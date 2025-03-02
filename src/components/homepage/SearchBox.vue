@@ -201,3 +201,4 @@ input[type="date"] {
   color: transparent;
 }
 </style>
+./ErrorDialog.vue

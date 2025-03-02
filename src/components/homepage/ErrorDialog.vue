@@ -1,9 +1,10 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto"
+    @click="$emit('close')"
   >
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" @click.stop>
       <div class="flex items-center text-red-500 mb-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +27,7 @@
       <div class="flex justify-end">
         <BaseButton
           @click="$emit('close')"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
         >
           {{ buttonText }}
         </BaseButton>
@@ -36,6 +37,8 @@
 </template>
 
 <script>
+import BaseButton from "../base/BaseButton.vue";
+
 export default {
   name: "ErrorDialog",
   props: {
@@ -55,6 +58,19 @@ export default {
       type: String,
       default: "OK",
     },
+  },
+  watch: {
+    show(newVal) {
+      if (newVal) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    },
+  },
+  beforeUnmount() {
+    // Ensure scroll is restored when component is destroyed
+    document.body.style.overflow = "";
   },
   emits: ["close"],
 };
