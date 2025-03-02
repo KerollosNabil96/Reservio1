@@ -76,8 +76,10 @@
 
       <!-- Auth Buttons (desktop) -->
       <div class="hidden md:flex items-center space-x-4">
-        <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
-          <RouterLink to="/signin">Sign In</RouterLink>
+        <BaseButton 
+          @click="showSigninForm = true"
+          class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
+          Sign In
         </BaseButton>
         <BaseButton
           @click="showSignupForm = true"
@@ -147,16 +149,13 @@
           <!-- Mobile Auth Buttons -->
           <div class="flex items-center space-x-4">
             <BaseButton
-              @click="closeMenu"
+              @click="closeMenu; showSigninForm = true;"
               class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
             >
-              <RouterLink to="/signin">Sign In</RouterLink>
+              Sign In
             </BaseButton>
             <BaseButton
-              @click="
-                closeMenu;
-                showSignupForm = true;
-              "
+              @click="closeMenu; showSignupForm = true;"
               class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
             >
               Sign Up
@@ -171,25 +170,32 @@
   <Signup
     :show="showSignupForm"
     @close="showSignupForm = false"
-    @switch-to-login="
-      showSignupForm = false;
-      toggleSignIn();
-    "
+    @switch-to-signin="showSignupForm = false; showSigninForm = true"
+  />
+  
+  <!-- Signin Form Popup -->
+  <Signin
+    :show="showSigninForm"
+    @close="showSigninForm = false"
+    @switch-to-signup="showSigninForm = false; showSignupForm = true"
   />
 </template>
 
 <script>
 import store from "@/store/store";
 import Signup from "../registration/Signup.vue";
+import Signin from "../registration/Signin.vue";
 
 export default {
   components: {
     Signup,
+    Signin
   },
   data() {
     return {
       isMenuOpen: false,
       showSignupForm: false,
+      showSigninForm: false,
     };
   },
   methods: {
@@ -201,13 +207,7 @@ export default {
     },
     closeMenu() {
       this.isMenuOpen = false;
-    },
-    toggleSignIn() {
-      store.state.showSignin = true;
-    },
-    toggleSignUp() {
-      store.state.showSignup = true;
-    },
+    }
   },
   computed: {
     dark() {

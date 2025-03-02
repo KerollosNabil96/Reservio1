@@ -1,69 +1,147 @@
 <template>
-  <!-- Container: 2-column layout on md+, stacked on mobile -->
-  <div class="flex flex-col-reverse md:flex-row min-h-screen">
-    <!-- Right Side: Sign Up Form -->
-    <div class="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-      <div class="max-w-md w-full">
-        <!-- Form Header -->
-        <h2 class="text-2xl md:text-3xl font-bold mb-6">Create Account</h2>
+  <!-- Overlay -->
+  <div
+    v-if="show"
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 overflow-auto"
+    @click="$emit('close')"
+  >
+    <!-- Form Container -->
+    <div
+      class="bg-white rounded-lg overflow-hidden flex flex-col md:flex-row max-w-4xl w-full md:w-4/5 lg:w-3/4 max-h-[90vh] md:max-h-[80vh] relative my-4"
+      @click.stop
+    >
+      <!-- Close Button -->
+      <button
+        type="button"
+        @click="$emit('close')"
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
 
-        <!-- Sign Up Form -->
-        <form class="space-y-4" @submit.prevent="handleSubmit">
-          <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Email</label
-              >
+      <!-- Map/Image Section - Will appear above form on mobile -->
+      <div class="md:w-1/2 h-48 md:h-auto relative">
+        <div
+          class="absolute inset-0 bg-gray-100 flex items-center justify-center"
+        >
+          <!-- Map background with logo overlay -->
+          <img
+            src="../../assets/pictures/signin.png"
+            alt="Sign In"
+            class="w-full h-full object-cover opacity-50"
+          />
+          <div class="absolute inset-0 flex items-center justify-center">
+            <h1 class="text-5xl font-bold text-blue-600">Reservio</h1>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-6">Sign In</h2>
+
+        <form @submit.prevent="handleSubmit">
+          <!-- Email -->
+          <div class="mb-4">
+            <label class="block mb-1">E mail</label>
+            <input
+              type="email"
+              v-model="email"
+              placeholder="name@gmail.com"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="mb-4">
+            <label class="block mb-1">Password</label>
+            <div class="relative">
               <input
-                v-model="email"
-                type="email"
-                required
-                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Password</label
-              >
-              <input
+                :type="showPassword ? 'text' : 'password'"
                 v-model="password"
-                type="password"
+                placeholder="Enter your password"
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 required
-                class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
               />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    v-if="showPassword"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                  />
+                  <path
+                    v-else
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    v-else
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
             </div>
-            <button
-              type="submit"
-              class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
+          </div>
+
+          <!-- Forgot Password Link -->
+          <div class="mb-6 text-right">
+            <a href="#" class="text-sm text-blue-600 hover:underline"
+              >Forgot Password?</a
             >
-              Sign In
+          </div>
+
+          <!-- Sign In Button -->
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200"
+          >
+            Sign In
+          </button>
+
+          <!-- Sign Up Link -->
+          <div class="mt-4 text-center text-sm">
+            Don't have an account?
+            <button
+              type="button"
+              @click="$emit('switch-to-signup')"
+              class="text-blue-600 hover:underline font-medium"
+            >
+              Sign up
             </button>
           </div>
         </form>
-
-        <!-- Login Link -->
-        <p class="mt-4 text-sm text-center">
-          Don't have an account?
-          <RouterLink to="/signup" class="text-blue-600">Signup</RouterLink>
-        </p>
-      </div>
-    </div>
-
-    <!-- Left Side: Image (below on mobile) -->
-    <div
-      class="w-full md:w-1/2 relative order-last md:order-first h-64 md:h-auto flex items-center justify-center p-4"
-    >
-      <!-- External Image -->
-      <img
-        src="../../assets/pictures/signin.png"
-        alt="Placeholder"
-        class="w-full h-full object-cover rounded-md"
-      />
-
-      <div
-        class="absolute inset-0 m-4 rounded-md flex items-center justify-center bg-white/50 w-2/3 h-2/3 left-14 top-7 md:left-28 md:top-28"
-      >
-        <h1 class="text-3xl md:text-4xl font-bold text-blue-600">Reservio</h1>
       </div>
     </div>
   </div>
@@ -71,11 +149,48 @@
 
 <script>
 export default {
-  name: "SignUp",
-  methods: {
-    handleSubmit() {
-      alert("Sign Up form submitted!");
+  name: "SigninForm",
+  props: {
+    show: {
+      type: Boolean,
+      default: false,
     },
   },
+  data() {
+    return {
+      email: "",
+      password: "",
+      showPassword: false,
+    };
+  },
+  watch: {
+    show(newVal) {
+      if (newVal) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    },
+  },
+  beforeUnmount() {
+    // Ensure scroll is restored when component is destroyed
+    document.body.style.overflow = "";
+  },
+  methods: {
+    handleSubmit() {
+      // Create user object
+      const user = {
+        email: this.email,
+        password: this.password,
+      };
+
+      console.log("Signing in user:", user);
+      // Here you would typically make an API call to authenticate the user
+
+      // Close the form after successful sign in
+      this.$emit("close");
+    },
+  },
+  emits: ["close", "switch-to-signup"],
 };
 </script>

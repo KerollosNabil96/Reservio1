@@ -2,7 +2,7 @@
   <!-- Overlay -->
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto"
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 overflow-auto"
     @click="$emit('close')"
   >
     <!-- Form Container -->
@@ -218,6 +218,18 @@
           >
             Register
           </button>
+
+          <!-- Sign In Link -->
+          <div class="mt-4 text-center text-sm">
+            Already have an account?
+            <button
+              type="button"
+              @click="$emit('switch-to-signin')"
+              class="text-blue-600 hover:underline font-medium"
+            >
+              Sign in
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -248,15 +260,15 @@ export default {
   watch: {
     show(newVal) {
       if (newVal) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
       }
-    }
+    },
   },
   beforeUnmount() {
     // Ensure scroll is restored when component is destroyed
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   },
   methods: {
     register() {
@@ -282,6 +294,6 @@ export default {
       this.$emit("close");
     },
   },
-  emits: ["close", "switch-to-login"],
+  emits: ["close", "switch-to-signin"],
 };
 </script>
