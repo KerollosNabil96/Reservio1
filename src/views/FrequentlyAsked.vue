@@ -1,5 +1,6 @@
 <template>
-  <div class="container mx-auto px-4 py-8 max-w-3xl">
+  <div class="container-fluid  dark:bg-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-3xl  ">
     <div class="space-y-8">
       <!-- General Questions Section -->
       <div>
@@ -134,6 +135,8 @@
       </div>
     </div>
   </div>
+  </div>
+
 </template>
 
 <script>

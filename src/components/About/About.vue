@@ -1,6 +1,6 @@
 <template>
   <div class="About dark:bg-gray-900 bg-gray-0">
-    <div class="who bg-[#fafafa] py-1.5 my-12 dark:my-0  dark:bg-gray-800">
+    <div class="who bg-[#fafafa] py-1.5 my-12 dark:my-0  dark:py-12 dark:bg-gray-800">
       <h2 class="font-bold text-3xl text-center text-blue-600 my-6">
         Who We Are
       </h2>
@@ -17,7 +17,7 @@
       </p>
     </div>
     <div class="Meet  dark:bg-gray-800">
-      <h2 class="font-bold text-3xl text-center text-blue-600 my-6 dark:my-3 dark:py-6 ">
+      <h2 class="font-bold text-3xl text-center text-blue-600 my-6 dark:my-3 dark:py-3 ">
         Meet Our Team
       </h2>
       <div class="teamMembers md:flex justify-around">
@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div class="mission bg-[#fafafa] py-7 mt-5 dark:mt-3   dark:bg-gray-800">
+    <div class="mission bg-[#fafafa] py-7 mt-5 dark:mt-3 dark:pt-2  dark:bg-gray-800">
       <h2 class="font-bold text-3xl text-center text-blue-600 my-6">
         Our Mission
       </h2>
