@@ -49,16 +49,12 @@
           <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
         </li>
         <li>
-<<<<<<< HEAD
           <RouterLink
             to="/about"
             class="hover:text-blue-600"
             :class="{ 'text-blue-600': $route.path === '/about' }"
             >About</RouterLink
           >
-=======
-          <RouterLink to="/About" class="hover:text-blue-600">About</RouterLink>
->>>>>>> 020c4fe (Creating About component)
         </li>
         <li>
           <a href="#contact-form" class="hover:text-blue-600">Contact</a>
@@ -138,7 +134,7 @@
             </li>
             <li>
               <RouterLink
-                to="/FAQs"
+                to="/about"
                 class="hover:text-blue-600"
                 @click="closeMenu"
                 >FAQs</RouterLink
