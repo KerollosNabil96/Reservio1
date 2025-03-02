@@ -2,7 +2,7 @@
   <nav
     class="flex items-center justify-between py-4 px-6 md:px-16 bg-white shadow-sm dark:bg-gray-700 dark:text-white"
   >
-    <!-- Brand / Logo -->
+    <!-- Logo -->
     <RouterLink to="/" class="text-2xl font-bold text-blue-600"
       >Reservio</RouterLink
     >
@@ -13,7 +13,9 @@
         <RouterLink to="/" class="hover:text-blue-600">Home</RouterLink>
       </li>
       <li>
-        <RouterLink to="/" class="hover:text-blue-600">Share Venue</RouterLink>
+        <RouterLink to="/register-venue" class="hover:text-blue-600"
+          >Share Venue</RouterLink
+        >
       </li>
       <li>
         <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>

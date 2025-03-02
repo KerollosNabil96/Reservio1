@@ -1,21 +1,23 @@
 <template>
   <div
-    class="min-h-screen w-full bg-white text-gray-800 flex flex-col dark:bg-gray-800 dark:text-white"
+    class="min-h-screen w-full mx-auto bg-white text-gray-800 flex flex-col dark:bg-gray-800 dark:text-white"
   >
-    <!-- Hero Section -->
-    <TheHeader />
+    <div class="w-full sm:w-10/12 mx-auto">
+      <!-- Hero Section -->
+      <TheHeader />
 
-    <!-- Search Box -->
-    <SearchBox />
+      <!-- Search Box -->
+      <SearchBox />
 
-    <!-- Available Reservations Section -->
-    <section class="mt-12 px-6 md:px-16">
-      <h2 class="text-2xl font-bold mb-6">Available Reservations</h2>
+      <!-- Available Reservations Section -->
+      <section class="mt-12 px-6 md:px-16">
+        <h2 class="text-2xl font-bold mb-6">Available Reservations</h2>
 
-      <!-- Custom ReservationCardList Component -->
-      <!-- Pass your reservation data via props -->
-      <ReservationCardList />
-    </section>
+        <!-- Custom ReservationCardList Component -->
+        <!-- Pass your reservation data via props -->
+        <ReservationCardList />
+      </section>
+    </div>
 
     <!-- Footer -->
     <footer

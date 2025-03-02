@@ -2,6 +2,7 @@ import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import ReservationDetails from "@/components/reservations/ReservationDetails.vue";
 import HomePage from "@/views/HomePage.vue";
+import VenueRegistration from "@/views/VenueRegistration.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -10,6 +11,7 @@ const router = createRouter({
     { path: "/", component: HomePage },
     { path: "/signin", component: Signin },
     { path: "/signup", component: Signup },
+    { path: "/register-venue", component: VenueRegistration },
     { path: "/reservation/:id", component: ReservationDetails, props: true },
   ],
 });
