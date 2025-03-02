@@ -80,9 +80,10 @@
           <RouterLink to="/signin">Sign In</RouterLink>
         </BaseButton>
         <BaseButton
+          @click="showSignupForm = true"
           class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
         >
-          <RouterLink to="/signup">Sign Up</RouterLink>
+          Sign Up
         </BaseButton>
       </div>
 
@@ -152,25 +153,43 @@
               <RouterLink to="/signin">Sign In</RouterLink>
             </BaseButton>
             <BaseButton
-              @click="closeMenu"
+              @click="
+                closeMenu;
+                showSignupForm = true;
+              "
               class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
             >
-              <RouterLink to="/signup">Sign Up</RouterLink>
+              Sign Up
             </BaseButton>
           </div>
         </div>
       </transition>
     </div>
   </nav>
+
+  <!-- Signup Form Popup -->
+  <Signup
+    :show="showSignupForm"
+    @close="showSignupForm = false"
+    @switch-to-login="
+      showSignupForm = false;
+      toggleSignIn();
+    "
+  />
 </template>
 
 <script>
 import store from "@/store/store";
+import Signup from "../registration/Signup.vue";
 
 export default {
+  components: {
+    Signup,
+  },
   data() {
     return {
       isMenuOpen: false,
+      showSignupForm: false,
     };
   },
   methods: {
