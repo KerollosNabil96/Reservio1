@@ -57,15 +57,15 @@
           >
         </li>
         <li>
-          <a href="#contact-form" class="hover:text-blue-600">Contact</a>
+          <a href="#footer" class="hover:text-blue-600">Contact</a>
+
         </li>
         <li>
           <RouterLink
             to="/FAQs"
             class="hover:text-blue-600"
             :class="{ 'text-blue-600': $route.path === '/FAQs' }"
-            >FAQs</RouterLink
-          >
+            >FAQs</RouterLink>
         </li>
         <li>
           <button class="hover:cursor-pointer" @click="toggleDarkMode">
