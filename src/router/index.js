@@ -1,3 +1,4 @@
+import About from "@/components/About/About.vue";
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import ReservationDetails from "@/components/reservations/ReservationDetails.vue";
@@ -14,6 +15,7 @@ const router = createRouter({
     { path: "/signin", component: Signin },
     { path: "/signup", component: Signup },
     { path: "/register-venue", component: VenueRegistration },
+    { path: "/About", component: About },
     { path: "/reservation/:id", component: ReservationDetails, props: true },
     { path: "/FAQs", component: FrequentlyAsked },
     { path: "/:notFound(.*)", component: NotFound },
