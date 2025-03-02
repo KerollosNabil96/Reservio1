@@ -8,21 +8,24 @@ const store = createStore({
         id: 1,
         name: "Football field",
         description: "Spacious football field with changing rooms.",
-        image: "../assets/pictures/Screenshot 2025-03-01 185349.png",
+        image:
+          "https://m.media-amazon.com/images/I/71+P-+MRm8L._AC_UF894,1000_QL80_.jpg",
         price: 100,
       },
       {
         id: 2,
         name: "Basketball Court",
         description: "Indoor court suitable for multiple sports.",
-        image: "https://via.placeholder.com/300x200?text=Basketball+Court",
+        image:
+          "https://m.media-amazon.com/images/I/71+P-+MRm8L._AC_UF894,1000_QL80_.jpg",
         price: 80,
       },
       {
         id: 3,
         name: "Conference Hall",
         description: "Perfect for business meetings and seminars.",
-        image: "https://via.placeholder.com/300x200?text=Conference+Hall",
+        image:
+          "https://m.media-amazon.com/images/I/71+P-+MRm8L._AC_UF894,1000_QL80_.jpg",
         price: 150,
       },
     ],

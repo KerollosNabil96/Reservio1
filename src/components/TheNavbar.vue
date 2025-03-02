@@ -1,62 +1,172 @@
 <template>
-  <nav
-    class="flex items-center justify-between py-4 px-6 md:px-16 bg-white shadow-sm dark:bg-gray-700 dark:text-white"
-  >
-    <!-- Logo -->
-    <RouterLink to="/" class="text-2xl font-bold text-blue-600"
-      >Reservio</RouterLink
+  <nav class="bg-white shadow-sm dark:bg-gray-900 dark:text-white relative">
+    <div
+      class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto"
     >
+      <!-- Logo -->
+      <RouterLink to="/" class="text-2xl font-bold text-blue-600">
+        Reservio
+      </RouterLink>
 
-    <!-- Navigation Links -->
-    <ul class="hidden md:flex items-center space-x-6">
-      <li>
-        <RouterLink to="/" class="hover:text-blue-600">Home</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/register-venue" class="hover:text-blue-600"
-          >Share Venue</RouterLink
+      <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
+
+      <div class="md:hidden text-gray-800 dark:text-white" @click="toggleMenu">
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          viewBox="0 0 24 24"
         >
-      </li>
-      <li>
-        <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/about" class="hover:text-blue-600">About</RouterLink>
-      </li>
-      <li>
-        <a href="#contact-form" class="hover:text-blue-600">Contact</a>
-      </li>
-      <li>
-        <RouterLink to="/about" class="hover:text-blue-600">FAQs</RouterLink>
-      </li>
-      <li>
-        <button class="hover:cursor-pointer" @click="toggleDarkMode">
-          Dark
-        </button>
-      </li>
-    </ul>
+          <!-- Hamburger lines (shown when menu is closed) -->
+          <path v-if="!isMenuOpen" d="M4 6h16M4 12h16M4 18h16" />
+          <!-- "X" icon (shown when menu is open) -->
+          <path v-else d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
 
-    <!-- Auth Buttons -->
-    <div class="flex items-center space-x-4">
-      <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
-        <RouterLink to="/signin"> Sign In </RouterLink>
-      </BaseButton>
-      <BaseButton
-        class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
-      >
-        <RouterLink to="/signup"> Sign Up </RouterLink>
-      </BaseButton>
+      <!-- Navigation Links (desktop) -->
+      <ul class="hidden md:flex items-center space-x-6">
+        <li>
+          <RouterLink to="/" class="hover:text-blue-600">Home</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/register-venue" class="hover:text-blue-600"
+            >Share Venue</RouterLink
+          >
+        </li>
+        <li>
+          <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/about" class="hover:text-blue-600">About</RouterLink>
+        </li>
+        <li>
+          <a href="#contact-form" class="hover:text-blue-600">Contact</a>
+        </li>
+        <li>
+          <RouterLink to="/about" class="hover:text-blue-600">FAQs</RouterLink>
+        </li>
+        <li>
+          <button class="hover:cursor-pointer" @click="toggleDarkMode">
+            Dark
+          </button>
+        </li>
+      </ul>
+
+      <!-- Auth Buttons (desktop) -->
+      <div class="hidden md:flex items-center space-x-4">
+        <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
+          <RouterLink to="/signin"> Sign In </RouterLink>
+        </BaseButton>
+        <BaseButton
+          class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
+        >
+          <RouterLink to="/signup"> Sign Up </RouterLink>
+        </BaseButton>
+      </div>
+
+      <!-- Mobile Menu (shown when isMenuOpen = true) -->
+      <transition name="fade">
+        <div
+          v-if="isMenuOpen"
+          class="absolute top-16 left-0 w-full bg-white shadow-md p-4 md:hidden dark:bg-gray-700 dark:text-white"
+        >
+          <!-- Mobile Nav Links -->
+          <ul class="flex flex-col space-y-4 mb-4">
+            <li>
+              <RouterLink to="/" class="hover:text-blue-600" @click="closeMenu"
+                >Home</RouterLink
+              >
+            </li>
+            <li>
+              <RouterLink
+                to="/register-venue"
+                class="hover:text-blue-600"
+                @click="closeMenu"
+                >Share Venue</RouterLink
+              >
+            </li>
+            <li>
+              <RouterLink to="/" class="hover:text-blue-600" @click="closeMenu"
+                >Book Now</RouterLink
+              >
+            </li>
+            <li>
+              <RouterLink
+                to="/about"
+                class="hover:text-blue-600"
+                @click="closeMenu"
+                >About</RouterLink
+              >
+            </li>
+            <li>
+              <a
+                href="#contact-form"
+                class="hover:text-blue-600"
+                @click="closeMenu"
+                >Contact</a
+              >
+            </li>
+            <li>
+              <RouterLink
+                to="/about"
+                class="hover:text-blue-600"
+                @click="closeMenu"
+                >FAQs</RouterLink
+              >
+            </li>
+            <li>
+              <button class="hover:cursor-pointer" @click="toggleDarkMode">
+                Dark
+              </button>
+            </li>
+          </ul>
+
+          <!-- Mobile Auth Buttons -->
+          <div class="flex items-center space-x-4">
+            <BaseButton
+              class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+            >
+              <RouterLink to="/signin" @click="closeMenu"> Sign In </RouterLink>
+            </BaseButton>
+            <BaseButton
+              class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
+            >
+              <RouterLink to="/signup" @click="closeMenu"> Sign Up </RouterLink>
+            </BaseButton>
+          </div>
+        </div>
+      </transition>
     </div>
   </nav>
 </template>
 
 <script>
 import store from "@/store/store";
+import BaseButton from "./base/BaseButton.vue";
+BaseButton;
 
 export default {
+  components: {
+    BaseButton,
+  },
+  data() {
+    return {
+      isMenuOpen: false,
+    };
+  },
   methods: {
     toggleDarkMode() {
       store.state.isDarkMode = !store.state.isDarkMode;
+    },
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+    closeMenu() {
+      this.isMenuOpen = false;
     },
   },
   computed: {
@@ -66,3 +176,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Simple fade transition for the mobile menu */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

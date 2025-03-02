@@ -1,7 +1,9 @@
 <template>
-  <header class="flex flex-col md:flex-row items-center py-8 px-6 md:px-16">
+  <header
+    class="flex flex-col-reverse md:flex-row items-end md:justify-between py-8 px-6 md:px-16"
+  >
     <!-- Text Section -->
-    <div class="w-full md:w-5/12 md:pr-8">
+    <div class="w-full md:w-5/12 md:pr-8 flex flex-col gap-5">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">
         Reserve Spaces or Share Your Venue
       </h1>
@@ -17,7 +19,6 @@
 
     <!-- Illustration/Image -->
     <div class="flex justify-center grow-1 sm:justify-end mb-6 md:mb-0">
-      <!-- Replace with your illustration or hero image -->
       <img
         src="../../assets/pictures/hero illustration.svg"
         alt="Hero Illustration"
