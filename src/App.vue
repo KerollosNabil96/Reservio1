@@ -1,7 +1,7 @@
 <script>
 import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
-import TheFooter from "./components/homepage/TheFooter.vue";
+import TheFooter from "./components/layouts/TheFooter.vue";
 export default {
   components: {
     TheNavbar,

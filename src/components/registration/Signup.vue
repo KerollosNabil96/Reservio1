@@ -100,7 +100,7 @@
         <!-- Login Link -->
         <p class="mt-4 text-sm text-center">
           Already have an account?
-          <a href="#" class="text-blue-600">Login</a>
+          <RouterLink to="/signin" class="text-blue-600">Login</RouterLink>
         </p>
       </div>
     </div>

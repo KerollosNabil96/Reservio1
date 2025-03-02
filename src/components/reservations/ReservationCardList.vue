@@ -1,5 +1,7 @@
 <template>
   <!-- Responsive grid of reservation cards -->
+  <h2 class="text-2xl font-bold mb-6">Available Reservations</h2>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     <ReservationCard
       v-for="reservation in reservations"

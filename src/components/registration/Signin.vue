@@ -43,8 +43,8 @@
 
         <!-- Login Link -->
         <p class="mt-4 text-sm text-center">
-          Already have an account?
-          <a href="#" class="text-blue-600">Login</a>
+          Don't have an account?
+          <RouterLink to="/signup" class="text-blue-600">Signup</RouterLink>
         </p>
       </div>
     </div>

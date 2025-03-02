@@ -135,13 +135,9 @@
 
 <script>
 import store from "@/store/store";
-import BaseButton from "../base/BaseButton.vue";
 
 export default {
   name: "FooterComponent",
-  components: {
-    BaseButton,
-  },
   computed: {
     dark() {
       return store.state.isDarkMode;
