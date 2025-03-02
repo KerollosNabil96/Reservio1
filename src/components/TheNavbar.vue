@@ -13,10 +13,19 @@
         <RouterLink to="/" class="hover:text-blue-600">Home</RouterLink>
       </li>
       <li>
+        <RouterLink to="/" class="hover:text-blue-600">Share Venue</RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
+      </li>
+      <li>
         <RouterLink to="/about" class="hover:text-blue-600">About</RouterLink>
       </li>
       <li>
         <a href="#contact-form" class="hover:text-blue-600">Contact</a>
+      </li>
+      <li>
+        <RouterLink to="/about" class="hover:text-blue-600">FAQs</RouterLink>
       </li>
       <li>
         <button class="hover:cursor-pointer" @click="toggleDarkMode">
