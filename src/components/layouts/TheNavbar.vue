@@ -59,12 +59,12 @@
       <!-- Auth Buttons (desktop) -->
       <div class="hidden md:flex items-center space-x-4">
         <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
-          <RouterLink to="/signin"> Sign In </RouterLink>
+          <RouterLink to="/signin">Sign In</RouterLink>
         </BaseButton>
         <BaseButton
           class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
         >
-          <RouterLink to="/signup"> Sign Up </RouterLink>
+          <RouterLink to="/signup">Sign Up</RouterLink>
         </BaseButton>
       </div>
 
@@ -128,15 +128,15 @@
           <!-- Mobile Auth Buttons -->
           <div class="flex items-center space-x-4">
             <BaseButton
+              @click="closeMenu"
               class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+              >Sign in</BaseButton
             >
-              <RouterLink to="/signin" @click="closeMenu"> Sign In </RouterLink>
-            </BaseButton>
             <BaseButton
+              @click="closeMenu"
               class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
+              >Sign Up</BaseButton
             >
-              <RouterLink to="/signup" @click="closeMenu"> Sign Up </RouterLink>
-            </BaseButton>
           </div>
         </div>
       </transition>
@@ -146,13 +146,8 @@
 
 <script>
 import store from "@/store/store";
-import BaseButton from "./base/BaseButton.vue";
-BaseButton;
 
 export default {
-  components: {
-    BaseButton,
-  },
   data() {
     return {
       isMenuOpen: false,
@@ -167,6 +162,12 @@ export default {
     },
     closeMenu() {
       this.isMenuOpen = false;
+    },
+    toggleSignIn() {
+      store.state.showSignin = true;
+    },
+    toggleSignUp() {
+      store.state.showSignup = true;
     },
   },
   computed: {

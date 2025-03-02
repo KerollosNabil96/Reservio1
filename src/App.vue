@@ -1,21 +1,29 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import Signin from "./components/registration/Signin.vue";
-import Signup from "./components/registration/Signup.vue";
-import TheNavbar from "./components/TheNavbar.vue";
-
 import store from "./store/store";
-import HomePage from "./views/HomePage.vue";
+import TheNavbar from "./components/layouts/TheNavbar.vue";
+import TheFooter from "./components/homepage/TheFooter.vue";
 export default {
   components: {
-    Signin,
-    Signup,
     TheNavbar,
-    HomePage,
+    TheFooter,
   },
   computed: {
     dark() {
       return store.state.isDarkMode;
+    },
+    showSignUp() {
+      return store.state.showSignup;
+    },
+    showSignIn() {
+      return store.state.showSignin;
+    },
+  },
+  methods: {
+    hideSignUp() {
+      store.state.showSignup = false;
+    },
+    hideSignIn() {
+      store.state.showSignin = false;
     },
   },
 };
@@ -25,5 +33,6 @@ export default {
   <div :class="{ dark: dark }">
     <TheNavbar />
     <RouterView />
+    <TheFooter />
   </div>
 </template>

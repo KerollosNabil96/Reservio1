@@ -14,13 +14,11 @@
       </section>
     </div>
     <!-- Footer -->
-    <TheFooter />
   </div>
 </template>
 
 <script>
 import SearchBox from "@/components/homepage/SearchBox.vue";
-import TheFooter from "@/components/homepage/TheFooter.vue";
 import TheHeader from "@/components/homepage/TheHeader.vue";
 import ReservationCardList from "@/components/reservations/ReservationCardList.vue";
 
@@ -30,7 +28,6 @@ export default {
   components: {
     ReservationCardList,
     TheHeader,
-    TheFooter,
     SearchBox,
   },
   data() {

@@ -3,6 +3,8 @@ import { createStore } from "vuex";
 const store = createStore({
   state: {
     isDarkMode: false,
+    showSignup: false,
+    showSignin: false,
     reservations: [
       {
         id: 1,
