@@ -127,7 +127,7 @@
     <!-- Full-Width Copyright Bar -->
     <div class="bg-blue-600 text-white dark:bg-gray-800">
       <div class="w-11/12 mx-auto py-2 text-center">
-        <p class="text-sm">© 2023 Reservio. All rights reserved.</p>
+        <p class="text-sm">© 2025 Reservio. All rights reserved.</p>
       </div>
     </div>
   </footer>
