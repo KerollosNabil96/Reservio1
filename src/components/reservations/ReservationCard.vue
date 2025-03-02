@@ -11,12 +11,11 @@
       </p>
       <div class="flex justify-between items-center">
         <span class="text-indigo-600 font-bold">${{ price }}</span>
-        <router-link
-          :to="`/reservation/${id}`"
-          class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+        <BaseButton
+          class="bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700"
         >
-          Reserve Now
-        </router-link>
+          <router-link :to="`/reservation/${id}`"> Reserve Now </router-link>
+        </BaseButton>
       </div>
     </div>
   </div>

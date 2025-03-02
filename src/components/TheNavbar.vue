@@ -38,18 +38,14 @@
 
     <!-- Auth Buttons -->
     <div class="flex items-center space-x-4">
-      <RouterLink
-        to="/signin"
-        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+      <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
+        <RouterLink to="/signin"> Sign In </RouterLink>
+      </BaseButton>
+      <BaseButton
+        class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
       >
-        Sign In
-      </RouterLink>
-      <RouterLink
-        to="/signup"
-        class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2 rounded-md transition-colors"
-      >
-        Sign Up
-      </RouterLink>
+        <RouterLink to="/signup"> Sign Up </RouterLink>
+      </BaseButton>
     </div>
   </nav>
 </template>
