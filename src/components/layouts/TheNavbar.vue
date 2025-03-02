@@ -76,9 +76,10 @@
 
       <!-- Auth Buttons (desktop) -->
       <div class="hidden md:flex items-center space-x-4">
-        <BaseButton 
+        <BaseButton
           @click="showSigninForm = true"
-          class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
+          class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+        >
           Sign In
         </BaseButton>
         <BaseButton
@@ -133,7 +134,7 @@
             </li>
             <li>
               <RouterLink
-                to="/about"
+                to="/FAQs"
                 class="hover:text-blue-600"
                 @click="closeMenu"
                 >FAQs</RouterLink
@@ -149,13 +150,19 @@
           <!-- Mobile Auth Buttons -->
           <div class="flex items-center space-x-4">
             <BaseButton
-              @click="closeMenu; showSigninForm = true;"
+              @click="
+                closeMenu;
+                showSigninForm = true;
+              "
               class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
             >
               Sign In
             </BaseButton>
             <BaseButton
-              @click="closeMenu; showSignupForm = true;"
+              @click="
+                closeMenu;
+                showSignupForm = true;
+              "
               class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
             >
               Sign Up
@@ -170,14 +177,20 @@
   <Signup
     :show="showSignupForm"
     @close="showSignupForm = false"
-    @switch-to-signin="showSignupForm = false; showSigninForm = true"
+    @switch-to-signin="
+      showSignupForm = false;
+      showSigninForm = true;
+    "
   />
-  
+
   <!-- Signin Form Popup -->
   <Signin
     :show="showSigninForm"
     @close="showSigninForm = false"
-    @switch-to-signup="showSigninForm = false; showSignupForm = true"
+    @switch-to-signup="
+      showSigninForm = false;
+      showSignupForm = true;
+    "
   />
 </template>
 
@@ -189,7 +202,7 @@ import Signin from "../registration/Signin.vue";
 export default {
   components: {
     Signup,
-    Signin
+    Signin,
   },
   data() {
     return {
@@ -207,7 +220,7 @@ export default {
     },
     closeMenu() {
       this.isMenuOpen = false;
-    }
+    },
   },
   computed: {
     dark() {
