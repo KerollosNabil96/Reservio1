@@ -1,6 +1,7 @@
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import ReservationDetails from "@/components/reservations/ReservationDetails.vue";
+import FrequentlyAsked from "@/views/FrequentlyAsked.vue";
 import HomePage from "@/views/HomePage.vue";
 import NotFound from "@/views/NotFound.vue";
 import VenueRegistration from "@/views/VenueRegistration.vue";
@@ -14,8 +15,16 @@ const router = createRouter({
     { path: "/signup", component: Signup },
     { path: "/register-venue", component: VenueRegistration },
     { path: "/reservation/:id", component: ReservationDetails, props: true },
+    { path: "/FAQs", component: FrequentlyAsked },
     { path: "/:notFound(.*)", component: NotFound },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
 });
 
 export default router;

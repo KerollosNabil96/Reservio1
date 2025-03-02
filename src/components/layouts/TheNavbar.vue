@@ -30,10 +30,18 @@
       <!-- Navigation Links (desktop) -->
       <ul class="hidden md:flex items-center space-x-6">
         <li>
-          <RouterLink to="/" class="hover:text-blue-600">Home</RouterLink>
+          <RouterLink
+            to="/"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/' }"
+            >Home</RouterLink
+          >
         </li>
         <li>
-          <RouterLink to="/register-venue" class="hover:text-blue-600"
+          <RouterLink
+            to="/register-venue"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
             >Share Venue</RouterLink
           >
         </li>
@@ -41,13 +49,23 @@
           <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
         </li>
         <li>
-          <RouterLink to="/about" class="hover:text-blue-600">About</RouterLink>
+          <RouterLink
+            to="/about"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/about' }"
+            >About</RouterLink
+          >
         </li>
         <li>
           <a href="#contact-form" class="hover:text-blue-600">Contact</a>
         </li>
         <li>
-          <RouterLink to="/about" class="hover:text-blue-600">FAQs</RouterLink>
+          <RouterLink
+            to="/FAQs"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/FAQs' }"
+            >FAQs</RouterLink
+          >
         </li>
         <li>
           <button class="hover:cursor-pointer" @click="toggleDarkMode">
@@ -130,13 +148,15 @@
             <BaseButton
               @click="closeMenu"
               class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
-              >Sign in</BaseButton
             >
+              <RouterLink to="/signin">Sign In</RouterLink>
+            </BaseButton>
             <BaseButton
               @click="closeMenu"
               class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
-              >Sign Up</BaseButton
             >
+              <RouterLink to="/signup">Sign Up</RouterLink>
+            </BaseButton>
           </div>
         </div>
       </transition>
@@ -173,6 +193,9 @@ export default {
   computed: {
     dark() {
       return store.state.isDarkMode;
+    },
+    selected() {
+      return "text-blue-600";
     },
   },
 };

@@ -15,6 +15,7 @@
             <input
               type="text"
               id="name"
+              required
               placeholder="Enter your name"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -26,6 +27,7 @@
             <input
               type="email"
               id="email"
+              required
               placeholder="name@gmail.com"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -37,6 +39,7 @@
             <input
               type="tel"
               id="phone"
+              required
               placeholder="With Country Code"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -50,6 +53,7 @@
             <input
               type="text"
               id="username"
+              required
               placeholder="Username"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -63,6 +67,7 @@
             <input
               type="password"
               id="password"
+              required
               placeholder="6+ characters"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -76,6 +81,7 @@
             <input
               type="password"
               id="confirm-password"
+              required
               placeholder="6+ characters"
               class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
