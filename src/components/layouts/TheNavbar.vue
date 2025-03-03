@@ -117,7 +117,10 @@
               >
             </li>
             <li>
-              <RouterLink to="/" class="hover:text-blue-600" @click="closeMenu"
+              <RouterLink
+                to="/book-now"
+                class="hover:text-blue-600"
+                @click="closeMenu"
                 >Book Now</RouterLink
               >
             </li>
@@ -139,7 +142,7 @@
             </li>
             <li>
               <RouterLink
-                to="/about"
+                to="/FAQs"
                 class="hover:text-blue-600"
                 @click="closeMenu"
                 >FAQs</RouterLink
