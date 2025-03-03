@@ -30,8 +30,22 @@
         <div class="row">
           <div class="form-group">
             <label>City</label>
-            <input type="text" v-model="city" placeholder="City" required />
+            <select v-model="selectedCity" @change="updateAreas" required>
+              <option disabled value="" class="text-gray-900">Select a City</option>
+              <option v-for="(areas, city) in cities" :key="city" :value="city" class="text-gray-900">
+                {{ city }}
+              </option>
+            </select>
           </div>
+          <div class="form-group">
+  <label>Area</label>
+  <select v-model="selectedArea" :disabled="!selectedCity" required>
+    <option disabled value="" class="text-gray-900">Select an Area</option>
+    <option v-for="area in cities[selectedCity] || []" :key="area" :value="area" class="text-gray-900">
+      {{ area }}
+    </option>
+  </select>
+</div>
           <div class="form-group">
             <label>Zip Code</label>
             <input
@@ -132,16 +146,47 @@ export default {
       isVisible: false,
       venueName: "",
       venueAddress: "",
-      city: "",
+      selectedCity: "",
+      selectedArea: "",
       zipCode: "",
       phoneNumber: "",
       category: "",
       categories: ["Stadium", "Medical", "Event Hall", "Gym"],
       venueImages: [],
       description: "",
+      cities: {
+  "Cairo": ["Nasr City", "Heliopolis", "Maadi", "Zamalek", "New Cairo", "Shubra", "Downtown", "El Marg", "Ain Shams", "Helwan", "Fifth Settlement"],
+  "Alexandria": ["Smouha", "Stanley", "Gleem", "Bolkly", "Miami","Sedi Beshr", "Sidi Gaber", "Sporting", "Bacchus", "Al Agamy", "Mandara", "Montazah"],
+  "Giza": ["Dokki", "Mohandeseen", "6th of October", "Sheikh Zayed", "Haram", "Faisal", "Imbaba", "Agouza", "Boulak El Dakrour"],
+  "Port Said": ["Al-Ganayen", "Al-Zohour", "Al-Manakh", "Port Fouad", "El Arab", "El Shark"],
+  "Suez": ["Arbaeen", "Ataka", "Faisal", "Ganayen", "Suez"],
+  "Ismailia": ["Al-Qantara", "Fayed", "Tell El Kebir", "El Tal El Kabir", "Abu Suwayr"],
+  "Sharkia": ["Zagazig", "10th of Ramadan", "Bilbeis", "Abu Hammad", "Minya El-Qamh", "Kafr Saqr", "El-Hussainia"],
+  "Dakahlia": ["Mansoura", "Mit Ghamr", "Talkha", "Sherbin", "Belqas", "Nabaroh", "Aga"],
+  "Beheira": ["Damanhur", "Kafr El Dawwar", "Rashid", "Abu Hummus", "Edku", "Shubrakhit", "Kom Hamada"],
+  "Menoufia": ["Shibin El Kom", "Menouf", "Ashmoun", "Sadat City", "Tala", "Birket El Sab"],
+  "Gharbia": ["Tanta", "El Mahalla El Kubra", "Zefta", "Kafr El Zayat", "Samannoud"],
+  "Kafr El Sheikh": ["Kafr El Sheikh", "Desouk", "Biyala", "Sidi Salem", "Baltim", "Fuwah"],
+  "Fayoum": ["Fayoum", "Ibshaway", "Sinnuris", "Tamiya", "Youssef El Seddik"],
+  "Beni Suef": ["Beni Suef", "Al Wasta", "Biba", "Naser", "Ehnasia"],
+  "Minya": ["Minya", "Mallawi", "Samalut", "Maghagha", "Bani Mazar"],
+  "Asyut": ["Asyut", "Dairut", "Manfalut", "Abnoub", "Al Qusiyah"],
+  "Sohag": ["Sohag", "Akhmim", "Girga", "Tahta", "Al Balina"],
+  "Qena": ["Qena", "Luxor", "Abu Tesht", "Nag Hammadi", "Dishna"],
+  "Luxor": ["Luxor", "Armant", "Esna", "New Tiba"],
+  "Aswan": ["Aswan", "Edfu", "Kom Ombo", "Drau"],
+  "Red Sea": ["Hurghada", "Safaga", "El Quseir", "Marsa Alam"],
+  "New Valley": ["Kharga", "Dakhla", "Farafra", "Balat"],
+  "Matrouh": ["Marsa Matruh", "Siwa", "Sidi Barrani", "El Dabaa"],
+  "North Sinai": ["Arish", "Sheikh Zuweid", "Rafah", "Bir El Abd"],
+  "South Sinai": ["Sharm El Sheikh", "Dahab", "Nuweiba", "Taba", "Tor"],
+}
     };
   },
   methods: {
+    updateAreas() {
+      this.selectedArea = "";
+    },
     uploadImages(event) {
       const files = event.target.files;
       if (files.length !== 3) {
@@ -164,10 +209,11 @@ export default {
         return;
       }
       console.log("Form Data:", this.$data);
-    },
-  },
+    }
+  }
 };
 </script>
+
 
 <style scoped>
 .form-container {
