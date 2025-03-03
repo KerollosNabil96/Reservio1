@@ -8,13 +8,15 @@
         Reserve Spaces or Share Your Venue
       </h1>
       <p class="text-gray-600 mb-6 dark:text-gray-100">
-        Book unique spaces or manage your own reservations
+        Book unique spaces or manage your own venues
       </p>
-      <BaseButton
-        class="text-white px-6 py-3 text-2xl w-full bg-blue-600 hover:bg-blue-700"
-      >
-        <RouterLink to="/register-venue"> Share Your Venue </RouterLink>
-      </BaseButton>
+
+      <RouterLink to="/register-venue">
+        <BaseButton
+          class="text-white px-6 py-3 text-2xl w-full bg-blue-600 hover:bg-blue-700"
+          >Share Your Venue</BaseButton
+        >
+      </RouterLink>
     </div>
 
     <!-- Illustration/Image -->
