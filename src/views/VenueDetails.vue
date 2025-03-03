@@ -7,7 +7,7 @@
       {{ currentVenue.name }}
     </h1>
     <p class="text-center text-gray-500 dark:text-gray-400 mb-6">
-      Nasr City, Cairo
+      {{ currentVenue.address.city }}, {{ currentVenue.address.governorate }}
     </p>
 
     <!-- Image Gallery -->
@@ -107,7 +107,9 @@
                 class="w-full h-full object-cover"
               />
             </div>
-            <span class="font-medium dark:text-white">{{ review.username }}</span>
+            <span class="font-medium dark:text-white">{{
+              review.username
+            }}</span>
           </div>
           <p class="text-gray-600 dark:text-gray-300 text-sm">
             {{ review.message }}
