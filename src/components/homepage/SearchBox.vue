@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap gap-2 items-center justify-center bg-blue-50 p-4 rounded-xl md:w-11/12 mx-auto"
+    class="flex flex-wrap gap-2 items-center justify-center bg-blue-50 p-4 rounded-xl md:w-11/12 mx-auto text-gray-900"
   >
     <!-- Pick a date -->
     <div class="relative flex-grow min-h-[40px]">
