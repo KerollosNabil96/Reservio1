@@ -22,9 +22,9 @@ const store = createStore({
           It is the stage for intense competition, strategy, and athleticism.`,
         price: 200,
         pictures: [
+          "https://www.soccer-field.net/images/fields/6/3.jpg?v=1",
+          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
           "https://www.soccer-field.net/images/fields/6/2.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
         ],
         reviews: [
           {
@@ -59,9 +59,9 @@ const store = createStore({
           It is the stage for intense competition, strategy, and athleticism.`,
         price: 150,
         pictures: [
+          "https://www.soccer-field.net/images/fields/6/3.jpg?v=1",
+          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
           "https://www.soccer-field.net/images/fields/6/2.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
         ],
         reviews: [
           {
@@ -96,9 +96,9 @@ const store = createStore({
           It is the stage for intense competition, strategy, and athleticism.`,
         price: 250,
         pictures: [
+          "https://www.soccer-field.net/images/fields/6/3.jpg?v=1",
+          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
           "https://www.soccer-field.net/images/fields/6/2.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
-          "https://www.soccer-field.net/images/fields/6/1.jpg?v=1",
         ],
         reviews: [
           {
