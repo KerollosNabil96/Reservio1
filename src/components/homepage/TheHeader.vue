@@ -13,7 +13,7 @@
       <BaseButton
         class="text-white px-6 py-3 text-2xl w-full bg-blue-600 hover:bg-blue-700"
       >
-        Share Your Venue
+        <RouterLink to="/register-venue"> Share Your Venue </RouterLink>
       </BaseButton>
     </div>
 
