@@ -7,6 +7,9 @@ import store from "./store/store";
 
 import BaseButton from "./components/base/BaseButton.vue";
 
+// Initialize the auth state before mounting the app
+store.dispatch('initAuth');
+
 const app = createApp(App);
 
 app.use(router);

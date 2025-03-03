@@ -20,10 +20,10 @@ export default {
   },
   methods: {
     hideSignUp() {
-      store.state.showSignup = false;
+      store.commit('setShowSignup', false);
     },
     hideSignIn() {
-      store.state.showSignin = false;
+      store.commit('setShowSignin', false);
     },
   },
 };

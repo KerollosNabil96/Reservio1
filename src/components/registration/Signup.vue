@@ -9,6 +9,7 @@
     <div
       class="bg-white rounded-lg overflow-hidden flex flex-col md:flex-row max-w-4xl w-full md:w-4/5 lg:w-3/4 max-h-[90vh] md:max-h-[80vh] relative my-4"
       @click.stop
+      ref="formContainer"
     >
       <!-- Close Button - Moved to top right of form container -->
       <button
@@ -50,10 +51,14 @@
       </div>
 
       <!-- Form Section -->
-      <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto">
+      <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto" ref="formSection">
         <h2 class="text-2xl font-bold mb-6">Create Account</h2>
 
         <form @submit.prevent="register">
+          <!-- Error Message -->
+          <div v-if="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 rounded-md" ref="errorMessage">
+            {{ errorMessage }}
+          </div>
           <!-- Name -->
           <div class="mb-4">
             <label class="block mb-1">Name</label>
@@ -211,12 +216,16 @@
             </p>
           </div>
 
-          <!-- Register Button -->
+          <!-- Register Button with Spinner -->
           <button
             type="submit"
-            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200"
+            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200 relative"
+            :disabled="isLoading"
           >
-            Register
+            <span v-if="!isLoading">Register</span>
+            <div v-else class="h-6 flex items-center justify-center">
+              <BaseSpinner :show="true" />
+            </div>
           </button>
 
           <!-- Sign In Link -->
@@ -237,8 +246,15 @@
 </template>
 
 <script>
+import { registerUser } from "@/firebase";
+import store from "@/store/store";
+import BaseSpinner from "../base/BaseSpinner.vue";
+
 export default {
   name: "SignupForm",
+  components: {
+    BaseSpinner
+  },
   props: {
     show: {
       type: Boolean,
@@ -255,6 +271,8 @@ export default {
       confirmPassword: "",
       showPassword: false,
       showConfirmPassword: false,
+      errorMessage: "",
+      isLoading: false,
     };
   },
   watch: {
@@ -271,27 +289,69 @@ export default {
     document.body.style.overflow = "";
   },
   methods: {
-    register() {
+    scrollToTop() {
+      // Scroll the form section to the top to show the error message
+      if (this.$refs.formSection) {
+        this.$refs.formSection.scrollTop = 0;
+      }
+    },
+    async register() {
+      // Reset error message
+      this.errorMessage = "";
+      
       // Validate passwords match
       if (this.password !== this.confirmPassword) {
-        alert("Passwords do not match");
+        this.errorMessage = "Passwords do not match";
+        this.$nextTick(() => this.scrollToTop());
         return;
       }
 
-      // Create user object
-      const user = {
-        name: this.name,
-        email: this.email,
-        phone: this.phone,
-        username: this.username,
-        password: this.password,
-      };
-
-      console.log("Registering user:", user);
-      // Here you would typically make an API call to register the user
-
-      // Close the form after successful registration
-      this.$emit("close");
+      try {
+        this.isLoading = true;
+        
+        // Register user with Firebase
+        const { user, error } = await registerUser(this.email, this.password);
+        
+        if (error) {
+          // Handle specific Firebase errors
+          switch(error.code) {
+            case 'auth/email-already-in-use':
+              this.errorMessage = "This email is already registered.";
+              break;
+            case 'auth/invalid-email':
+              this.errorMessage = "Invalid email address.";
+              break;
+            case 'auth/weak-password':
+              this.errorMessage = "Password is too weak. Use at least 6 characters.";
+              break;
+            default:
+              this.errorMessage = error.message || "Registration failed. Please try again.";
+          }
+          this.$nextTick(() => this.scrollToTop());
+          return;
+        }
+        
+        // Update store with user info
+        store.dispatch('updateAuthState', user);
+        
+        // Create user profile object (could be stored in Firestore in a future update)
+        const userProfile = {
+          name: this.name,
+          email: this.email,
+          phone: this.phone,
+          username: this.username,
+        };
+        
+        console.log("User registered successfully:", userProfile);
+        
+        // Close the form after successful registration
+        this.$emit("close");
+      } catch (error) {
+        this.errorMessage = error.message || "An unexpected error occurred.";
+        this.$nextTick(() => this.scrollToTop());
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
   emits: ["close", "switch-to-signin"],

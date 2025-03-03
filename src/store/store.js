@@ -1,12 +1,18 @@
 import { createStore } from "vuex";
 // Import the reviewer image
 import reviewerImage from "../assets/pictures/reviewer.svg";
+// Import firebase auth functions
+import { auth, getCurrentUser } from "../firebase";
 
 const store = createStore({
   state: {
     isDarkMode: false,
     showSignup: false,
     showSignin: false,
+    user: null,
+    isAuthenticated: false,
+    authError: null,
+    isLoading: false,
     reservations: [
       {
         id: 0,
@@ -184,11 +190,44 @@ const store = createStore({
     addReservation(state, payload) {
       state.reservations.push(payload);
     },
+    setUser(state, user) {
+      state.user = user;
+      state.isAuthenticated = !!user;
+    },
+    setAuthError(state, error) {
+      state.authError = error;
+    },
+    setLoading(state, isLoading) {
+      state.isLoading = isLoading;
+    },
+    setShowSignup(state, value) {
+      state.showSignup = value;
+    },
+    setShowSignin(state, value) {
+      state.showSignin = value;
+    }
   },
   actions: {
     addReservation(context, payload) {
       context.commit("addReservation", payload);
     },
+    async initAuth({ commit }) {
+      try {
+        commit('setLoading', true);
+        const user = await getCurrentUser();
+        commit('setUser', user);
+      } catch (error) {
+        commit('setAuthError', error.message);
+      } finally {
+        commit('setLoading', false);
+      }
+    },
+    updateAuthState({ commit }, user) {
+      commit('setUser', user);
+    },
+    setLoadingState({ commit }, isLoading) {
+      commit('setLoading', isLoading);
+    }
   },
   getters: {
     getReservations(state) {

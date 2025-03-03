@@ -54,6 +54,13 @@
         <h2 class="text-2xl font-bold mb-6">Sign In</h2>
 
         <form @submit.prevent="handleSubmit">
+          <!-- Error Message -->
+          <div
+            v-if="errorMessage"
+            class="mb-4 p-3 bg-red-100 text-red-700 rounded-md"
+          >
+            Invalid Credentials
+          </div>
           <!-- Email -->
           <div class="mb-4">
             <label class="block mb-1">E mail</label>
@@ -122,12 +129,16 @@
             >
           </div>
 
-          <!-- Sign In Button -->
+          <!-- Sign In Button with Spinner -->
           <button
             type="submit"
-            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200"
+            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200 relative"
+            :disabled="isLoading"
           >
-            Sign In
+            <span v-if="!isLoading">Sign In</span>
+            <div v-else class="h-6 flex items-center justify-center">
+              <BaseSpinner :show="true" />
+            </div>
           </button>
 
           <!-- Sign Up Link -->
@@ -148,8 +159,15 @@
 </template>
 
 <script>
+import { loginUser } from "@/firebase";
+import store from "@/store/store";
+import BaseSpinner from "../base/BaseSpinner.vue";
+
 export default {
   name: "SigninForm",
+  components: {
+    BaseSpinner,
+  },
   props: {
     show: {
       type: Boolean,
@@ -161,6 +179,8 @@ export default {
       email: "",
       password: "",
       showPassword: false,
+      errorMessage: "",
+      isLoading: false,
     };
   },
   watch: {
@@ -177,18 +197,46 @@ export default {
     document.body.style.overflow = "";
   },
   methods: {
-    handleSubmit() {
-      // Create user object
-      const user = {
-        email: this.email,
-        password: this.password,
-      };
+    async handleSubmit() {
+      // Reset error message
+      this.errorMessage = "";
 
-      console.log("Signing in user:", user);
-      // Here you would typically make an API call to authenticate the user
+      try {
+        this.isLoading = true;
 
-      // Close the form after successful sign in
-      this.$emit("close");
+        // Login user with Firebase
+        const { user, error } = await loginUser(this.email, this.password);
+
+        if (error) {
+          // Handle specific Firebase errors
+          switch (error.code) {
+            case "auth/user-not-found":
+              this.errorMessage = "No account found with this email.";
+              break;
+            case "auth/wrong-password":
+              this.errorMessage = "Incorrect password.";
+              break;
+            case "auth/invalid-email":
+              this.errorMessage = "Invalid email address.";
+              break;
+            default:
+              this.errorMessage =
+                error.message || "Sign in failed. Please try again.";
+          }
+          return;
+        }
+
+        // Update store with user info
+        store.dispatch("updateAuthState", user);
+        console.log("User signed in successfully:", user.email);
+
+        // Close the form after successful sign in
+        this.$emit("close");
+      } catch (error) {
+        this.errorMessage = error.message || "An unexpected error occurred.";
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
   emits: ["close", "switch-to-signup"],
