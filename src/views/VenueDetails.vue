@@ -51,8 +51,8 @@
         <p class="text-gray-700 dark:text-gray-300 text-sm">
           {{ currentVenue.longDescription }}
         </p>
-        <h2 class="mt-5 text-lg">Full address</h2>
-        <h3 class="text-gray-600">
+        <h2 class="mt-5 text-lg dark:text-white">Full address</h2>
+        <h3 class="text-gray-600 dark:text-gray-300">
           {{ fullAddress }}
         </h3>
       </div>
