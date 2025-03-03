@@ -2,6 +2,7 @@ import About from "@/components/About/About.vue";
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import ReservationDetails from "@/components/reservations/ReservationDetails.vue";
+import BookNow from "@/views/BookNow.vue";
 import FrequentlyAsked from "@/views/FrequentlyAsked.vue";
 import HomePage from "@/views/HomePage.vue";
 import NotFound from "@/views/NotFound.vue";
@@ -16,6 +17,7 @@ const router = createRouter({
     { path: "/signup", component: Signup },
     { path: "/register-venue", component: VenueRegistration },
     { path: "/about", component: About },
+    { path: "/bookNow", component: BookNow },
     { path: "/reservation/:id", component: ReservationDetails, props: true },
     { path: "/FAQs", component: FrequentlyAsked },
     { path: "/:notFound(.*)", component: NotFound },

@@ -46,7 +46,11 @@
           >
         </li>
         <li>
-          <RouterLink to="/" class="hover:text-blue-600">Book Now</RouterLink>
+          <RouterLink
+            to="/bookNow"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
+            >Book Now</RouterLink>
         </li>
         <li>
           <RouterLink
