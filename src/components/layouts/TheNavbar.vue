@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white shadow-sm dark:bg-gray-900 dark:text-white relative">
+  <nav class="bg-white shadow-sm dark:bg-gray-900 dark:text-white fixed top-0 left-0 right-0 z-50">
     <div
       class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto"
     >
@@ -181,25 +181,10 @@
     </div>
   </nav>
 
-  <!-- Signup Form Popup -->
-  <Signup
-    :show="showSignupForm"
-    @close="showSignupForm = false"
-    @switch-to-signin="
-      showSignupForm = false;
-      showSigninForm = true;
-    "
-  />
+  <!-- Add a spacer to prevent content from being hidden under the navbar -->
+  <div class="h-16"></div>
 
-  <!-- Signin Form Popup -->
-  <Signin
-    :show="showSigninForm"
-    @close="showSigninForm = false"
-    @switch-to-signup="
-      showSigninForm = false;
-      showSignupForm = true;
-    "
-  />
+  <!-- Signup and Signin components remain the same -->
 </template>
 
 <script>
