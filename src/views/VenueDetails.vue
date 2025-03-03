@@ -124,6 +124,7 @@
       @click="closeImageModal"
     >
       <div class="relative max-w-4xl max-h-screen p-2">
+        <!-- Close button -->
         <button
           @click="closeImageModal"
           class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
@@ -143,11 +144,55 @@
             />
           </svg>
         </button>
+        
+        <!-- Left arrow navigation -->
+        <button
+          @click.stop="prevImage"
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        
+        <!-- Main image -->
         <img
           :src="selectedImage"
           class="w-[80vw] max-h-[90vh] object-contain"
           @click.stop
         />
+        
+        <!-- Right arrow navigation -->
+        <button
+          @click.stop="nextImage"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -159,6 +204,7 @@ export default {
     return {
       showImageModal: false,
       selectedImage: null,
+      currentImageIndex: 0,
     };
   },
   computed: {
@@ -173,12 +219,24 @@ export default {
   methods: {
     openImageModal(imageUrl) {
       this.selectedImage = imageUrl;
+      // Find the index of the clicked image
+      this.currentImageIndex = this.currentVenue.pictures.findIndex(pic => pic === imageUrl);
       this.showImageModal = true;
       document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
     },
     closeImageModal() {
       this.showImageModal = false;
       document.body.style.overflow = ""; // Restore scrolling
+    },
+    nextImage() {
+      const totalImages = this.currentVenue.pictures.length;
+      this.currentImageIndex = (this.currentImageIndex + 1) % totalImages;
+      this.selectedImage = this.currentVenue.pictures[this.currentImageIndex];
+    },
+    prevImage() {
+      const totalImages = this.currentVenue.pictures.length;
+      this.currentImageIndex = (this.currentImageIndex - 1 + totalImages) % totalImages;
+      this.selectedImage = this.currentVenue.pictures[this.currentImageIndex];
     },
   },
 };
