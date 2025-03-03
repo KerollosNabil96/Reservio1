@@ -49,13 +49,12 @@
           About the place
         </h2>
         <p class="text-gray-700 dark:text-gray-300 text-sm">
-          Our football field offers a high-quality playing surface designed for
-          both casual and competitive matches. Featuring well-maintained turf,
-          excellent lighting, and a spacious layout, it provides the perfect
-          environment for players of all skill levels. Whether you're looking to
-          enjoy a friendly game or train seriously, our facility ensures a
-          top-tier football experience with easy booking and affordable rates.
+          {{ currentVenue.longDescription }}
         </p>
+        <h2 class="mt-5 text-lg">Full address</h2>
+        <h3 class="text-gray-600">
+          {{ fullAddress }}
+        </h3>
       </div>
 
       <!-- Booking Info Card (full width on mobile) -->
@@ -166,6 +165,9 @@ export default {
     currentVenue() {
       const id = this.$route.params.id;
       return this.$store.getters.getVenueById(id);
+    },
+    fullAddress() {
+      return `${this.currentVenue.address.street}, ${this.currentVenue.address.city}, ${this.currentVenue.address.governorate}`;
     },
   },
   methods: {

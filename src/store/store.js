@@ -16,6 +16,7 @@ const store = createStore({
         address: {
           governorate: "Cairo",
           city: "Maadi",
+          street: "12 Road 254, Degla",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
@@ -58,6 +59,7 @@ const store = createStore({
         address: {
           governorate: "Cairo",
           city: "6th October",
+          street: "45 El Nahda Street",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
@@ -100,6 +102,7 @@ const store = createStore({
         address: {
           governorate: "Cairo",
           city: "Giza",
+          street: "23 Mohamed Farid Street, Giza Square",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
@@ -141,6 +144,7 @@ const store = createStore({
         address: {
           governorate: "Cairo",
           city: "Zamalek",
+          street: "8 Hassan Sabry Street",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
