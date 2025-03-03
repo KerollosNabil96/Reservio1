@@ -17,7 +17,8 @@
         <img
           :src="currentVenue.pictures[0]"
           alt="Venue main view"
-          class="w-full h-full object-cover rounded-lg border dark:border-gray-700"
+          class="w-full h-full object-cover rounded-lg border dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+          @click="openImageModal(currentVenue.pictures[0])"
         />
       </div>
 
@@ -28,12 +29,14 @@
         <img
           :src="currentVenue.pictures[1]"
           alt="Venue view 2"
-          class="w-full h-full object-cover rounded-lg border dark:border-gray-700"
+          class="w-full h-full object-cover rounded-lg border dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+          @click="openImageModal(currentVenue.pictures[1])"
         />
         <img
           :src="currentVenue.pictures[2]"
           alt="Venue view 3"
-          class="w-full h-full object-cover rounded-lg border dark:border-gray-700"
+          class="w-full h-full object-cover rounded-lg border dark:border-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+          @click="openImageModal(currentVenue.pictures[2])"
         />
       </div>
     </div>
@@ -88,8 +91,10 @@
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- First row of reviews -->
+        <!-- Dynamic reviews using v-for -->
         <div
+          v-for="(review, index) in currentVenue.reviews"
+          :key="index"
           class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 dark:bg-gray-800"
         >
           <div class="flex items-center mb-2">
@@ -97,82 +102,51 @@
               class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden mr-2"
             >
               <img
-                :src="currentVenue.reviews[0].userPic"
-                alt="Kareem Mohamed"
+                :src="review.userPic"
+                :alt="review.username"
                 class="w-full h-full object-cover"
               />
             </div>
-            <span class="font-medium dark:text-white">Kareem Mohamed</span>
+            <span class="font-medium dark:text-white">{{ review.username }}</span>
           </div>
           <p class="text-gray-600 dark:text-gray-300 text-sm">
-            Great football field with excellent turf and lighting. Easy booking
-            and a great atmosphere. Highly recommended!
+            {{ review.message }}
           </p>
         </div>
+      </div>
+    </div>
 
-        <div
-          class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 dark:bg-gray-800"
+    <!-- Image Modal -->
+    <div
+      v-if="showImageModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/75"
+      @click="closeImageModal"
+    >
+      <div class="relative max-w-4xl max-h-screen p-2">
+        <button
+          @click="closeImageModal"
+          class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
         >
-          <div class="flex items-center mb-2">
-            <div
-              class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden mr-2"
-            >
-              <img
-                :src="currentVenue.reviews[0].userPic"
-                alt="Hazem Abdulmoneim"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <span class="font-medium dark:text-white">Hazem Abdulmoneim</span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-300 text-sm">
-            Great football field with excellent turf and lighting. Easy booking
-            and a great atmosphere. Highly recommended!
-          </p>
-        </div>
-
-        <!-- Second row of reviews -->
-        <div
-          class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 dark:bg-gray-800"
-        >
-          <div class="flex items-center mb-2">
-            <div
-              class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden mr-2"
-            >
-              <img
-                :src="currentVenue.reviews[0].userPic"
-                alt="Kareem Mohamed"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <span class="font-medium dark:text-white">Kareem Mohamed</span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-300 text-sm">
-            Great football field with excellent turf and lighting. Easy booking
-            and a great atmosphere. Highly recommended!
-          </p>
-        </div>
-
-        <div
-          class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 dark:bg-gray-800"
-        >
-          <div class="flex items-center mb-2">
-            <div
-              class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden mr-2"
-            >
-              <img
-                :src="currentVenue.reviews[0].userPic"
-                alt="Hazem Abdulmoneim"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <span class="font-medium dark:text-white">Hazem Abdulmoneim</span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-300 text-sm">
-            Great football field with excellent turf and lighting. Easy booking
-            and a great atmosphere. Highly recommended!
-          </p>
-        </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <img
+          :src="selectedImage"
+          class="w-[80vw] max-h-[90vh] object-contain"
+          @click.stop
+        />
       </div>
     </div>
   </div>
@@ -180,10 +154,27 @@
 
 <script>
 export default {
+  data() {
+    return {
+      showImageModal: false,
+      selectedImage: null,
+    };
+  },
   computed: {
     currentVenue() {
       const id = this.$route.params.id;
       return this.$store.getters.getVenueById(id);
+    },
+  },
+  methods: {
+    openImageModal(imageUrl) {
+      this.selectedImage = imageUrl;
+      this.showImageModal = true;
+      document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+    },
+    closeImageModal() {
+      this.showImageModal = false;
+      document.body.style.overflow = ""; // Restore scrolling
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex flex-col"
+    class="bg-white dark:bg-gray-900 rounded-md shadow-md overflow-hidden flex flex-col"
   >
     <!-- Top Image -->
     <img
@@ -16,14 +16,14 @@
         {{ title }}
       </h3>
 
-      <p class="text-sm text-gray-500 mb-4">
+      <p class="text-sm text-gray-500 mb-4 dark:text-gray-400">
         {{ description }}
       </p>
 
       <!-- Bottom Price & Button -->
       <div class="mt-10 flex items-center justify-between">
         <span
-          class="text-sm text-gray-500 font-medium border-1 border-gray-500 p-2 rounded-md"
+          class="text-sm text-gray-500 dark:text-gray-300 font-medium border-1 border-gray-500 p-2 rounded-md"
         >
           {{ price }} EGP/hr
         </span>
