@@ -1,129 +1,131 @@
 <template>
-  <div
-    class="flex flex-wrap gap-2 items-center justify-center bg-blue-50 p-4 rounded-xl md:w-11/12 mx-auto text-gray-900"
-  >
-    <!-- Pick a date -->
-    <div class="relative flex-grow min-h-[40px]">
-      <input
-        type="date"
-        v-model="selectedDate"
-        class="w-full appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer"
-        :class="{ 'text-gray-400': !selectedDate }"
-        placeholder="Pick a date"
-      />
-      <div
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-      </div>
-      <span
-        class="pointer-events-none absolute inset-y-0 left-10 flex items-center"
-      >
-        {{ selectedDate ? formatDate(selectedDate) : "Pick a date" }}
-      </span>
-    </div>
-
-    <!-- Category -->
-    <div class="relative flex-grow min-h-[40px]">
-      <select
-        v-model="selectedCategory"
-        class="w-full appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer pr-10"
-      >
-        <option value="" disabled selected hidden>Category</option>
-        <option>All</option>
-        <option>Sports</option>
-        <option>Events</option>
-        <option>Meeting</option>
-      </select>
-      <div
-        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </div>
-    </div>
-
-    <!-- Select Location -->
-    <div class="relative flex-grow min-h-[40px]">
-      <select
-        v-model="selectedLocation"
-        class="w-full appearance-none bg-white pl-10 pr-4 py-2 rounded-lg shadow cursor-pointer"
-      >
-        <option value="" disabled selected hidden>Select Location</option>
-        <option v-for="city in cities" :value="city">{{ city }}</option>
-      </select>
-      <div
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-      </div>
-    </div>
-
-    <!-- Search Button -->
-    <BaseButton
-      @click="validateAndSearch"
-      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 shadow"
+  <div>
+    <div
+      class="flex flex-wrap gap-4 items-center justify-center bg-white dark:bg-gray-800 p-6 rounded-xl md:w-11/12 mx-auto text-gray-900 shadow-lg border border-gray-100 dark:border-gray-700"
     >
-      Search
-    </BaseButton>
+      <!-- Pick a date -->
+      <div class="relative flex-grow min-h-[40px]">
+        <input
+          type="date"
+          v-model="selectedDate"
+          class="w-full appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer"
+          :class="{ 'text-gray-400': !selectedDate }"
+          placeholder="Pick a date"
+        />
+        <div
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <span
+          class="pointer-events-none absolute inset-y-0 left-10 flex items-center"
+        >
+          {{ selectedDate ? formatDate(selectedDate) : "Pick a date" }}
+        </span>
+      </div>
 
-    <!-- Error Dialog -->
-    <ErrorDialog
-      :show="showErrorDialog"
-      title="Missing Information"
-      message="Please fill in all required fields:"
-      @close="showErrorDialog = false"
-    >
-      <ul class="list-disc pl-5 mb-4">
-        <li v-if="!selectedDate">Select a date</li>
-        <li v-if="!selectedCategory">Choose a category</li>
-        <li v-if="!selectedLocation">Select a location</li>
-      </ul>
-    </ErrorDialog>
+      <!-- Category -->
+      <div class="relative flex-grow min-h-[40px]">
+        <select
+          v-model="selectedCategory"
+          class="w-full appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer pr-10"
+        >
+          <option value="" disabled selected hidden>Category</option>
+          <option>All</option>
+          <option>Sports</option>
+          <option>Events</option>
+          <option>Meeting</option>
+        </select>
+        <div
+          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Select Location -->
+      <div class="relative flex-grow min-h-[40px]">
+        <select
+          v-model="selectedLocation"
+          class="w-full appearance-none bg-white pl-10 pr-4 py-2 rounded-lg shadow cursor-pointer"
+        >
+          <option value="" disabled selected hidden>Select Location</option>
+          <option v-for="city in cities" :value="city">{{ city }}</option>
+        </select>
+        <div
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Search Button -->
+      <BaseButton
+        @click="validateAndSearch"
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 shadow"
+      >
+        Search
+      </BaseButton>
+
+      <!-- Error Dialog -->
+      <ErrorDialog
+        :show="showErrorDialog"
+        title="Missing Information"
+        message="Please fill in all required fields:"
+        @close="showErrorDialog = false"
+      >
+        <ul class="list-disc pl-5 mb-4">
+          <li v-if="!selectedDate">Select a date</li>
+          <li v-if="!selectedCategory">Choose a category</li>
+          <li v-if="!selectedLocation">Select a location</li>
+        </ul>
+      </ErrorDialog>
+    </div>
   </div>
 </template>
 
@@ -211,4 +213,3 @@ input[type="date"] {
   color: transparent;
 }
 </style>
-./ErrorDialog.vue

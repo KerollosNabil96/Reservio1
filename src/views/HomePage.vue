@@ -8,10 +8,22 @@
 
       <!-- Search Box -->
       <SearchBox />
+
       <!-- Available Reservations Section -->
       <section class="mt-12 px-6 md:px-16">
-        <VenueCardList />
+        <h2 class="text-3xl font-bold mb-8 text-center animate-fade-in-up">
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
+            >Available Venues</span
+          >
+        </h2>
+        <div class="animate-fade-in-up">
+          <VenueCardList />
+        </div>
       </section>
+
+      <!-- Testimonials Section -->
+      <TestimonialSection />
     </div>
     <!-- Footer -->
   </div>
@@ -21,13 +33,15 @@
 import SearchBox from "@/components/homepage/SearchBox.vue";
 import TheHeader from "@/components/homepage/TheHeader.vue";
 import VenueCardList from "@/components/reservations/VenueCardList.vue";
-// Import your custom component here
+import TestimonialSection from "@/components/homepage/TestimonialSection.vue";
+
 export default {
   name: "Home",
   components: {
     VenueCardList,
     TheHeader,
     SearchBox,
+    TestimonialSection,
   },
   data() {
     return {

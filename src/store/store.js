@@ -6,7 +6,7 @@ import { auth, getCurrentUser } from "../firebase";
 
 const store = createStore({
   state: {
-    isDarkMode: false,
+    isDarkMode: true,
     showSignup: false,
     showSignin: false,
     user: null,

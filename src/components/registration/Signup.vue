@@ -56,7 +56,11 @@
 
         <form @submit.prevent="register">
           <!-- Error Message -->
-          <div v-if="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 rounded-md" ref="errorMessage">
+          <div
+            v-if="errorMessage"
+            class="mb-4 p-3 bg-red-100 text-red-700 rounded-md"
+            ref="errorMessage"
+          >
             {{ errorMessage }}
           </div>
           <!-- Name -->
@@ -253,7 +257,7 @@ import BaseSpinner from "../base/BaseSpinner.vue";
 export default {
   name: "SignupForm",
   components: {
-    BaseSpinner
+    BaseSpinner,
   },
   props: {
     show: {
@@ -298,7 +302,7 @@ export default {
     async register() {
       // Reset error message
       this.errorMessage = "";
-      
+
       // Validate passwords match
       if (this.password !== this.confirmPassword) {
         this.errorMessage = "Passwords do not match";
@@ -308,32 +312,34 @@ export default {
 
       try {
         this.isLoading = true;
-        
+
         // Register user with Firebase
         const { user, error } = await registerUser(this.email, this.password);
-        
+
         if (error) {
           // Handle specific Firebase errors
-          switch(error.code) {
-            case 'auth/email-already-in-use':
+          switch (error.code) {
+            case "auth/email-already-in-use":
               this.errorMessage = "This email is already registered.";
               break;
-            case 'auth/invalid-email':
+            case "auth/invalid-email":
               this.errorMessage = "Invalid email address.";
               break;
-            case 'auth/weak-password':
-              this.errorMessage = "Password is too weak. Use at least 6 characters.";
+            case "auth/weak-password":
+              this.errorMessage =
+                "Password is too weak. Use at least 6 characters.";
               break;
             default:
-              this.errorMessage = error.message || "Registration failed. Please try again.";
+              this.errorMessage =
+                error.message || "Registration failed. Please try again.";
           }
           this.$nextTick(() => this.scrollToTop());
           return;
         }
-        
+
         // Update store with user info
-        store.dispatch('updateAuthState', user);
-        
+        store.dispatch("updateAuthState", user);
+
         // Create user profile object (could be stored in Firestore in a future update)
         const userProfile = {
           name: this.name,
@@ -341,9 +347,9 @@ export default {
           phone: this.phone,
           username: this.username,
         };
-        
+
         console.log("User registered successfully:", userProfile);
-        
+
         // Close the form after successful registration
         this.$emit("close");
       } catch (error) {
