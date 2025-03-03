@@ -75,10 +75,7 @@
         class="w-full appearance-none bg-white pl-10 pr-4 py-2 rounded-lg shadow cursor-pointer"
       >
         <option value="" disabled selected hidden>Select Location</option>
-        <option>Maadi</option>
-        <option>Giza</option>
-        <option>Dokki</option>
-        <option>6th October</option>
+        <option v-for="city in cities" :value="city">{{ city }}</option>
       </select>
       <div
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
@@ -131,6 +128,7 @@
 </template>
 
 <script>
+import store from "@/store/store";
 import ErrorDialog from "./ErrorDialog.vue";
 
 export default {
@@ -172,6 +170,18 @@ export default {
         location: this.selectedLocation,
       });
       // Implement your search logic here
+    },
+  },
+  computed: {
+    cities() {
+      const uniqueCities = [];
+      for (const rev of store.getters.getReservations) {
+        const currentCity = rev.address.city;
+        if (!uniqueCities.includes(currentCity)) {
+          uniqueCities.push(currentCity);
+        }
+      }
+      return uniqueCities;
     },
   },
 };

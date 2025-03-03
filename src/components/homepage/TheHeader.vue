@@ -31,7 +31,5 @@
 </template>
 
 <script>
-import BaseButton from "../base/BaseButton.vue";
-
 export default {};
 </script>
