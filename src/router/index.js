@@ -17,7 +17,7 @@ const router = createRouter({
     { path: "/signup", component: Signup },
     { path: "/register-venue", component: VenueRegistration },
     { path: "/about", component: About },
-    { path: "/bookNow", component: BookNow },
+    { path: "/book-now", component: BookNow },
     { path: "/reservation/:id", component: ReservationDetails, props: true },
     { path: "/FAQs", component: FrequentlyAsked },
     { path: "/:notFound(.*)", component: NotFound },

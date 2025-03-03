@@ -47,10 +47,11 @@
         </li>
         <li>
           <RouterLink
-            to="/bookNow"
+            to="/book-now"
             class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
-            >Book Now</RouterLink>
+            :class="{ 'text-blue-600': $route.path === '/book-now' }"
+            >Book Now</RouterLink
+          >
         </li>
         <li>
           <RouterLink
@@ -62,14 +63,14 @@
         </li>
         <li>
           <a href="#footer" class="hover:text-blue-600">Contact</a>
-
         </li>
         <li>
           <RouterLink
             to="/FAQs"
             class="hover:text-blue-600"
             :class="{ 'text-blue-600': $route.path === '/FAQs' }"
-            >FAQs</RouterLink>
+            >FAQs</RouterLink
+          >
         </li>
         <li>
           <button class="hover:cursor-pointer" @click="toggleDarkMode">
