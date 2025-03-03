@@ -1,9 +1,11 @@
 <template>
-  <footer class="bg-gray-50 mt-12 dark:mt-0 dark:pt-12 dark:bg-gray-900 dark:text-gray-100" id="footer" >
-    <!-- Main Footer Content -->
+  <footer
+    class="bg-gray-50 mt-12 dark:bg-gray-900 dark:text-gray-100"
+    id="footer"
+  >
     <div class="py-8 md:px-16 w-11/12 mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Left: Brand & Slogan -->
+        <!-- Left: Logo & Slogan -->
         <div class="flex flex-col gap-5">
           <h3 class="text-xl font-bold mb-2 text-blue-600">Reservio</h3>
           <p class="text-gray-700 dark:text-gray-300">
@@ -13,6 +15,7 @@
           <div class="flex flex-row gap-3">
             <a href=""
               ><svg
+                class="dark:text-gray-300 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
                 y="0px"
@@ -25,6 +28,7 @@
             ></a>
             <a href="">
               <svg
+                class="dark:text-gray-300 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
                 y="0px"
@@ -39,6 +43,7 @@
 
             <a href="">
               <svg
+                class="dark:text-gray-300 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
                 y="0px"
@@ -91,7 +96,10 @@
         <!-- Right: Contact Form -->
         <div>
           <h4 class="text-lg font-semibold mb-2">Contact Us</h4>
-          <form class="space-y-4" id="contact-form">
+          <form
+            class="space-y-4 text-gray-900 dark:text-gray-300"
+            id="contact-form"
+          >
             <div>
               <input
                 type="text"

@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <div :class="{ dark: dark }">
+  <div class="dark:bg-gray-800" :class="{ dark: dark }">
     <TheNavbar />
     <RouterView />
     <TheFooter />
