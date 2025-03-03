@@ -3,16 +3,19 @@
     class="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden flex flex-col"
   >
     <!-- Top Image -->
-    <img :src="source" :alt="title" class="w-full h-48 object-cover" />
+    <img
+      src="../../assets/pictures/football1.png"
+      :alt="title"
+      class="w-full h-48 object-cover"
+    />
 
     <!-- Card Content -->
     <div class="p-4 flex flex-col flex-grow">
-      <!-- Title & Subtitle -->
+      <!-- Title -->
       <h3 class="text-lg font-semibold mb-1">
         {{ title }}
       </h3>
 
-      <!-- Description (Lorem Ipsum) -->
       <p class="text-sm text-gray-500 mb-4">
         {{ description }}
       </p>
@@ -25,7 +28,7 @@
           {{ price }} EGP/hr
         </span>
         <BaseButton class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">
-          Book Now
+          <RouterLink :to="`/book-now/${id}`"> Book Now </RouterLink>
         </BaseButton>
       </div>
     </div>

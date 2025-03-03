@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-center">
+  <div class="flex justify-center items-center dark:bg-white">
     <img src="../assets/pictures/notfound.png" alt="" />
   </div>
 </template>

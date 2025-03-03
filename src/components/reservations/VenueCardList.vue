@@ -3,12 +3,12 @@
   <h2 class="text-2xl font-bold mb-6">Available Reservations</h2>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    <ReservationCard
+    <VenueCard
       v-for="reservation in reservations"
       :key="reservation.id"
-      :source="reservation.image"
+      :source="reservation.pictures[0]"
       :title="reservation.name"
-      :description="reservation.description"
+      :description="reservation.shortDescription"
       :price="reservation.price"
       :id="reservation.id"
     />
@@ -17,11 +17,11 @@
 
 <script>
 import store from "@/store/store";
-import ReservationCard from "./ReservationCard.vue";
+import VenueCard from "./VenueCard.vue";
 
 export default {
   components: {
-    ReservationCard,
+    VenueCard,
   },
   data() {
     return {};

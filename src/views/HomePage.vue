@@ -10,7 +10,7 @@
       <SearchBox />
       <!-- Available Reservations Section -->
       <section class="mt-12 px-6 md:px-16">
-        <ReservationCardList />
+        <VenueCardList />
       </section>
     </div>
     <!-- Footer -->
@@ -20,13 +20,12 @@
 <script>
 import SearchBox from "@/components/homepage/SearchBox.vue";
 import TheHeader from "@/components/homepage/TheHeader.vue";
-import ReservationCardList from "@/components/reservations/ReservationCardList.vue";
-
+import VenueCardList from "@/components/reservations/VenueCardList.vue";
 // Import your custom component here
 export default {
   name: "Home",
   components: {
-    ReservationCardList,
+    VenueCardList,
     TheHeader,
     SearchBox,
   },
