@@ -59,7 +59,7 @@
             v-if="errorMessage"
             class="mb-4 p-3 bg-red-100 text-red-700 rounded-md"
           >
-            Invalid Credentials
+            {{ errorMessage }}
           </div>
           <!-- Email -->
           <div class="mb-4">
@@ -78,47 +78,12 @@
             <label class="block mb-1">Password</label>
             <div class="relative">
               <input
-                :type="showPassword ? 'text' : 'password'"
+                type="password"
                 v-model="password"
                 placeholder="Enter your password"
                 class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 required
               />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 transform -translate-y-1/2"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    v-if="showPassword"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                  />
-                  <path
-                    v-else
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    v-else
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
 
@@ -159,9 +124,12 @@
 </template>
 
 <script>
-import { loginUser } from "@/firebase";
+// import { loginUser } from "@/firebase";
 import store from "@/store/store";
 import BaseSpinner from "../base/BaseSpinner.vue";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { db, onValue, ref, set } from "@/firebase";
+import axios from "axios";
 
 export default {
   name: "SigninForm",
@@ -178,7 +146,6 @@ export default {
     return {
       email: "",
       password: "",
-      showPassword: false,
       errorMessage: "",
       isLoading: false,
     };
@@ -192,10 +159,6 @@ export default {
       }
     },
   },
-  beforeUnmount() {
-    // Ensure scroll is restored when component is destroyed
-    document.body.style.overflow = "";
-  },
   methods: {
     async handleSubmit() {
       // Reset error message
@@ -205,35 +168,48 @@ export default {
         this.isLoading = true;
 
         // Login user with Firebase
-        const { user, error } = await loginUser(this.email, this.password);
-
-        if (error) {
-          // Handle specific Firebase errors
-          switch (error.code) {
-            case "auth/user-not-found":
-              this.errorMessage = "No account found with this email.";
-              break;
-            case "auth/wrong-password":
-              this.errorMessage = "Incorrect password.";
-              break;
-            case "auth/invalid-email":
-              this.errorMessage = "Invalid email address.";
-              break;
-            default:
-              this.errorMessage =
-                error.message || "Sign in failed. Please try again.";
+        const auth = getAuth();
+        const { user } = await signInWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
+        // const allUsers = await axios.get(
+        //   "https://reservio-77386-default-rtdb.europe-west1.firebasedatabase.app/users.json"
+        // );
+        let allUsers = null;
+        const usersRef = ref(db, "users/");
+        onValue(usersRef, (snapshot) => {
+          allUsers = snapshot.val();
+          for (const u in allUsers) {
+            const currentUser = allUsers[u];
+            if (currentUser.email === this.email) {
+              store.dispatch("updateAuthState", currentUser);
+              console.log(store.state.user);
+              return;
+            }
           }
-          return;
-        }
-
-        // Update store with user info
-        store.dispatch("updateAuthState", user);
-        console.log("User signed in successfully:", user.email);
+        });
 
         // Close the form after successful sign in
         this.$emit("close");
       } catch (error) {
-        this.errorMessage = error.message || "An unexpected error occurred.";
+        switch (error.code) {
+          case "auth/user-not-found":
+            this.errorMessage = "No account found with this email.";
+            break;
+          case "auth/wrong-password":
+            this.errorMessage = "Incorrect password.";
+            break;
+          case "auth/invalid-email":
+            this.errorMessage = "Invalid email address.";
+            break;
+          default:
+            this.errorMessage =
+              error.message || "Sign in failed. Please try again.";
+        }
+
+        return;
       } finally {
         this.isLoading = false;
       }

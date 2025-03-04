@@ -1,8 +1,7 @@
 import { createStore } from "vuex";
 // Import the reviewer image
 import reviewerImage from "../assets/pictures/reviewer.svg";
-// Import firebase auth functions
-import { auth, getCurrentUser } from "../firebase";
+// Import firebase auth functions and database functions
 
 const store = createStore({
   state: {
@@ -13,7 +12,7 @@ const store = createStore({
     isAuthenticated: false,
     authError: null,
     isLoading: false,
-    myFormData : {},
+    formData: {},
     reservations: [
       {
         id: 0,
@@ -191,6 +190,9 @@ const store = createStore({
     addReservation(state, payload) {
       state.reservations.push(payload);
     },
+    setReservations(state, venues) {
+      state.reservations = venues;
+    },
     setUser(state, user) {
       state.user = user;
       state.isAuthenticated = !!user;
@@ -206,42 +208,72 @@ const store = createStore({
     },
     setShowSignin(state, value) {
       state.showSignin = value;
-    },login(state) {
-      state.isAuthenticated = true;
     },
-    logout(state) {
-      state.isAuthenticated = false;
+    setMyFormData(state, formData) {
+      state.formData = formData;
     },
-    setMyFormData (state , Data){
-      state.myFormData=Data
-    }
-    
   },
   actions: {
-    addReservation(context, payload) {
-      context.commit("addReservation", payload);
-    },
-    async initAuth({ commit }) {
+    async addReservation({ commit, state }, payload) {
       try {
-        commit('setLoading', true);
-        const user = await getCurrentUser();
-        commit('setUser', user);
+        // Save venue to Firebase Realtime Database
+        const { id, error } = await addVenue(payload);
+
+        if (error) {
+          throw new Error(error.message || "Failed to save venue");
+        }
+
+        // Add to local state with the ID from Firebase
+        const venueWithId = { ...payload, id };
+        commit("addReservation", venueWithId);
+
+        return { id, error: null };
       } catch (error) {
-        commit('setAuthError', error.message);
+        return { id: null, error: error.message };
+      }
+    },
+    async fetchVenues({ commit }) {
+      try {
+        commit("setLoading", true);
+        const { venues, error } = await getVenues();
+
+        if (error) {
+          throw new Error(error.message || "Failed to fetch venues");
+        }
+
+        // Replace the hardcoded venues with ones from Firebase
+        if (venues && venues.length > 0) {
+          commit("setReservations", venues);
+        }
+
+        return { venues, error: null };
+      } catch (error) {
+        return { venues: [], error: error.message };
       } finally {
-        commit('setLoading', false);
+        commit("setLoading", false);
+      }
+    },
+    async initAuth({ commit, dispatch }) {
+      try {
+        commit("setLoading", true);
+        const user = await getCurrentUser();
+        commit("setUser", user);
+
+        // Fetch venues after authentication
+        if (user) {
+          await dispatch("fetchVenues");
+        }
+      } catch (error) {
+        commit("setAuthError", error.message);
+      } finally {
+        commit("setLoading", false);
       }
     },
     updateAuthState({ commit }, user) {
-      commit('setUser', user);
+      commit("setUser", user);
     },
     setLoadingState({ commit }, isLoading) {
-      commit('setLoading', isLoading);
-    },login({ commit }) {
-      commit("login");
-    },
-    logout({ commit }) {
-      commit("logout");
+      commit("setLoading", isLoading);
     },
   },
   getters: {
@@ -253,7 +285,6 @@ const store = createStore({
         return state.reservations.find((venue) => venue.id == id);
       };
     },
-    isAuthenticated: (state) => state.isAuthenticated,
   },
 });
 

@@ -22,8 +22,12 @@ const routes = [
   { path: "/book-now", component: BookNow },
   { path: "/book-now/:id", component: VenueDetails, props: true },
   { path: "/FAQs", component: FrequentlyAsked },
-  { path: "/afterRegForm", component: AfterRegForm, meta: { requiresAuth: true } },
-  { path: "/payment", component: Payment , meta: { requiresAuth: true } },
+  {
+    path: "/afterRegForm",
+    component: AfterRegForm,
+    meta: { requiresAuth: true },
+  },
+  { path: "/payment", component: Payment, meta: { requiresAuth: true } },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 
@@ -36,8 +40,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
-    next("/"); 
+  if (to.meta.requiresAuth && !store.state.isAuthenticated) {
+    next("/");
   } else {
     next();
   }

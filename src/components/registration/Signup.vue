@@ -250,9 +250,12 @@
 </template>
 
 <script>
-import { registerUser } from "@/firebase";
+// import { registerUser } from "@/firebase";
 import store from "@/store/store";
 import BaseSpinner from "../base/BaseSpinner.vue";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import axios from "axios";
+import { db, ref, set, onValue } from "../../firebase";
 
 export default {
   name: "SignupForm",
@@ -314,46 +317,55 @@ export default {
         this.isLoading = true;
 
         // Register user with Firebase
-        const { user, error } = await registerUser(this.email, this.password);
+        const auth = getAuth();
+        const { user } = await createUserWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
 
-        if (error) {
-          // Handle specific Firebase errors
-          switch (error.code) {
-            case "auth/email-already-in-use":
-              this.errorMessage = "This email is already registered.";
-              break;
-            case "auth/invalid-email":
-              this.errorMessage = "Invalid email address.";
-              break;
-            case "auth/weak-password":
-              this.errorMessage =
-                "Password is too weak. Use at least 6 characters.";
-              break;
-            default:
-              this.errorMessage =
-                error.message || "Registration failed. Please try again.";
-          }
-          this.$nextTick(() => this.scrollToTop());
-          return;
-        }
-
-        // Update store with user info
-        store.dispatch("updateAuthState", user);
-
-        // Create user profile object (could be stored in Firestore in a future update)
         const userProfile = {
+          id: user.uid,
           name: this.name,
           email: this.email,
           phone: this.phone,
           username: this.username,
+          password: this.password,
+          venues: {},
+          reservations: {},
         };
+        // axios.post(
+        //   "https://reservio-77386-default-rtdb.europe-west1.firebasedatabase.app/users.json",
+        //   userProfile
+        // );
+        const reference = ref(db, "users/" + this.username);
+        set(reference, userProfile);
 
-        console.log("User registered successfully:", userProfile);
+        // Update store with user info
+        store.dispatch("updateAuthState", userProfile);
+
+        // Create user profile object (could be stored in Firestore in a future update)
 
         // Close the form after successful registration
         this.$emit("close");
+        this.$router.push("/");
       } catch (error) {
-        this.errorMessage = error.message || "An unexpected error occurred.";
+        // Handle specific Firebase errors
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            this.errorMessage = "This email is already registered.";
+            break;
+          case "auth/invalid-email":
+            this.errorMessage = "Invalid email address.";
+            break;
+          case "auth/weak-password":
+            this.errorMessage =
+              "Password is too weak. Use at least 6 characters.";
+            break;
+          default:
+            this.errorMessage =
+              error.message || "Registration failed. Please try again.";
+        }
         this.$nextTick(() => this.scrollToTop());
       } finally {
         this.isLoading = false;

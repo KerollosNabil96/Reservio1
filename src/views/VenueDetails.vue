@@ -1,8 +1,8 @@
 <template>
   <div
-    class="venue-details-container relative overflow-hidden bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
+    class="relative overflow-hidden bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
   >
-    <!-- Animated background elements with more subtle colors -->
+    <!-- Background decorative elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div
         class="absolute -top-24 -left-24 w-64 h-64 bg-blue-200 dark:bg-blue-800 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-pulse-slow"
@@ -16,8 +16,10 @@
     </div>
 
     <div class="max-w-5xl mx-auto px-4 py-8 relative z-10">
-      <!-- Venue Title with animation -->
-      <div class="venue-title-section animate-fade-in-down">
+      <!-- Venue Title Section -->
+      <div
+        class="mb-8 transform transition-all duration-500 opacity-100 translate-y-0"
+      >
         <h1
           class="text-3xl md:text-4xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
         >
@@ -51,12 +53,14 @@
         </p>
       </div>
 
-      <!-- Image Gallery with enhanced animations -->
-      <div class="gallery-section mb-12 animate-fade-in-up animation-delay-300">
+      <!-- Image Gallery Section -->
+      <div
+        class="mb-12 transform transition-all duration-500 opacity-100 translate-y-0"
+      >
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <!-- Main large image on left (full width on mobile) -->
+          <!-- Main large image -->
           <div
-            class="col-span-1 md:col-span-7 transform transition-all duration-500 hover:translate-y-[-5px]"
+            class="col-span-1 md:col-span-7 transform transition-all duration-500 hover:-translate-y-1"
           >
             <div class="relative overflow-hidden rounded-xl shadow-2xl group">
               <div
@@ -76,12 +80,12 @@
             </div>
           </div>
 
-          <!-- Two stacked images on right (side by side on mobile) -->
+          <!-- Side images -->
           <div
             class="col-span-1 md:col-span-5 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-4"
           >
             <div
-              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:translate-y-[-5px]"
+              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
             >
               <div
                 class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -100,7 +104,7 @@
             </div>
 
             <div
-              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:translate-y-[-5px]"
+              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
             >
               <div
                 class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -121,19 +125,18 @@
         </div>
       </div>
 
-      <!-- Venue Info and Booking Section with animations -->
+      <!-- Venue Info and Booking Section -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <!-- About the place (full width on mobile) -->
+        <!-- About Venue Component -->
         <AboutVenue :current-venue="currentVenue" :full-address="fullAddress" />
 
-        <!-- Booking Info Card (full width on mobile) -->
+        <!-- Booking Card -->
         <div
-          class="col-span-1 md:col-span-5 animate-fade-in-up animation-delay-700"
+          class="col-span-1 md:col-span-5 transform transition-all duration-500 opacity-100 translate-y-0"
         >
           <div
             class="bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transform transition-all duration-500 hover:shadow-xl relative overflow-hidden"
           >
-            <!-- Decorative elements with more subtle colors -->
             <div
               class="absolute -top-10 -right-10 w-24 h-24 bg-blue-200/5 dark:bg-blue-700/5 rounded-full blur-xl"
             ></div>
@@ -206,7 +209,6 @@
         @click="closeImageModal"
       >
         <div class="relative max-w-4xl max-h-screen p-2">
-          <!-- Close button -->
           <button
             @click="closeImageModal"
             class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
@@ -227,7 +229,6 @@
             </svg>
           </button>
 
-          <!-- Left arrow navigation -->
           <button
             @click.stop="prevImage"
             class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
@@ -248,14 +249,12 @@
             </svg>
           </button>
 
-          <!-- Main image -->
           <img
             :src="selectedImage"
             class="w-[80vw] max-h-[90vh] object-contain"
             @click.stop
           />
 
-          <!-- Right arrow navigation -->
           <button
             @click.stop="nextImage"
             class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
@@ -309,16 +308,15 @@ export default {
   methods: {
     openImageModal(imageUrl) {
       this.selectedImage = imageUrl;
-      // Find the index of the clicked image
       this.currentImageIndex = this.currentVenue.pictures.findIndex(
         (pic) => pic === imageUrl
       );
       this.showImageModal = true;
-      document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+      document.body.style.overflow = "hidden";
     },
     closeImageModal() {
       this.showImageModal = false;
-      document.body.style.overflow = ""; // Restore scrolling
+      document.body.style.overflow = "";
     },
     nextImage() {
       const totalImages = this.currentVenue.pictures.length;
