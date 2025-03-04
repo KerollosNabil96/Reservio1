@@ -13,6 +13,7 @@ const store = createStore({
     isAuthenticated: false,
     authError: null,
     isLoading: false,
+    myFormData : {},
     reservations: [
       {
         id: 0,
@@ -210,6 +211,9 @@ const store = createStore({
     },
     logout(state) {
       state.isAuthenticated = false;
+    },
+    setMyFormData (state , Data){
+      state.myFormData=Data
     }
     
   },

@@ -242,12 +242,17 @@ export default {
       console.log("Form Data:", this.$data);
     },
     handleNext() {
-      if (this.isAuthenticated) {
-        this.$router.push({path:"/afterRegForm" , query:{category : this.category}});
-      } else {
-      this.showSigninForm=true
-      }
-    }, selectCategory(event) {
+  if (this.isAuthenticated) {
+    this.$store.commit("setMyFormData", {
+      venueName: this.venueName,
+      selectedCity: this.selectedCity,
+      selectedArea: this.selectedArea
+    });
+    this.$router.push({ path: "/afterRegForm", query: { category: this.category } });
+  } else {
+    this.showSigninForm = true;
+  }
+}, selectCategory(event) {
       this.$emit("categorySelected", event.target.value);
     },
     ...mapActions(["logout"]), 
