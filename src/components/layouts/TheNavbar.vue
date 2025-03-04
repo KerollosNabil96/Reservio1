@@ -1,14 +1,14 @@
 <template>
   <nav
-    class="bg-white shadow-sm dark:bg-gray-900 dark:text-white fixed top-0 left-0 right-0 z-50"
+    class="bg-white/85 rounded-xl md:rounded-b-3xl shadow-sm dark:bg-gray-900/95 dark:text-white fixed top-0 left-0 right-0 z-50"
   >
     <div
       class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto"
     >
       <!-- Logo -->
-      <RouterLink to="/" class="text-2xl font-bold text-blue-600">
-        Reservio
-      </RouterLink>
+      <RouterLink to="/" class="text-2xl font-bold text-blue-600"
+        >Reservio</RouterLink
+      >
 
       <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
 
@@ -289,14 +289,14 @@
                 Sign Up
               </BaseButton>
             </template>
-            
+
             <!-- Show user profile options when authenticated -->
             <template v-else>
               <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
                 <div class="flex items-center mb-4 px-2">
                   <span class="font-medium">{{ userEmail }}</span>
                 </div>
-                
+
                 <RouterLink
                   to="/profile"
                   class="flex items-center px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
@@ -317,7 +317,7 @@
                   </svg>
                   Profile
                 </RouterLink>
-                
+
                 <RouterLink
                   to="/settings"
                   class="flex items-center px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
@@ -344,9 +344,12 @@
                   </svg>
                   Settings
                 </RouterLink>
-                
+
                 <button
-                  @click="handleLogout(); closeMenu();"
+                  @click="
+                    handleLogout();
+                    closeMenu();
+                  "
                   class="flex items-center w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
                 >
                   <svg
