@@ -119,7 +119,8 @@
           ></textarea>
         </div>
 
-        <button type="submit" :disabled="venueImages.length !== 3">Next</button>
+        <button 
+  type="submit" @click="handleNext(); anotherFunction();" :disabled="venueImages.length !== 3">Next</button>
       </form>
       <div :class="{ layer: true, hidden: !isVisible }">
         <div class="parent flex justify-center items-center">
@@ -137,12 +138,34 @@
       </div>
     </div>
   </div>
+  <Signup
+    :show="showSignupForm"
+    @close="showSignupForm = false"
+    @switch-to-signin="
+      showSignupForm = false;
+      showSigninForm = true;
+    "
+  />
+  <Signin
+    :show="showSigninForm"
+    @close="showSigninForm = false"
+    @switch-to-signup="
+      showSigninForm = false;
+      showSignupForm = true;
+    "
+  />
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import Signin from "@/components/registration/Signin.vue";
+import Signup from "@/components/registration/Signup.vue";
 export default {
   data() {
     return {
+      showSigninForm: false,
+      showSignupForm:false,
       isVisible: false,
       venueName: "",
       venueAddress: "",
@@ -182,7 +205,15 @@ export default {
   "South Sinai": ["Sharm El Sheikh", "Dahab", "Nuweiba", "Taba", "Tor"],
 }
     };
+  }, 
+  components:{
+    Signin ,
+    Signup ,
   },
+  computed : {
+    ...mapGetters(["isAuthenticated"]),
+  }
+  ,
   methods: {
     updateAreas() {
       this.selectedArea = "";
@@ -209,6 +240,18 @@ export default {
         return;
       }
       console.log("Form Data:", this.$data);
+    },
+    handleNext() {
+      if (this.isAuthenticated) {
+        this.$router.push("/afterRegForm");
+      } else {
+      this.showSigninForm=true
+      }
+    },
+    ...mapActions(["logout"]), 
+    handleLogout() {
+      this.logout();
+      this.$router.push("/"); 
     }
   }
 };

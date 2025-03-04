@@ -205,7 +205,13 @@ const store = createStore({
     },
     setShowSignin(state, value) {
       state.showSignin = value;
+    },login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
     }
+    
   },
   actions: {
     addReservation(context, payload) {
@@ -227,7 +233,12 @@ const store = createStore({
     },
     setLoadingState({ commit }, isLoading) {
       commit('setLoading', isLoading);
-    }
+    },login({ commit }) {
+      commit("login");
+    },
+    logout({ commit }) {
+      commit("logout");
+    },
   },
   getters: {
     getReservations(state) {
@@ -238,6 +249,7 @@ const store = createStore({
         return state.reservations.find((venue) => venue.id == id);
       };
     },
+    isAuthenticated: (state) => state.isAuthenticated,
   },
 });
 

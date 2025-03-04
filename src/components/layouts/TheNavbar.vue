@@ -496,6 +496,7 @@ export default {
         store.state.user = null;
         store.state.isAuthenticated = false;
         console.log("User logged out successfully");
+        this.$router.push('/');
       } catch (err) {
         console.error("Unexpected logout error:", err);
       }
