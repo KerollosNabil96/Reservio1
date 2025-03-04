@@ -38,7 +38,7 @@
         <button @click="bookNow" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg transition-all w-full text-center">
           Book Now
         </button>
-        <button class="bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium shadow-lg transition-all">
+        <button  @click="cancelBooking" class="bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium shadow-lg transition-all">
           Cancel
         </button>
       </div>
@@ -62,6 +62,9 @@
     methods: {
       bookNow() {
         alert(`Booking confirmed`);
+      },
+      cancelBooking(){
+        this.$router.back()
       }
     }
   };
