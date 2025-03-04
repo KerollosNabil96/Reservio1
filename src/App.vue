@@ -20,10 +20,10 @@ export default {
   },
   methods: {
     hideSignUp() {
-      store.commit('setShowSignup', false);
+      store.commit("setShowSignup", false);
     },
     hideSignIn() {
-      store.commit('setShowSignin', false);
+      store.commit("setShowSignin", false);
     },
   },
 };
@@ -50,13 +50,27 @@ html.dark * {
 }
 
 /* Text color transitions happen immediately */
-html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6,
-html.dark p, html.dark span, html.dark a, html.dark div, html.dark label {
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark p,
+html.dark span,
+html.dark a,
+html.dark div,
+html.dark label {
   transition: color 0s;
 }
 
 /* Background transitions are slightly delayed for a smoother effect */
-.bg-white, .bg-gray-50, .bg-gray-100, .bg-gray-200, .bg-gray-800, .bg-gray-900 {
+.bg-white,
+.bg-gray-50,
+.bg-gray-100,
+.bg-gray-200,
+.bg-gray-800,
+.bg-gray-900 {
   transition: background-color 0.2s ease;
 }
 
