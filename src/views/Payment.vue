@@ -1,26 +1,26 @@
 <template>
-    <div class="flex justify-center items-center min-h-screen bg-gray-100">
-      <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-3xl">
-        <h2 class="text-2xl font-bold text-center text-blue-900">Payment</h2>
-        <p class="text-gray-500 text-center mb-6">Kindly follow the instructions below</p>
+    <div class="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-800">
+      <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-3xl  dark:bg-gray-900">
+        <h2 class="text-2xl font-bold text-center text-blue-900 ">Payment</h2>
+        <p class="text-gray-500 text-center mb-6 dark:text-white">Kindly follow the instructions below</p>
   
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Left Side (Details) -->
           <div class="border-r pr-6">
-            <h3 class="font-semibold text-lg text-gray-800">Transfer Reservio:</h3>
-            <p class="text-gray-600">1 Day at {{ myFormData.venueName  }} - {{myFormData.selectedArea}}, {{myFormData.selectedCity}}</p>
+            <h3 class="font-semibold text-lg text-gray-800  dark:text-white">Transfer Reservio:</h3>
+            <p class="text-gray-600  dark:text-white">1 Day at {{ myFormData.venueName  }} - {{myFormData.selectedArea}}, {{myFormData.selectedCity}}</p>
             <p class="mt-4 text-lg font-bold text-blue-800">Total: 100 EGP</p>
           </div>
   
           <!-- Right Side (Payment Form) -->
           <div>
-            <label class="block text-gray-700 font-medium">Card Number</label>
-            <input v-model="cardNumber" type="text" maxlength="16" pattern="\d{16}" class="p-2 border rounded-lg bg-white w-full" placeholder="1234 5678 9012 3456" required>
+            <label class="block text-gray-700 font-medium  dark:text-white">Card Number</label>
+            <input v-model="cardNumber" type="text" maxlength="16" pattern="\d{16}" class="p-2 border rounded-lg bg-white w-full  dark:text-white" placeholder="1234 5678 9012 3456" required>
   
-            <label class="block mt-4 text-gray-700 font-medium">Expiry Date (MM/YY)</label>
+            <label class="block mt-4 text-gray-700 font-medium  dark:text-white">Expiry Date (MM/YY)</label>
             <input v-model="cardExpiry" type="text" pattern="^(0[1-9]|1[0-2])\/\d{2}$" class="p-2 border rounded-lg bg-white w-full" placeholder="MM/YY" required>
   
-            <label class="block mt-4 text-gray-700 font-medium">CVV</label>
+            <label class="block mt-4 text-gray-700 font-medium  dark:text-white">CVV</label>
             <input v-model="cardCvc" type="text" maxlength="4" pattern="\d{3,4}" class="p-2 border rounded-lg bg-white w-full" placeholder="123" required>
           </div>
         </div>
