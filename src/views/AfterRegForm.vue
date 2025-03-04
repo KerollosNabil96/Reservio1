@@ -52,8 +52,15 @@
     </div>
 
     <!-- Proceed Button -->
-    <button class="mt-6 w-full bg-green-600 text-white py-2 rounded-md">Proceed to Payment</button>
-  </div>
+    <button 
+  @click="proceedToPayment" 
+  :disabled="!canProceed"
+  class="mt-6 w-full bg-green-600 text-white py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed">
+  Proceed to Payment
+</button> 
+<p v-if="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
+
+</div>
 </template>
 
 <script>
@@ -64,7 +71,8 @@ export default {
       fromTime: '',
       toTime: '',
       capacity: 5,
-      timeSlots: []
+      timeSlots: [],
+      errorMessage: ''
     };
   },
 
@@ -80,7 +88,10 @@ export default {
         Gym: ["Gym License"]
       };
       return licenseMap[this.category] || [];
-    }
+    },
+    canProceed() {
+    return this.selectedDate && this.timeSlots.length > 0;
+  }
   },
 
   methods: {
@@ -98,7 +109,15 @@ export default {
     },
     removeTimeSlot(index) {
       this.timeSlots.splice(index, 1);
+    },
+    proceedToPayment() {
+    if (this.canProceed) {
+      this.errorMessage = '';
+      this.$router.push('/payment');
+    }else {
+      this.errorMessage = "Please fill in all required fields and add at least one time slot.";
     }
+  }
   }
 };
 </script>

@@ -11,6 +11,7 @@ import HomePage from "@/views/HomePage.vue";
 import NotFound from "@/views/NotFound.vue";
 import VenueDetails from "@/views/VenueDetails.vue";
 import VenueRegistration from "@/views/VenueRegistration.vue";
+import Payment from "@/views/Payment.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -21,11 +22,8 @@ const routes = [
   { path: "/book-now", component: BookNow },
   { path: "/book-now/:id", component: VenueDetails, props: true },
   { path: "/FAQs", component: FrequentlyAsked },
-  { 
-    path: "/afterRegForm", 
-    component: AfterRegForm, 
-    meta: { requiresAuth: true } 
-  },
+  { path: "/afterRegForm", component: AfterRegForm, meta: { requiresAuth: true } },
+  { path: "/payment", component: Payment , meta: { requiresAuth: true } },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 
