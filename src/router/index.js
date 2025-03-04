@@ -12,6 +12,8 @@ import NotFound from "@/views/NotFound.vue";
 import VenueDetails from "@/views/VenueDetails.vue";
 import VenueRegistration from "@/views/VenueRegistration.vue";
 import Payment from "@/views/Payment.vue";
+import Profile from "@/views/Profile.vue";
+import Settings from "@/views/Settings.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -24,6 +26,8 @@ const routes = [
   { path: "/FAQs", component: FrequentlyAsked },
   { path: "/afterRegForm", component: AfterRegForm, meta: { requiresAuth: true } },
   { path: "/payment", component: Payment , meta: { requiresAuth: true } },
+  { path: "/profile", component: Profile , meta: { requiresAuth: true } },
+  { path: "/settings", component: Settings , meta: { requiresAuth: true } },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 
