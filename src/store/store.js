@@ -14,6 +14,7 @@ const store = createStore({
     authError: null,
     isLoading: false,
     myFormData : {},
+    selectedVenue:null,
     reservations: [
       {
         id: 0,
@@ -60,13 +61,13 @@ const store = createStore({
       // Second reservation
       {
         id: 2,
-        owner: "Hazem",
-        name: "Liverpool football field",
+        owner: "Kerollos",
+        name: "Real Madrid football field",
         category: "Sports",
         address: {
-          governorate: "Cairo",
-          city: "6th October",
-          street: "45 El Nahda Street",
+          governorate: "Alexandria",
+          city: "Stanley",
+          street: "El Moshir Street",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
@@ -103,13 +104,13 @@ const store = createStore({
       // Third reservation
       {
         id: 3,
-        owner: "Hazem",
-        name: "Liverpool football field",
+        owner: "Kareem",
+        name: "Porto football field",
         category: "Sports",
         address: {
           governorate: "Cairo",
-          city: "Giza",
-          street: "23 Mohamed Farid Street, Giza Square",
+          city: "Shoubra",
+          street: "Rood El farag, Shoubra ",
         },
         shortDescription: "A great football field with many facilities",
         longDescription: `A football field is a rectangular playing surface,
@@ -214,7 +215,11 @@ const store = createStore({
     },
     setMyFormData (state , Data){
       state.myFormData=Data
-    }
+    } ,
+    setVenuePictures(state, venue) {
+        state.selectedVenue = venue; 
+      },
+  
     
   },
   actions: {
@@ -252,6 +257,9 @@ const store = createStore({
       return (id) => {
         return state.reservations.find((venue) => venue.id == id);
       };
+    }, 
+    getSelectedVenue(state) {
+      return state.selectedVenue;
     },
     isAuthenticated: (state) => state.isAuthenticated,
   },
