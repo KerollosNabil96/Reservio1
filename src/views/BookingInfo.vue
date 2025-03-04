@@ -35,7 +35,8 @@
         </div>
       </div>
       <div class="mt-6 flex justify-center gap-4">
-        <button @click="bookNow" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg transition-all w-full text-center">
+        <button @click="bookNow"   :class="{'bg-gray-400 hover:bg-gray-400 cursor-not-allowed': !selectedDate || !selectedTime}"
+        :disabled="!selectedDate || !selectedTime" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg transition-all w-full text-center">
           Book Now
         </button>
         <button  @click="cancelBooking" class="bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium shadow-lg transition-all">
@@ -61,7 +62,7 @@
     ,
     methods: {
       bookNow() {
-        alert(`Booking confirmed`);
+        this.$router.push("/bookingInfoPayment")
       },
       cancelBooking(){
         this.$router.back()
