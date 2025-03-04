@@ -177,6 +177,7 @@
             </div>
 
             <button
+            @click="goToBooking"
               class="relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-[1.02] w-full text-center flex items-center justify-center"
             >
               <svg
@@ -329,6 +330,12 @@ export default {
         (this.currentImageIndex - 1 + totalImages) % totalImages;
       this.selectedImage = this.currentVenue.pictures[this.currentImageIndex];
     },
+    goToBooking() {
+    this.$store.commit("setVenuePictures", this.currentVenue);
+    this.$router.push("/bookigInfo");
+    
+  },
+
   },
 };
 </script>

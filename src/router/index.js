@@ -12,6 +12,10 @@ import NotFound from "@/views/NotFound.vue";
 import VenueDetails from "@/views/VenueDetails.vue";
 import VenueRegistration from "@/views/VenueRegistration.vue";
 import Payment from "@/views/Payment.vue";
+import Profile from "@/views/Profile.vue";
+import Settings from "@/views/Settings.vue";
+import BookingInfo from "@/views/BookingInfo.vue";
+import BookingInfoPayment from "@/views/bookingInfoPayment.vue";
 
 const routes = [
   { path: "/", component: HomePage },
