@@ -5,17 +5,15 @@
         <p class="text-gray-500 text-center mb-6 dark:text-white">Kindly follow the instructions below</p>
   
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Left Side (Details) -->
           <div class="border-r pr-6">
             <h3 class="font-semibold text-lg text-gray-800  dark:text-white">Transfer Reservio:</h3>
             <p class="text-gray-600  dark:text-white">1 Day at {{ myFormData.venueName  }} - {{myFormData.selectedArea}}, {{myFormData.selectedCity}}</p>
             <p class="mt-4 text-lg font-bold text-blue-800">Total: 100 EGP</p>
           </div>
   
-          <!-- Right Side (Payment Form) -->
           <div>
             <label class="block text-gray-700 font-medium  dark:text-white">Card Number</label>
-            <input v-model="cardNumber" type="text" maxlength="16" pattern="\d{16}" class="p-2 border rounded-lg bg-white w-full  dark:text-white" placeholder="1234 5678 9012 3456" required>
+            <input v-model="cardNumber" type="text" maxlength="16" pattern="\d{16}" class="p-2 border rounded-lg bg-white w-full " placeholder="1234 5678 9012 3456" required>
   
             <label class="block mt-4 text-gray-700 font-medium  dark:text-white">Expiry Date (MM/YY)</label>
             <input v-model="cardExpiry" type="text" pattern="^(0[1-9]|1[0-2])\/\d{2}$" class="p-2 border rounded-lg bg-white w-full" placeholder="MM/YY" required>
@@ -25,7 +23,6 @@
           </div>
         </div>
   
-        <!-- Buttons -->
         <div class="flex justify-between mt-6">
           <button 
             @click="processPayment" 
@@ -43,7 +40,6 @@
           </button>
         </div>
   
-        <!-- Success/Error Messages -->
         <p v-if="paymentSuccess" class="mt-4 text-green-600 font-medium text-center">
           ✅ Payment Successful! 🎉
         </p>
@@ -84,25 +80,36 @@
           this.loading = false;
           return;
         }
-        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(this.cardExpiry)) {
-          this.paymentError = "Invalid expiry date. Use MM/YY format.";
-          this.loading = false;
-          return;
-        }
-        if (!/^\d{3,4}$/.test(this.cardCvc)) {
-          this.paymentError = "Invalid CVV. Must be 3 or 4 digits.";
-          this.loading = false;
-          return;
-        }
-  
-        setTimeout(() => {
-          this.paymentSuccess = true;
-          this.loading = false;
+        let currentYear = new Date().getFullYear() % 100; //last 2 digit in this yr
+        let currentMonth = new Date().getMonth() + 1;  //this month
+
+let expiryMatch = this.cardExpiry.match(/^(\d{2})\/(\d{2})$/); // match regex
+if (!expiryMatch) {
+  this.paymentError = "Invalid expiry date. Use MM/YY format.";
+  this.loading = false;
+  return;
+}
+
+let month = parseInt(expiryMatch[1], 10);
+let year = parseInt(expiryMatch[2], 10);
+
+if (month < 1 || month > 12 || year < currentYear || (year === currentYear && month < currentMonth)) {
+  this.paymentError = "Invalid expiry date";
+  this.loading = false;
+  return;
+}
+if (!/^\d{3,4}$/.test(this.cardCvc)) {
+    this.paymentError = "Invalid CVV. Must be 3 or 4 digits.";
+    this.loading = false;
+    return;
+}
+    setTimeout(() => {
+        this.paymentSuccess = true;
+        this.loading = false;
         }, 2000);
-      },
     },
-  };
-  </script>
-  
-  <style scoped>
-  </style>
+},
+};
+</script>
+<style scoped>
+</style>
