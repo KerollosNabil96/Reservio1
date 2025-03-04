@@ -74,7 +74,7 @@
 
         <div class="form-group">
           <label>Category</label>
-          <select v-model="category" required>
+          <select v-model="category"  @change="selectCategory" required>
             <option disabled value="" class="text-gray-900">
               Select your category
             </option>
@@ -243,10 +243,12 @@ export default {
     },
     handleNext() {
       if (this.isAuthenticated) {
-        this.$router.push("/afterRegForm");
+        this.$router.push({path:"/afterRegForm" , query:{category : this.category}});
       } else {
       this.showSigninForm=true
       }
+    }, selectCategory(event) {
+      this.$emit("categorySelected", event.target.value);
     },
     ...mapActions(["logout"]), 
     handleLogout() {
