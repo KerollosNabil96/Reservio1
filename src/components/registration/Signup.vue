@@ -329,6 +329,7 @@ export default {
           name: this.name,
           email: this.email,
           phone: this.phone,
+          isAdmin: false,
           username: this.username,
           password: this.password,
           venues: {},

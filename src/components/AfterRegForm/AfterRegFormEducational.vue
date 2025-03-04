@@ -115,6 +115,7 @@ export default {
           from: this.fromTime,
           to: this.toTime,
           capacity: this.capacity,
+          available: this.capacity,
         });
         this.fromTime = "";
         this.toTime = "";
