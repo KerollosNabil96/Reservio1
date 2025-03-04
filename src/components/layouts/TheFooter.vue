@@ -63,32 +63,18 @@
           <h4 class="text-lg font-semibold mb-2">Quick Links</h4>
           <ul class="space-y-2">
             <li>
-              <a
-                href="#"
-                class="text-gray-600 hover:text-blue-600 dark:text-gray-300"
-                >About Us</a
+              <RouterLink
+                to="/about" class="hover:text-blue-600  dark:text-gray-300"
+                >About US</RouterLink
               >
             </li>
             <li>
-              <a
-                href="#"
-                class="text-gray-600 hover:text-blue-600 dark:text-gray-300"
-                >FAQs</a
-              >
+              <RouterLink to="/FAQs" class="hover:text-blue-600  dark:text-gray-300">
+                FAQs
+              </RouterLink>
             </li>
             <li>
-              <a
-                href="#"
-                class="text-gray-600 hover:text-blue-600 dark:text-gray-300"
-                >Privacy Policy</a
-              >
-            </li>
-            <li>
-              <a
-                href="#"
-                class="text-gray-600 hover:text-blue-600 dark:text-gray-300"
-                >Contact Us</a
-              >
+              <a href="#footer" class="hover:text-blue-600  dark:text-gray-300">Contact Us</a>
             </li>
           </ul>
         </div>
