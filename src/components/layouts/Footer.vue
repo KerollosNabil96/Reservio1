@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-gray-800 dark:to-gray-700 text-white pt-12 pb-2 mt-auto"
+    class="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-gray-800 dark:to-gray-700 text-white py-12 mt-auto"
   >
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -136,7 +136,7 @@
                   d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
                 />
               </svg>
-              (+2) 01123456789
+              +1 (555) 123-4567
             </p>
             <p class="flex items-center text-gray-200">
               <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -146,14 +146,14 @@
                   clip-rule="evenodd"
                 />
               </svg>
-              123 Booking Street, Giza 12556
+              123 Booking Street, NY 10001
             </p>
           </div>
         </div>
       </div>
 
       <!-- Bottom Bar -->
-      <div class="border-t border-white/10 mt-12 pt-2 text-center">
+      <div class="border-t border-white/10 mt-12 pt-8 text-center">
         <p class="text-sm text-gray-200">
           © {{ new Date().getFullYear() }} Reservio. All rights reserved.
         </p>
@@ -164,7 +164,7 @@
 
 <script>
 export default {
-  name: "TheFooter",
+  name: "Footer",
 };
 </script>
 

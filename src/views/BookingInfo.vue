@@ -37,13 +37,15 @@
       <div class="w-1/2">
         <h3 class="font-bold text-lg dark:text-white">{{ venue.name }}</h3>
         <p class="text-gray-500 dark:text-gray-200">
-          {{ venue.address.city }}, {{ venue.address.governorate }}
+          {{ venue.address.city }},{{ venue.address.governorate }}
         </p>
         <div class="mt-4">
           <label class="block text-gray-700 font-medium dark:text-gray-200"
             >Pick a Date</label
           >
-          <div class="flex items-center border p-2 rounded-lg shadow-sm mt-1">
+          <div
+            class="flex items-center border p-2 rounded-lg shadow-sm mt-1 dark:text-gray-200"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5 text-gray-500"
@@ -61,7 +63,7 @@
             <input
               type="date"
               v-model="selectedDate"
-              class="ml-2 w-full border-none outline-none"
+              class="ml-2 w-full border-none outline-none dark:text-gray-200"
             />
           </div>
         </div>
@@ -71,7 +73,7 @@
           >
           <select
             v-model="selectedTime"
-            class="w-full border p-2 rounded-lg shadow-sm mt-1"
+            class="w-full border p-2 rounded-lg shadow-sm mt-1 dark:text-gray-200"
           >
             <option value="7:00 PM - 8:00 PM">7:00 PM - 8:00 PM</option>
             <option value="8:00 PM - 9:00 PM">8:00 PM - 9:00 PM</option>
@@ -80,7 +82,7 @@
         <p class="mt-4 text-gray-700 dark:text-gray-200">
           You will pay
           <span class="text-blue-600 font-bold">{{ venue.price }} EGP</span> per
-          session
+          <span class="font-bold">1 Hour</span>
         </p>
       </div>
     </div>
