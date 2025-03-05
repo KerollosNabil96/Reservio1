@@ -2,21 +2,21 @@
   <div
     class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8 dark:bg-gray-900"
   >
-    <div class="flex items-center justify-center mb-6">
+    <div class="flex items-center justify-center mb-6 text-gray-900">
       <div
-        class="w-8 h-8 bg-green-500 text-white flex items-center justify-center rounded-full"
+        class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
       >
         ✔
       </div>
       <div class="w-16 h-1 bg-gray-300 mx-2"></div>
       <div
-        class="w-8 h-8 bg-gray-300 text-white flex items-center justify-center rounded-full"
+        class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full"
       >
         2
       </div>
       <div class="w-16 h-1 bg-gray-300 mx-2"></div>
       <div
-        class="w-8 h-8 bg-gray-300 text-white flex items-center justify-center rounded-full"
+        class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full"
       >
         3
       </div>
@@ -37,14 +37,14 @@
       <div class="w-1/2">
         <h3 class="font-bold text-lg dark:text-white">{{ venue.name }}</h3>
         <p class="text-gray-500 dark:text-gray-200">
-          {{ venue.address.city }},{{ venue.address.governorate }}
+          {{ venue.address.city }}, {{ venue.address.governorate }}
         </p>
         <div class="mt-4">
           <label class="block text-gray-700 font-medium dark:text-gray-200"
-            >Pick a Date</label
+            >Date</label
           >
           <div
-            class="flex items-center border p-2 rounded-lg shadow-sm mt-1 dark:text-gray-200"
+            class="flex items-center border p-2 rounded-lg shadow-sm mt-1 dark:bg-gray-800 dark:text-gray-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,11 +60,9 @@
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <input
-              type="date"
-              v-model="selectedDate"
-              class="ml-2 w-full border-none outline-none dark:text-gray-200"
-            />
+            <span class="ml-2 w-full dark:text-gray-200">
+              {{ formatDate(venue.selectedDate) }}
+            </span>
           </div>
         </div>
         <div class="mt-4">
@@ -73,16 +71,25 @@
           >
           <select
             v-model="selectedTime"
-            class="w-full border p-2 rounded-lg shadow-sm mt-1 dark:text-gray-200"
+            class="w-full border p-2 rounded-lg shadow-sm mt-1 dark:bg-gray-800 dark:text-gray-200"
           >
-            <option value="7:00 PM - 8:00 PM">7:00 PM - 8:00 PM</option>
-            <option value="8:00 PM - 9:00 PM">8:00 PM - 9:00 PM</option>
+            <option value="" disabled>Select a time slot</option>
+            <option
+              v-for="(slot, index) in availableTimeSlots"
+              :key="index"
+              :value="`${slot.id}`"
+            >
+              {{ slot.from }} - {{ slot.to }} ({{ slot.available }} spots
+              available)
+            </option>
           </select>
         </div>
         <p class="mt-4 text-gray-700 dark:text-gray-200">
           You will pay
           <span class="text-blue-600 font-bold">{{ venue.price }} EGP</span> per
-          <span class="font-bold">1 Hour</span>
+          <span class="font-bold"
+            >1 {{ venue.category === "Stadium" ? "Hour" : "Session" }}</span
+          >
         </p>
       </div>
     </div>
@@ -90,10 +97,9 @@
       <button
         @click="bookNow"
         :class="{
-          'bg-gray-400 hover:bg-gray-400 cursor-not-allowed':
-            !selectedDate || !selectedTime,
+          'bg-gray-400 hover:bg-gray-400 cursor-not-allowed': !selectedTime,
         }"
-        :disabled="!selectedDate || !selectedTime"
+        :disabled="!selectedTime"
         class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg transition-all w-full text-center"
       >
         Book Now
@@ -109,20 +115,42 @@
 </template>
 
 <script>
+import store from "@/store/store";
+
 export default {
   data() {
     return {
-      selectedDate: "",
-      selectedTime: "7:00 PM - 8:00 PM",
+      selectedTime: "",
     };
   },
   computed: {
     venue() {
       return this.$store.getters.getSelectedVenue;
     },
+    availableTimeSlots() {
+      // Filter time slots to only show those with availability > 0
+      return this.venue.timeSlots.filter((slot) => slot.available > 0);
+    },
   },
   methods: {
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    },
     bookNow() {
+      const bookingInfo = {
+        username: store.state.user.username,
+        venue: this.venue,
+        date: this.venue.selectedDate,
+        timeSlotId: this.selectedTime,
+      };
+      store.state.currentBookingInfo = bookingInfo;
       this.$router.push("/bookingInfoPayment");
     },
     cancelBooking() {

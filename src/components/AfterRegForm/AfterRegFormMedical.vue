@@ -129,6 +129,7 @@ export default {
     addTimeSlot() {
       if (this.fromTime && this.toTime && this.capacity > 0) {
         this.timeSlots.push({
+          id: this.timeSlots.length,
           from: this.fromTime,
           to: this.toTime,
           capacity: this.capacity,

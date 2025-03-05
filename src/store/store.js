@@ -1,7 +1,4 @@
 import { createStore } from "vuex";
-// Import the reviewer image
-import reviewerImage from "../assets/pictures/reviewer.svg";
-// Import firebase auth functions and database functions
 
 const store = createStore({
   state: {
@@ -15,6 +12,7 @@ const store = createStore({
     myFormData: {},
     selectedVenue: null,
     reservations: [],
+    currentBookingInfo: null,
   },
   mutations: {
     addReservation(state, payload) {

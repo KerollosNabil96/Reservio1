@@ -3,23 +3,23 @@
     class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800"
   >
     <div
-      class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900"
+      class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900"
     >
       <div class="flex items-center justify-center mb-6">
         <div
-          class="w-8 h-8 bg-green-500 text-white flex items-center justify-center rounded-full"
+          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
         >
           ✔
         </div>
         <div class="w-16 h-1 bg-gray-300 mx-2"></div>
         <div
-          class="w-8 h-8 bg-green-500 text-white flex items-center justify-center rounded-full"
+          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
         >
           ✔
         </div>
         <div class="w-16 h-1 bg-gray-300 mx-2"></div>
         <div
-          class="w-8 h-8 bg-gray-300 text-white flex items-center justify-center rounded-full"
+          class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full"
         >
           3
         </div>
@@ -92,7 +92,7 @@
           class="w-full py-2 rounded-lg font-bold"
           :class="
             isFormValid
-              ? 'bg-blue-600 text-white'
+              ? 'bg-blue-600 '
               : 'bg-gray-300 text-gray-600 cursor-not-allowed'
           "
         >
