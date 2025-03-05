@@ -146,7 +146,7 @@
             min="0"
             step="10"
             required
-          ></input>
+          > </input>
         </div>
         <div class="form-group">
           <label>Short Description</label>
@@ -155,7 +155,7 @@
             v-model="shortDescription"
             placeholder="briefly describe your venue"
             required
-          ></input>
+          > </input>
         </div>
 
         <div class="form-group">

@@ -16,11 +16,11 @@
             Transfer Reservio:
           </h3>
           <p class="text-gray-600 dark:text-white">
-            1 Day at {{ myFormData.venueName }} - {{ myFormData.address.city }},
-            {{ myFormData.address.governorate }}
+            1 Day at {{venueName}} - {{ city }},
+            {{ governorate }}
           </p>
           <p class="mt-4 text-lg font-bold text-blue-800">
-            Total: {{ total }} EGP
+            Total: {{ price }} EGP
           </p>
         </div>
 
@@ -113,11 +113,17 @@ export default {
     };
   },
   computed: {
-    myFormData() {
-      return store.state.formData;
+    venueName() {
+      return this.$store.state.myFormData.venueName;
     },
-    total() {
-      return this.myFormData.price;
+    governorate() {
+      return this.$store.state.myFormData.address?.governorate;
+    },
+    city() {
+      return this.$store.state.myFormData.address?.city; 
+    },
+    price() {
+      return this.$store.state.myFormData.price;
     },
   },
   methods: {
