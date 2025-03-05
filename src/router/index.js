@@ -19,8 +19,6 @@ import BookingInfo from "@/views/BookingInfo.vue";
 import PaymentAccess from "@/views/PaymentAccess.vue";
 import BookingInfoPayment from "@/views/BookingInfoPayment.vue";
 import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
-import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
-
 const routes = [
   { path: "/", component: HomePage },
   { path: "/signin", component: Signin },
@@ -30,6 +28,8 @@ const routes = [
   { path: "/book-now", component: BookNow },
   { path: "/book-now/:id", component: VenueDetails, props: true },
   { path: "/FAQs", component: FrequentlyAsked },
+  { path: "/contact", component: Contact },
+
   {
     path: "/afterRegForm",
     component: AfterRegForm,
