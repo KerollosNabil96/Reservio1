@@ -10,6 +10,7 @@
 </template>
 
 <script>
+
 import AfterRegFormEducational from "@/components/AfterRegForm/AfterRegFormEducational.vue";
 import AfterRegFormMedical from "@/components/AfterRegForm/AfterRegFormMedical.vue";
 import AfterRegFormSports from "@/components/AfterRegForm/AfterRegFormSports.vue";
@@ -23,7 +24,9 @@ export default {
   },
   computed: {
     category() {
-      return this.$route.query.category || "No category selected";
+      const category = this.$route.query.category || "No category selected";
+    console.log("Category:", category);  // تأكد من قيمة category
+    return category
     },
     requiredLicenses() {
       const licenseMap = {
