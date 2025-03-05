@@ -12,6 +12,7 @@ const store = createStore({
     isAuthenticated: false,
     authError: null,
     isLoading: false,
+    formData:{},
     myFormData: {},
     selectedVenue:null,
     reservations: [
