@@ -2,7 +2,7 @@
   <div class="About dark:bg-gray-900 bg-gray-0 overflow-x-hidden">
     <!-- Hero Section -->
     <div
-      class="hero-section relative bg-gradient-to-r from-blue-600 to-blue-400 py-24 md:py-32 text-white relative z-100"
+      class="hero-section bg-gradient-to-r from-blue-600 to-blue-400 py-24 md:py-32 text-white relative z-100"
     >
       <div class="container mx-auto px-4">
         <h1
@@ -161,12 +161,14 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Hazem AbdelMouneim</h3>
-                <p class="text-gray-200 text-lg">Head of Customer Support</p>
+                <h3 class="font-bold text-2xl mb-2">Hazem Abdulmoneim</h3>
+                <p class="text-gray-200 text-lg">
+                  Chief Technology Officer (CTO)
+                </p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Ensuring exceptional customer experiences every day.
+                  Ensures the optimal quality of the application
                 </p>
               </div>
             </div>
