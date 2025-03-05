@@ -341,7 +341,7 @@ export default {
     },
     goToBooking() {
       this.$store.commit("setVenuePictures", this.currentVenue);
-      this.$router.push("/bookigInfo");
+      this.$router.push("/booking-info");
     },
   },
 };
