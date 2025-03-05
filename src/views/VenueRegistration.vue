@@ -8,7 +8,7 @@
       <form @submit.prevent="handleNext">
         <!-- Venue Name -->
         <div class="form-group">
-          <label>Venue Name (cannot contain special characters)</label>
+          <label>Venue Name</label>
           <input
             type="text"
             v-model="venueName"

@@ -65,6 +65,7 @@ export default {
       console.log(venues);
       store.state.reservations = venues;
     });
+    console.log(store.state.reservations);
   },
 };
 </script>
