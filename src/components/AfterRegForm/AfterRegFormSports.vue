@@ -1,6 +1,8 @@
 <template>
   <div class="mb-4">
-    <label class="block font-medium dark:text-white">Add your Stadium license</label>
+    <label class="block font-medium dark:text-white"
+      >Add your Stadium license</label
+    >
     <input
       type="text"
       v-model="sportOrganizationLicense"
@@ -103,7 +105,11 @@ export default {
   },
   computed: {
     canProceed() {
-      return this.selectedDate && this.timeSlots.length > 0 && this.sportOrganizationLicense;
+      return (
+        this.selectedDate &&
+        this.timeSlots.length > 0 &&
+        this.sportOrganizationLicense
+      );
     },
   },
   methods: {
@@ -134,9 +140,9 @@ export default {
         this.isLoading = true;
         this.errorMessage = "";
 
-        const formData = store.state.formData;
+        const formData = store.state.myFormData;
 
-        store.state.formData = {
+        store.state.myFormData = {
           ...formData,
           selectedDate: this.selectedDate,
           sportOrganizationLicense: this.sportOrganizationLicense,

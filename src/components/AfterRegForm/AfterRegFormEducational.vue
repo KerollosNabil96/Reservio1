@@ -137,10 +137,10 @@ export default {
         this.errorMessage = "";
 
         // Get form data from first registration step
-        const formData = store.state.formData;
+        const formData = store.state.myFormData;
 
         // Create venue data object combining both forms
-        store.state.formData = {
+        store.state.myFormData = {
           ...formData,
           selectedDate: this.selectedDate,
           educationalLicense: this.educationalLicense,

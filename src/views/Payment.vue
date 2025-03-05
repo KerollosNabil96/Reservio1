@@ -16,7 +16,7 @@
             Transfer Reservio:
           </h3>
           <p class="text-gray-600 dark:text-white">
-            1 Day at {{venueName}} - {{ city }},
+            1 Day at {{ venueName }} - {{ city }},
             {{ governorate }}
           </p>
           <p class="mt-4 text-lg font-bold text-blue-800">
@@ -120,7 +120,7 @@ export default {
       return this.$store.state.myFormData.address?.governorate;
     },
     city() {
-      return this.$store.state.myFormData.address?.city; 
+      return this.$store.state.myFormData.address?.city;
     },
     price() {
       return this.$store.state.myFormData.price;
@@ -165,16 +165,24 @@ export default {
         this.loading = false;
         return;
       }
+      let cardInfo = {
+        cardNum: this.cardNumber,
+        expiryDate: this.cardExpiry,
+        CVC: this.cardCvc,
+      };
+      store.state.myFormData = { ...store.state.myFormData, cardInfo };
+
       setTimeout(() => {
         this.paymentSuccess = true;
         const reference = ref(
           db,
-          `users/${store.state.user.username}/venues/${store.state.formData.venueName}`
+          `users/${store.state.user.username}/venues/${store.state.myFormData.venueName}`
         );
-        set(reference, store.state.formData);
+        const venueRef = ref(db, "venues/" + store.state.myFormData.venueName);
+        set(reference, store.state.myFormData);
+        set(venueRef, store.state.myFormData);
         this.loading = false;
-        this.$router.push( `/paymentPending`);
-
+        this.$router.push(`/paymentPending`);
       }, 2000);
     },
   },

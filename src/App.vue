@@ -2,6 +2,7 @@
 import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
 import TheFooter from "./components/layouts/TheFooter.vue";
+import { auth, onAuthStateChanged, db, ref, onValue } from "./firebase";
 export default {
   components: {
     TheNavbar,
@@ -25,6 +26,45 @@ export default {
     hideSignIn() {
       store.commit("setShowSignin", false);
     },
+  },
+  created() {
+    // Set up Firebase auth state listener to persist user login
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is signed in:", user.email);
+        // Fetch user data from database
+        const usersRef = ref(db, "users/");
+        onValue(usersRef, (snapshot) => {
+          const allUsers = snapshot.val();
+          if (allUsers) {
+            for (const username in allUsers) {
+              const currentUser = allUsers[username];
+              if (currentUser.email === user.email) {
+                // Update store with user info
+                store.dispatch("updateAuthState", currentUser);
+                return;
+              }
+            }
+          }
+        });
+      } else {
+        // User is signed out
+        console.log("User is signed out");
+        store.dispatch("updateAuthState", null);
+      }
+    });
+    const venuesRef = ref(db, "/venues");
+    onValue(venuesRef, (snapshot) => {
+      const data = snapshot.val();
+      let venues = [];
+      for (const venue in data) {
+        const current = data[venue];
+        venues.push(current);
+      }
+      console.log(venues);
+      store.state.reservations = venues;
+    });
   },
 };
 </script>

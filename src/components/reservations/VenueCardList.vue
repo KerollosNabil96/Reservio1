@@ -6,7 +6,7 @@
       v-for="reservation in reservations"
       :key="reservation.id"
       :source="reservation.pictures[0]"
-      :title="reservation.name"
+      :title="reservation.venueName"
       :description="reservation.shortDescription"
       :price="reservation.price"
       :id="reservation.id"
