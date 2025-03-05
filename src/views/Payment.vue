@@ -182,7 +182,7 @@ export default {
         set(reference, store.state.myFormData);
         set(venueRef, store.state.myFormData);
         this.loading = false;
-        this.$router.push(`/paymentPending`);
+        this.$router.push(`/`);
       }, 2000);
     },
   },
