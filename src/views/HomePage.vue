@@ -14,7 +14,7 @@
         <h2 class="text-3xl font-bold mb-8 text-center animate-fade-in-up">
           <span
             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-            >Available Venues</span
+            >Popular</span
           >
         </h2>
         <div class="animate-fade-in-up">

@@ -17,6 +17,7 @@ import Settings from "@/views/Settings.vue";
 import BookingInfo from "@/views/BookingInfo.vue";
 import PaymentAccess from "@/views/PaymentAccess.vue";
 import BookingInfoPayment from "@/views/BookingInfoPayment.vue";
+import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -46,6 +47,25 @@ const routes = [
     component: PaymentAccess,
     meta: { requiresAuth: true },
   },
+  {
+    path: "/paymentPending",
+    component: PaymentSuccess2,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/afterRegForm",
+    component: AfterRegForm,
+    meta: { requiresAuth: true },
+  },
+  { path: "/payment", component: Payment, meta: { requiresAuth: true } },
+  { path: "/profile", component: Profile, meta: { requiresAuth: true } },
+  { path: "/settings", component: Settings, meta: { requiresAuth: true } },
+  { path: "/bookigInfo", component: BookingInfo, meta: { requiresAuth: true } },
+  {
+    path: "/bookingInfoPayment",
+    component: BookingInfoPayment,
+    meta: { requiresAuth: true },
+  },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 
@@ -58,7 +78,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+  if (to.meta.requiresAuth && !store.state.isAuthenticated) {
     next("/");
   } else {
     next();

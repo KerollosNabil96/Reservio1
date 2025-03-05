@@ -128,7 +128,7 @@
               @click="toggleUserMenu"
               class="flex items-center space-x-2 cursor-pointer py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              <span>{{ userEmail }}</span>
+              <span>{{ username }}</span>
               <svg
                 class="w-4 h-4"
                 :class="{ 'transform rotate-180': isUserMenuOpen }"
@@ -337,7 +337,7 @@
             <template v-else>
               <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
                 <div class="flex items-center mb-4 px-2">
-                  <span class="font-medium">{{ userEmail }}</span>
+                  <span class="font-medium">{{ username }}</span>
                 </div>
 
                 <RouterLink
@@ -444,8 +444,8 @@
 import store from "@/store/store";
 import Signup from "../registration/Signup.vue";
 import Signin from "../registration/Signin.vue";
-import { logoutUser } from "@/firebase";
-import { computed } from "vue";
+// import { logoutUser } from "@/firebase";
+import { getAuth, signOut } from "firebase/auth";
 
 export default {
   data() {
@@ -460,8 +460,8 @@ export default {
     isAuthenticated() {
       return this.$store.state.isAuthenticated;
     },
-    userEmail() {
-      return this.$store.state.user ? this.$store.state.user.email : "";
+    username() {
+      return this.$store.state.user ? this.$store.state.user.username : "";
     },
     isDarkMode() {
       return store.state.isDarkMode;
@@ -486,17 +486,14 @@ export default {
     },
     async handleLogout() {
       try {
-        const { error } = await logoutUser();
-        if (error) {
-          console.error("Logout error:", error);
-          return;
-        }
+        const auth = getAuth();
+        await signOut(auth);
 
         // Clear user data from store
         store.state.user = null;
         store.state.isAuthenticated = false;
         console.log("User logged out successfully");
-        this.$router.push('/');
+        this.$router.push("/");
       } catch (err) {
         console.error("Unexpected logout error:", err);
       }

@@ -1,142 +1,141 @@
 <template>
-  <div class="container-fluid  dark:bg-gray-800">
-    <div class="container mx-auto px-4 py-8 max-w-3xl  ">
-    <div class="space-y-8">
-      <!-- General Questions Section -->
-      <div>
-        <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
-          General Questions
-        </h2>
-        <div class="space-y-2">
-          <div
-            v-for="(item, index) in generalQuestions"
-            :key="index"
-            class="bg-gray-100 rounded"
-          >
-            <button
-              @click="toggleAccordion(index, 'general')"
-              class="w-full px-4 py-3 flex justify-between items-center"
-            >
-              <span class="text-left">{{ item.question }}</span>
-              <svg
-                class="w-5 h-5"
-                :class="{
-                  'rotate-180':
-                    activeSection === 'general' && activeIndex === index,
-                }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+  <div class="container-fluid dark:bg-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+      <div class="space-y-8">
+        <!-- General Questions Section -->
+        <div>
+          <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
+            General Questions
+          </h2>
+          <div class="space-y-2">
             <div
-              v-show="activeSection === 'general' && activeIndex === index"
-              class="px-4 pb-3 text-gray-600"
+              v-for="(item, index) in generalQuestions"
+              :key="index"
+              class="bg-gray-100 rounded"
             >
-              <p>{{ item.answer }}</p>
+              <button
+                @click="toggleAccordion(index, 'general')"
+                class="w-full px-4 py-3 flex justify-between items-center"
+              >
+                <span class="text-left">{{ item.question }}</span>
+                <svg
+                  class="w-5 h-5"
+                  :class="{
+                    'rotate-180':
+                      activeSection === 'general' && activeIndex === index,
+                  }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <div
+                v-show="activeSection === 'general' && activeIndex === index"
+                class="px-4 pb-3 text-gray-600"
+              >
+                <p>{{ item.answer }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Booking Questions Section -->
-      <div>
-        <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
-          Booking Questions
-        </h2>
-        <div class="space-y-2">
-          <div
-            v-for="(item, index) in bookingQuestions"
-            :key="index"
-            class="bg-gray-100 rounded"
-          >
-            <button
-              @click="toggleAccordion(index, 'booking')"
-              class="w-full px-4 py-3 flex justify-between items-center"
-            >
-              <span class="text-left">{{ item.question }}</span>
-              <svg
-                class="w-5 h-5"
-                :class="{
-                  'rotate-180':
-                    activeSection === 'booking' && activeIndex === index,
-                }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+        <!-- Booking Questions Section -->
+        <div>
+          <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
+            Booking Questions
+          </h2>
+          <div class="space-y-2">
             <div
-              v-show="activeSection === 'booking' && activeIndex === index"
-              class="px-4 pb-3 text-gray-600"
+              v-for="(item, index) in bookingQuestions"
+              :key="index"
+              class="bg-gray-100 rounded"
             >
-              <p>{{ item.answer }}</p>
+              <button
+                @click="toggleAccordion(index, 'booking')"
+                class="w-full px-4 py-3 flex justify-between items-center"
+              >
+                <span class="text-left">{{ item.question }}</span>
+                <svg
+                  class="w-5 h-5"
+                  :class="{
+                    'rotate-180':
+                      activeSection === 'booking' && activeIndex === index,
+                  }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <div
+                v-show="activeSection === 'booking' && activeIndex === index"
+                class="px-4 pb-3 text-gray-600"
+              >
+                <p>{{ item.answer }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Support Questions Section -->
-      <div>
-        <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
-          Support Questions
-        </h2>
-        <div class="space-y-2">
-          <div
-            v-for="(item, index) in supportQuestions"
-            :key="index"
-            class="bg-gray-100 rounded"
-          >
-            <button
-              @click="toggleAccordion(index, 'support')"
-              class="w-full px-4 py-3 flex justify-between items-center"
-            >
-              <span class="text-left">{{ item.question }}</span>
-              <svg
-                class="w-5 h-5"
-                :class="{
-                  'rotate-180':
-                    activeSection === 'support' && activeIndex === index,
-                }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+        <!-- Support Questions Section -->
+        <div>
+          <h2 class="text-center text-blue-600 text-xl font-medium mb-4">
+            Support Questions
+          </h2>
+          <div class="space-y-2">
             <div
-              v-show="activeSection === 'support' && activeIndex === index"
-              class="px-4 pb-3 text-gray-600"
+              v-for="(item, index) in supportQuestions"
+              :key="index"
+              class="bg-gray-100 rounded"
             >
-              <p>{{ item.answer }}</p>
+              <button
+                @click="toggleAccordion(index, 'support')"
+                class="w-full px-4 py-3 flex justify-between items-center"
+              >
+                <span class="text-left">{{ item.question }}</span>
+                <svg
+                  class="w-5 h-5"
+                  :class="{
+                    'rotate-180':
+                      activeSection === 'support' && activeIndex === index,
+                  }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <div
+                v-show="activeSection === 'support' && activeIndex === index"
+                class="px-4 pb-3 text-gray-600"
+              >
+                <p>{{ item.answer }}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  </div>
-
 </template>
 
 <script>

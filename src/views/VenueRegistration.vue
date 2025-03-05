@@ -5,7 +5,7 @@
         Register Your <span class="highlight">Venue</span>
       </h2>
 
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="handleNext">
         <!-- Venue Name -->
         <div class="form-group">
           <label>Venue Name</label>
@@ -31,21 +31,35 @@
           <div class="form-group">
             <label>City</label>
             <select v-model="selectedCity" @change="updateAreas" required>
-              <option disabled value="" class="text-gray-900">Select a City</option>
-              <option v-for="(areas, city) in cities" :key="city" :value="city" class="text-gray-900">
+              <option disabled value="" class="text-gray-900">
+                Select a City
+              </option>
+              <option
+                v-for="(areas, city) in cities"
+                :key="city"
+                :value="city"
+                class="text-gray-900"
+              >
                 {{ city }}
               </option>
             </select>
           </div>
           <div class="form-group">
-  <label>Area</label>
-  <select v-model="selectedArea" :disabled="!selectedCity" required>
-    <option disabled value="" class="text-gray-900">Select an Area</option>
-    <option v-for="area in cities[selectedCity] || []" :key="area" :value="area" class="text-gray-900">
-      {{ area }}
-    </option>
-  </select>
-</div>
+            <label>Area</label>
+            <select v-model="selectedArea" :disabled="!selectedCity" required>
+              <option disabled value="" class="text-gray-900">
+                Select an Area
+              </option>
+              <option
+                v-for="area in cities[selectedCity] || []"
+                :key="area"
+                :value="area"
+                class="text-gray-900"
+              >
+                {{ area }}
+              </option>
+            </select>
+          </div>
           <div class="form-group">
             <label>Zip Code</label>
             <input
@@ -69,12 +83,12 @@
 
         <div class="form-group">
           <label>Government ID</label>
-          <input type="file" @change="uploadID" required />
+          <input type="text" v-model="govID" required placeholder="place the link to your government id"/>
         </div>
 
         <div class="form-group">
           <label>Category</label>
-          <select v-model="category"  @change="selectCategory" required>
+          <select v-model="category" @change="selectCategory" required>
             <option disabled value="" class="text-gray-900">
               Select your category
             </option>
@@ -90,14 +104,28 @@
         </div>
 
         <div class="form-group">
-          <label>Venue Images (Upload 3 images)</label>
+          <label>Venue Images (link 3 images)</label>
+          <div class="flex flex-col gap-3 mt-2">
+
           <input
-            type="file"
-            multiple
-            @change="uploadImages"
-            accept="image/*"
+            type="text"
+            v-model="firstImage"
+            placeholder="first image"
             required
           />
+          <input
+            type="text"
+            v-model="secondImage"
+            placeholder="second image"
+            required
+          />
+          <input
+            type="text"
+            v-model="thirdImage"
+            placeholder="third image"
+            required
+          />
+          </div>
         </div>
 
         <div class="image-preview">
@@ -109,6 +137,26 @@
             <img :src="img" alt="Venue Image" />
           </div>
         </div>
+        <div class="form-group">
+          <label>Price (in EGP)</label>
+          <input
+          type="number"
+            v-model="price"
+            placeholder="How much does a session cost?"
+            min="0"
+            step="10"
+            required
+          > </input>
+        </div>
+        <div class="form-group">
+          <label>Short Description</label>
+          <input
+          type="text"
+            v-model="shortDescription"
+            placeholder="briefly describe your venue"
+            required
+          > </input>
+        </div>
 
         <div class="form-group">
           <label>Description</label>
@@ -119,8 +167,7 @@
           ></textarea>
         </div>
 
-        <button 
-  type="submit" @click="handleNext(); anotherFunction();" :disabled="venueImages.length !== 3">Next</button>
+        <button type="submit" :disabled="!validImages">Next</button>
       </form>
       <div :class="{ layer: true, hidden: !isVisible }">
         <div class="parent flex justify-center items-center">
@@ -161,59 +208,166 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
+import store from "@/store/store";
 export default {
   data() {
     return {
       showSigninForm: false,
-      showSignupForm:false,
+      showSignupForm: false,
       isVisible: false,
       venueName: "",
       venueAddress: "",
       selectedCity: "",
       selectedArea: "",
+      firstImage: "",
+      secondImage: "",
+      thirdImage: "",
+      govID: "",
+      price: 0, 
       zipCode: "",
       phoneNumber: "",
       category: "",
-      categories: ["Stadium", "Medical", "Event Hall", "Gym"],
+      categories: ["Medical", "Stadium", "Educational"],
       venueImages: [],
+shortDescription: "",
       description: "",
       cities: {
-  "Cairo": ["Nasr City", "Heliopolis", "Maadi", "Zamalek", "New Cairo", "Shubra", "Downtown", "El Marg", "Ain Shams", "Helwan", "Fifth Settlement"],
-  "Alexandria": ["Smouha", "Stanley", "Gleem", "Bolkly", "Miami","Sedi Beshr", "Sidi Gaber", "Sporting", "Bacchus", "Al Agamy", "Mandara", "Montazah"],
-  "Giza": ["Dokki", "Mohandeseen", "6th of October", "Sheikh Zayed", "Haram", "Faisal", "Imbaba", "Agouza", "Boulak El Dakrour"],
-  "Port Said": ["Al-Ganayen", "Al-Zohour", "Al-Manakh", "Port Fouad", "El Arab", "El Shark"],
-  "Suez": ["Arbaeen", "Ataka", "Faisal", "Ganayen", "Suez"],
-  "Ismailia": ["Al-Qantara", "Fayed", "Tell El Kebir", "El Tal El Kabir", "Abu Suwayr"],
-  "Sharkia": ["Zagazig", "10th of Ramadan", "Bilbeis", "Abu Hammad", "Minya El-Qamh", "Kafr Saqr", "El-Hussainia"],
-  "Dakahlia": ["Mansoura", "Mit Ghamr", "Talkha", "Sherbin", "Belqas", "Nabaroh", "Aga"],
-  "Beheira": ["Damanhur", "Kafr El Dawwar", "Rashid", "Abu Hummus", "Edku", "Shubrakhit", "Kom Hamada"],
-  "Menoufia": ["Shibin El Kom", "Menouf", "Ashmoun", "Sadat City", "Tala", "Birket El Sab"],
-  "Gharbia": ["Tanta", "El Mahalla El Kubra", "Zefta", "Kafr El Zayat", "Samannoud"],
-  "Kafr El Sheikh": ["Kafr El Sheikh", "Desouk", "Biyala", "Sidi Salem", "Baltim", "Fuwah"],
-  "Fayoum": ["Fayoum", "Ibshaway", "Sinnuris", "Tamiya", "Youssef El Seddik"],
-  "Beni Suef": ["Beni Suef", "Al Wasta", "Biba", "Naser", "Ehnasia"],
-  "Minya": ["Minya", "Mallawi", "Samalut", "Maghagha", "Bani Mazar"],
-  "Asyut": ["Asyut", "Dairut", "Manfalut", "Abnoub", "Al Qusiyah"],
-  "Sohag": ["Sohag", "Akhmim", "Girga", "Tahta", "Al Balina"],
-  "Qena": ["Qena", "Luxor", "Abu Tesht", "Nag Hammadi", "Dishna"],
-  "Luxor": ["Luxor", "Armant", "Esna", "New Tiba"],
-  "Aswan": ["Aswan", "Edfu", "Kom Ombo", "Drau"],
-  "Red Sea": ["Hurghada", "Safaga", "El Quseir", "Marsa Alam"],
-  "New Valley": ["Kharga", "Dakhla", "Farafra", "Balat"],
-  "Matrouh": ["Marsa Matruh", "Siwa", "Sidi Barrani", "El Dabaa"],
-  "North Sinai": ["Arish", "Sheikh Zuweid", "Rafah", "Bir El Abd"],
-  "South Sinai": ["Sharm El Sheikh", "Dahab", "Nuweiba", "Taba", "Tor"],
-}
+        Cairo: [
+          "Nasr City",
+          "Heliopolis",
+          "Maadi",
+          "Zamalek",
+          "New Cairo",
+          "Shubra",
+          "Downtown",
+          "El Marg",
+          "Ain Shams",
+          "Helwan",
+          "Fifth Settlement",
+        ],
+        Alexandria: [
+          "Smouha",
+          "Stanley",
+          "Gleem",
+          "Bolkly",
+          "Miami",
+          "Sedi Beshr",
+          "Sidi Gaber",
+          "Sporting",
+          "Bacchus",
+          "Al Agamy",
+          "Mandara",
+          "Montazah",
+        ],
+        Giza: [
+          "Dokki",
+          "Mohandeseen",
+          "6th of October",
+          "Sheikh Zayed",
+          "Haram",
+          "Faisal",
+          "Imbaba",
+          "Agouza",
+          "Boulak El Dakrour",
+        ],
+        "Port Said": [
+          "Al-Ganayen",
+          "Al-Zohour",
+          "Al-Manakh",
+          "Port Fouad",
+          "El Arab",
+          "El Shark",
+        ],
+        Suez: ["Arbaeen", "Ataka", "Faisal", "Ganayen", "Suez"],
+        Ismailia: [
+          "Al-Qantara",
+          "Fayed",
+          "Tell El Kebir",
+          "El Tal El Kabir",
+          "Abu Suwayr",
+        ],
+        Sharkia: [
+          "Zagazig",
+          "10th of Ramadan",
+          "Bilbeis",
+          "Abu Hammad",
+          "Minya El-Qamh",
+          "Kafr Saqr",
+          "El-Hussainia",
+        ],
+        Dakahlia: [
+          "Mansoura",
+          "Mit Ghamr",
+          "Talkha",
+          "Sherbin",
+          "Belqas",
+          "Nabaroh",
+          "Aga",
+        ],
+        Beheira: [
+          "Damanhur",
+          "Kafr El Dawwar",
+          "Rashid",
+          "Abu Hummus",
+          "Edku",
+          "Shubrakhit",
+          "Kom Hamada",
+        ],
+        Menoufia: [
+          "Shibin El Kom",
+          "Menouf",
+          "Ashmoun",
+          "Sadat City",
+          "Tala",
+          "Birket El Sab",
+        ],
+        Gharbia: [
+          "Tanta",
+          "El Mahalla El Kubra",
+          "Zefta",
+          "Kafr El Zayat",
+          "Samannoud",
+        ],
+        "Kafr El Sheikh": [
+          "Kafr El Sheikh",
+          "Desouk",
+          "Biyala",
+          "Sidi Salem",
+          "Baltim",
+          "Fuwah",
+        ],
+        Fayoum: [
+          "Fayoum",
+          "Ibshaway",
+          "Sinnuris",
+          "Tamiya",
+          "Youssef El Seddik",
+        ],
+        "Beni Suef": ["Beni Suef", "Al Wasta", "Biba", "Naser", "Ehnasia"],
+        Minya: ["Minya", "Mallawi", "Samalut", "Maghagha", "Bani Mazar"],
+        Asyut: ["Asyut", "Dairut", "Manfalut", "Abnoub", "Al Qusiyah"],
+        Sohag: ["Sohag", "Akhmim", "Girga", "Tahta", "Al Balina"],
+        Qena: ["Qena", "Luxor", "Abu Tesht", "Nag Hammadi", "Dishna"],
+        Luxor: ["Luxor", "Armant", "Esna", "New Tiba"],
+        Aswan: ["Aswan", "Edfu", "Kom Ombo", "Drau"],
+        "Red Sea": ["Hurghada", "Safaga", "El Quseir", "Marsa Alam"],
+        "New Valley": ["Kharga", "Dakhla", "Farafra", "Balat"],
+        Matrouh: ["Marsa Matruh", "Siwa", "Sidi Barrani", "El Dabaa"],
+        "North Sinai": ["Arish", "Sheikh Zuweid", "Rafah", "Bir El Abd"],
+        "South Sinai": ["Sharm El Sheikh", "Dahab", "Nuweiba", "Taba", "Tor"],
+      },
     };
-  }, 
-  components:{
-    Signin ,
-    Signup ,
   },
-  computed : {
+  components: {
+    Signin,
+    Signup,
+  },
+  computed: {
     ...mapGetters(["isAuthenticated"]),
-  }
-  ,
+    validImages(){ 
+      return this.firstImage && this.secondImage && this.thirdImage && this.govID;
+    }
+  },
   methods: {
     updateAreas() {
       this.selectedArea = "";
@@ -234,36 +388,45 @@ export default {
         reader.readAsDataURL(file);
       });
     },
-    submitForm() {
-      if (this.venueImages.length !== 3) {
-        alert("Please upload 3 venue images.");
-        return;
-      }
-      console.log("Form Data:", this.$data);
-    },
+
     handleNext() {
-  if (this.isAuthenticated) {
-    this.$store.commit("setMyFormData", {
-      venueName: this.venueName,
-      selectedCity: this.selectedCity,
-      selectedArea: this.selectedArea
-    });
-    this.$router.push({ path: "/afterRegForm", query: { category: this.category } });
-  } else {
-    this.showSigninForm = true;
-  }
-}, selectCategory(event) {
+      if (store.state.isAuthenticated) {
+        this.$store.commit("setMyFormData", {
+          venueName: this.venueName,
+          owner: store.state.user.email,
+          category: this.category,
+          govID: this.govID,
+          price: this.price,
+          address: {
+            street: this.venueAddress,
+            governorate: this.selectedCity,
+            city: this.selectedArea,
+          },
+          shortDescription: this.shortDescription, 
+          longDescription: this.description,
+          pictures: [this.firstImage,this.secondImage,this.thirdImage],
+          reviews: {},
+        });
+        console.log(store.state.formData);
+        this.$router.push({
+          path: "/afterRegForm",
+          query: { category: this.category },
+        });
+      } else {
+        this.showSigninForm = true;
+      }
+    },
+    selectCategory(event) {
       this.$emit("categorySelected", event.target.value);
     },
-    ...mapActions(["logout"]), 
+    ...mapActions(["logout"]),
     handleLogout() {
       this.logout();
-      this.$router.push("/"); 
-    }
-  }
+      this.$router.push("/");
+    },
+  },
 };
 </script>
-
 
 <style scoped>
 .form-container {

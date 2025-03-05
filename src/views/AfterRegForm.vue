@@ -1,124 +1,55 @@
 <template>
-  <div class="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-xl my-8 dark:bg-gray-900">
+  <div
+    class="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-xl my-8 dark:bg-gray-900"
+  >
     <h2 class="text-2xl font-semibold text-center mb-6 dark:text-white">
       Register Your <span class="text-blue-600">{{ category }}</span>
     </h2>
-
-    <!-- Dynamic Documents Upload -->
-    <div v-for="(license, index) in requiredLicenses" :key="index" class="mb-4">
-      <label class="block font-medium  dark:text-white">Upload your {{ license }}</label>
-      <input type="file" class="mt-2 border p-2 w-full rounded-md  dark:text-white"  />
-    </div>
-
-    <!-- Date Picker -->
-    <div class="mb-4">
-      <label class="block font-medium  dark:text-white">Pick a Date</label>
-      <input type="date" v-model="selectedDate" class="mt-2 border p-2 w-full rounded-md  dark:text-white" />
-    </div>
-
-    <!-- Time Slot Selection -->
-    <div class="mb-4">
-      <label class="block font-medium  dark:text-white">Select time slot</label>
-      <div class="flex gap-2 mt-2">
-        <input type="time" v-model="fromTime" class="border p-2 w-1/3 rounded-md  dark:text-white" />
-        <input type="time" v-model="toTime" class="border p-2 w-1/3 rounded-md  dark:text-white" />
-        <input type="number" v-model.number="capacity" class="border p-2 w-1/3 rounded-md  dark:text-white" placeholder="Capacity" min="1" />
-      </div>
-      <button @click="addTimeSlot" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md">Add Time Slot</button>
-    </div>
-
-    <!-- Time Slots Table -->
-    <div class="mt-4 border rounded-md p-4">
-      <table class="w-full text-left">
-        <thead>
-          <tr class="border-b">
-            <th class="py-2  dark:text-white">From</th>
-            <th class="py-2  dark:text-white">To</th>
-            <th class="py-2  dark:text-white">Capacity</th>
-            <th class="py-2  dark:text-white">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(slot, index) in timeSlots" :key="index" class="border-b">
-            <td class="py-2  dark:text-white">{{ slot.from }}</td>
-            <td class="py-2  dark:text-white">{{ slot.to }}</td>
-            <td class="py-2  dark:text-white">{{ slot.capacity }}</td>
-            <td class="py-2  dark:text-white">
-              <button @click="removeTimeSlot(index)" class="text-red-500">✖</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Proceed Button -->
-    <button 
-  @click="proceedToPayment" 
-  :disabled="!canProceed"
-  class="mt-6 w-full bg-green-600 text-white py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed">
-  Proceed to Payment
-</button> 
-<p v-if="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
-
-</div>
+    <component :is="component" :required-licenses="requiredLicenses" />
+  </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      selectedDate: '',
-      fromTime: '',
-      toTime: '',
-      capacity: 5,
-      timeSlots: [],
-      errorMessage: ''
-    };
-  },
 
+import AfterRegFormEducational from "@/components/AfterRegForm/AfterRegFormEducational.vue";
+import AfterRegFormMedical from "@/components/AfterRegForm/AfterRegFormMedical.vue";
+import AfterRegFormSports from "@/components/AfterRegForm/AfterRegFormSports.vue";
+import store from "@/store/store";
+
+export default {
+  component: {
+    AfterRegFormEducational,
+    AfterRegFormMedical,
+    AfterRegFormSports,
+  },
   computed: {
     category() {
-      return this.$route.query.category || "No category selected";
+      const category = this.$route.query.category || "No category selected";
+    console.log("Category:", category);  // تأكد من قيمة category
+    return category
     },
     requiredLicenses() {
       const licenseMap = {
         Medical: ["Medical License", "Clinic License"],
         Stadium: ["Stadium License"],
-        "Event Hall": ["Hall License"],
-        Gym: ["Gym License"]
+        Educational: ["Educational Center License"],
       };
-      return licenseMap[this.category] || [];
+      return licenseMap[store.state.formData.category] || [];
     },
-    canProceed() {
-    return this.selectedDate && this.timeSlots.length > 0;
-  }
-  },
 
-  methods: {
-    addTimeSlot() {
-      if (this.fromTime && this.toTime && this.capacity > 0) {
-        this.timeSlots.push({
-          from: this.fromTime,
-          to: this.toTime,
-          capacity: this.capacity
-        });
-        this.fromTime = '';
-        this.toTime = '';
-        this.capacity = 5;
+    component() {
+      switch (this.category) {
+        case "Medical":
+          return AfterRegFormMedical;
+        case "Stadium":
+          return AfterRegFormSports;
+        case "Educational":
+          return AfterRegFormEducational;
+        default:
+          return;
       }
     },
-    removeTimeSlot(index) {
-      this.timeSlots.splice(index, 1);
-    },
-    proceedToPayment() {
-    if (this.canProceed) {
-      this.errorMessage = '';
-      this.$router.push('/payment');
-    }else {
-      this.errorMessage = "Please fill in all required fields and add at least one time slot.";
-    }
-  }
-  }
+  },
 };
 </script>
 
@@ -130,5 +61,4 @@ input[type="time"],
 input[type="date"] {
   color-scheme: dark;
 }
-
 </style>

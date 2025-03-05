@@ -7,6 +7,7 @@
     </h1>
 
     <div class="w-full md:w-11/12 md:mx-auto">
+      <SearchBox />
       <section class="mt-12 px-6 md:px-16">
         <VenueCardList />
       </section>
@@ -15,12 +16,14 @@
 </template>
 
 <script>
+import SearchBox from "@/components/homepage/SearchBox.vue";
 import VenueCardList from "../components/reservations/VenueCardList.vue";
 
 export default {
   name: "bookNow",
   components: {
     VenueCardList,
+    SearchBox,
   },
 };
 </script>
