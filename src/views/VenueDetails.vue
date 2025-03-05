@@ -74,9 +74,7 @@
               />
               <div
                 class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
-              >
-                <p class="text-sm font-medium">Click to view gallery</p>
-              </div>
+              ></div>
             </div>
           </div>
 
@@ -98,9 +96,7 @@
               />
               <div
                 class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
-              >
-                <p class="text-xs font-medium">View image</p>
-              </div>
+              ></div>
             </div>
 
             <div
@@ -117,9 +113,7 @@
               />
               <div
                 class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
-              >
-                <p class="text-xs font-medium">View image</p>
-              </div>
+              ></div>
             </div>
           </div>
         </div>
@@ -172,7 +166,10 @@
                 >{{ currentVenue.price }}EGP</span
               >
               <span class="text-gray-500 dark:text-gray-400 text-sm ml-2"
-                >/ Hour</span
+                >/
+                {{
+                  currentVenue.category === "Stadium" ? "Hour" : "Session"
+                }}</span
               >
             </div>
 
