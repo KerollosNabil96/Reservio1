@@ -23,7 +23,7 @@
         <h1
           class="text-3xl md:text-4xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
         >
-          {{ currentVenue.name }}
+          {{ currentVenue.venueName }}
         </h1>
         <p
           class="text-center text-gray-500 dark:text-gray-400 mb-6 flex items-center justify-center"
@@ -177,7 +177,7 @@
             </div>
 
             <button
-            @click="goToBooking"
+              @click="goToBooking"
               class="relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-[1.02] w-full text-center flex items-center justify-center"
             >
               <svg
@@ -331,11 +331,9 @@ export default {
       this.selectedImage = this.currentVenue.pictures[this.currentImageIndex];
     },
     goToBooking() {
-    this.$store.commit("setVenuePictures", this.currentVenue);
-    this.$router.push("/bookigInfo");
-    
-  },
-
+      this.$store.commit("setVenuePictures", this.currentVenue);
+      this.$router.push("/bookigInfo");
+    },
   },
 };
 </script>

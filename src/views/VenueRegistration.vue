@@ -391,7 +391,9 @@ shortDescription: "",
 
     handleNext() {
       if (store.state.isAuthenticated) {
+         let id = "id" + Math.random().toString(16).slice(2);
         this.$store.commit("setMyFormData", {
+          id,
           venueName: this.venueName,
           owner: store.state.user.email,
           category: this.category,

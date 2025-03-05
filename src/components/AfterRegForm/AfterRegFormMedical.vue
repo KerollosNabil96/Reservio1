@@ -1,6 +1,8 @@
 <template>
   <div class="mb-4">
-    <label class="block font-medium dark:text-white">Add your Medical License</label>
+    <label class="block font-medium dark:text-white"
+      >Add your Medical License</label
+    >
     <input
       type="text"
       v-model="medicalLicense"
@@ -9,7 +11,9 @@
   </div>
 
   <div class="mb-4">
-    <label class="block font-medium dark:text-white">Add your Clinic License</label>
+    <label class="block font-medium dark:text-white"
+      >Add your Clinic License</label
+    >
     <input
       type="text"
       v-model="clinicLicense"
@@ -113,7 +117,12 @@ export default {
   },
   computed: {
     canProceed() {
-      return this.selectedDate && this.timeSlots.length > 0 && this.medicalLicense && this.clinicLicense;
+      return (
+        this.selectedDate &&
+        this.timeSlots.length > 0 &&
+        this.medicalLicense &&
+        this.clinicLicense
+      );
     },
   },
   methods: {
@@ -144,9 +153,9 @@ export default {
         this.isLoading = true;
         this.errorMessage = "";
 
-        const formData = store.state.formData;
+        const formData = store.state.myFormData;
 
-        store.state.formData = {
+        store.state.myFormData = {
           ...formData,
           selectedDate: this.selectedDate,
           medicalLicense: this.medicalLicense,
@@ -154,7 +163,6 @@ export default {
           timeSlots: this.timeSlots,
         };
 
-        
         this.$router.push("/payment");
       } catch (error) {
         this.errorMessage =
