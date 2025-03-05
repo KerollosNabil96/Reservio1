@@ -64,7 +64,7 @@
           >
         </li>
         <li>
-          <a href="#footer" class="hover:text-blue-600">Contact</a>
+          <RouterLink to="/contact" class="hover:text-blue-600" :class="{ 'text-blue-600': $route.path === '/contact' }">Contact</RouterLink>
         </li>
         <li>
           <RouterLink
@@ -266,11 +266,12 @@
               >
             </li>
             <li>
-              <a
-                href="#contact-form"
+              <RouterLink
+                to="/contact"
                 class="hover:text-blue-600"
+                :class="{ 'text-blue-600': $route.path === '/contact' }"
                 @click="closeMenu"
-                >Contact</a
+                >Contact</RouterLink
               >
             </li>
             <li>

@@ -173,6 +173,8 @@ export default {
         );
         set(reference, store.state.formData);
         this.loading = false;
+        this.$router.push( `/paymentPending`);
+
       }, 2000);
     },
   },
