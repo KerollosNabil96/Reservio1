@@ -1,9 +1,5 @@
 <template>
   <div class="mt-8">
-    <h2 class="text-lg font-semibold mb-4 dark:text-white">
-      Hear from Our Visitors
-    </h2>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Dynamic reviews using v-for -->
       <div

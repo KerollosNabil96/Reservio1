@@ -201,7 +201,16 @@
       </div>
 
       <!-- Reviews Section -->
-      <VenueReviews :current-venue="currentVenue" />
+      <h2 class="text-lg font-semibold mb-4 dark:text-white mt-5">
+        Hear from Our Visitors
+      </h2>
+      <h2
+        v-if="!currentVenue.reviews"
+        class="text-center mt-5 text-xl text-blue-600 bg-gray-200 dark:bg-gray-800 p-3 rounded-md font-bold"
+      >
+        This venue does not have any reviews yet.
+      </h2>
+      <VenueReviews v-else :current-venue="currentVenue" />
 
       <!-- Image Modal -->
       <div

@@ -45,9 +45,9 @@
         >
           <option value="" disabled selected hidden>Category</option>
           <option>All</option>
-          <option>Sports</option>
-          <option>Events</option>
-          <option>Meeting</option>
+          <option value="Stadium">Stadium</option>
+          <option value="Educational">Educational</option>
+          <option value="Medical">Medical</option>
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2"
