@@ -51,7 +51,7 @@
           <RouterLink
             to="/book-now"
             class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/book-now' }"
+            :class="{ 'text-blue-600': $route.path.includes('/book-now') }"
             >Book Now</RouterLink
           >
         </li>
@@ -64,7 +64,12 @@
           >
         </li>
         <li>
-          <RouterLink to="/contact" class="hover:text-blue-600" :class="{ 'text-blue-600': $route.path === '/contact' }">Contact</RouterLink>
+          <RouterLink
+            to="/contact"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/contact' }"
+            >Contact</RouterLink
+          >
         </li>
         <li>
           <RouterLink
