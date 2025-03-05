@@ -174,13 +174,16 @@ export default {
 
       setTimeout(() => {
         this.paymentSuccess = true;
-        const reference = ref(
+        // const reference = ref(
+        //   db,
+        //   `users/${store.state.user.username}/venues/${store.state.myFormData.venueName}`
+        // );
+        const requestsRef = ref(
           db,
-          `users/${store.state.user.username}/venues/${store.state.myFormData.venueName}`
+          "requests/" + store.state.myFormData.venueName
         );
-        const venueRef = ref(db, "venues/" + store.state.myFormData.venueName);
-        set(reference, store.state.myFormData);
-        set(venueRef, store.state.myFormData);
+        // set(reference, store.state.myFormData);
+        set(requestsRef, store.state.myFormData);
         this.loading = false;
         this.$router.push(`/`);
       }, 2000);
