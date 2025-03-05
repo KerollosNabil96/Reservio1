@@ -12,7 +12,8 @@ const store = createStore({
     isAuthenticated: false,
     authError: null,
     isLoading: false,
-    formData: {},
+    myFormData: {},
+    selectedVenue:null,
     reservations: [
       {
         id: 0,
@@ -208,10 +209,12 @@ const store = createStore({
     },
     setShowSignin(state, value) {
       state.showSignin = value;
-    },
-    setMyFormData(state, formData) {
-      state.formData = formData;
-    },
+    },setMyFormData (state , Data){
+      state.myFormData=Data
+    } ,
+    setVenuePictures(state, venue) {
+        state.selectedVenue = venue; 
+      },
   },
   actions: {
     async addReservation({ commit, state }, payload) {
@@ -285,6 +288,11 @@ const store = createStore({
         return state.reservations.find((venue) => venue.id == id);
       };
     },
+    getSelectedVenue(state) {
+      return state.selectedVenue;
+    },
+    isAuthenticated: (state) => state.isAuthenticated,
+    
   },
 });
 

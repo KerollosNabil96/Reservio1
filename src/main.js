@@ -9,7 +9,6 @@ import "./firebase";
 
 import BaseButton from "./components/base/BaseButton.vue";
 
-// Initialize the auth state before mounting the app
 
 const app = createApp(App);
 
