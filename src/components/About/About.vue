@@ -72,9 +72,9 @@
               class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px]"
             >
               <img
-                src="../../assets/pictures/2.png"
+                src="../../assets/pictures/man.jpg"
                 class="w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
-                alt="Nareman Abdallah"
+                alt="Hazem"
               />
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -82,41 +82,19 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Nareman Abdallah</h3>
-                <p class="text-gray-200 text-lg">CEO & Founder</p>
+                <h3 class="font-bold text-2xl mb-2">Hazem Abdulmoneim</h3>
+                <p class="text-gray-200 text-lg">
+                  Chief Technology Officer (CTO)
+                </p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Leading our vision of transforming the reservation industry.
+                  Ensures the optimal quality of the application
                 </p>
               </div>
             </div>
           </div>
-          <div class="team-member group">
-            <div
-              class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px]"
-            >
-              <img
-                src="../../assets/pictures/2.png"
-                class="w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
-                alt="Nourhan Sami"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              ></div>
-              <div
-                class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
-              >
-                <h3 class="font-bold text-2xl mb-2">Nourhan Sami</h3>
-                <p class="text-gray-200 text-lg">Head of Customer Support</p>
-                <p
-                  class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
-                >
-                  Ensuring exceptional customer experiences every day.
-                </p>
-              </div>
-            </div>
-          </div>
+
           <div class="team-member group">
             <div
               class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px]"
@@ -142,37 +120,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl mx-auto"
-        >
-          <div class="team-member group">
-            <div
-              class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px]"
-            >
-              <img
-                src="../../assets/pictures/man.jpg"
-                class="w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
-                alt="Hazem"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              ></div>
-              <div
-                class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
-              >
-                <h3 class="font-bold text-2xl mb-2">Hazem Abdulmoneim</h3>
-                <p class="text-gray-200 text-lg">
-                  Chief Technology Officer (CTO)
-                </p>
-                <p
-                  class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
-                >
-                  Ensures the optimal quality of the application
-                </p>
-              </div>
-            </div>
-          </div>
           <div class="team-member group">
             <div
               class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px]"
@@ -194,6 +141,60 @@
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
                   Ensuring exceptional customer experiences every day.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl mx-auto"
+        >
+          <div class="team-member group">
+            <div
+              class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px] flex justify-center"
+            >
+              <img
+                src="../../assets/pictures/2.png"
+                class="transition-transform duration-500 ease-in-out group-hover:scale-110"
+                alt="Nourhan Sami"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
+              <div
+                class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
+              >
+                <h3 class="font-bold text-2xl mb-2">Nourhan Sami</h3>
+                <p class="text-gray-200 text-lg">Head of Customer Support</p>
+                <p
+                  class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
+                >
+                  Ensuring exceptional customer experiences every day.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="team-member group">
+            <div
+              class="relative overflow-hidden rounded-xl shadow-xl bg-white/10 backdrop-blur-sm transform hover:-translate-y-2 transition-all duration-300 h-[400px] flex justify-center"
+            >
+              <img
+                src="../../assets/pictures/2.png"
+                class="transition-transform duration-500 ease-in-out group-hover:scale-110"
+                alt="Nareman Abdallah"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
+              <div
+                class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
+              >
+                <h3 class="font-bold text-2xl mb-2">Nareman Abdallah</h3>
+                <p class="text-gray-200 text-lg">CEO & Founder</p>
+                <p
+                  class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
+                >
+                  Leading our vision of transforming the reservation industry.
                 </p>
               </div>
             </div>
