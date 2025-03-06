@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 const store = createStore({
   state: {
-    userName: {
+    user: {
       name: '', 
       email: '',
       phone: '',
@@ -57,6 +57,9 @@ const store = createStore({
     },
     updateUserProfile(state, userData) {
       state.user = { ...state.user, ...userData };
+  },
+  updateUserPhone(state, newPhone) {
+    state.user.phone = newPhone;
   }
   },
   actions: {
