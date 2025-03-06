@@ -83,7 +83,12 @@
 
         <div class="form-group">
           <label>Government ID</label>
-          <input type="text" v-model="govID" required placeholder="place the link to your government id"/>
+          <input
+            type="text"
+            v-model="govID"
+            required
+            placeholder="place the link to your government id"
+          />
         </div>
 
         <div class="form-group">
@@ -106,25 +111,24 @@
         <div class="form-group">
           <label>Venue Images (link 3 images)</label>
           <div class="flex flex-col gap-3 mt-2">
-
-          <input
-            type="text"
-            v-model="firstImage"
-            placeholder="first image"
-            required
-          />
-          <input
-            type="text"
-            v-model="secondImage"
-            placeholder="second image"
-            required
-          />
-          <input
-            type="text"
-            v-model="thirdImage"
-            placeholder="third image"
-            required
-          />
+            <input
+              type="text"
+              v-model="firstImage"
+              placeholder="first image"
+              required
+            />
+            <input
+              type="text"
+              v-model="secondImage"
+              placeholder="second image"
+              required
+            />
+            <input
+              type="text"
+              v-model="thirdImage"
+              placeholder="third image"
+              required
+            />
           </div>
         </div>
 
@@ -140,21 +144,22 @@
         <div class="form-group">
           <label>Price (in EGP)</label>
           <input
-          type="number"
+            type="number"
             v-model="price"
             placeholder="How much does a session cost?"
             min="0"
             step="10"
             required
-          > 
+          />
         </div>
         <div class="form-group">
           <label>Short Description</label>
           <input
-          type="text"
+            type="text"
             v-model="shortDescription"
             placeholder="briefly describe your venue"
-            required> 
+            required
+          />
         </div>
 
         <div class="form-group">
@@ -222,13 +227,13 @@ export default {
       secondImage: "",
       thirdImage: "",
       govID: "",
-      price: 0, 
+      price: 0,
       zipCode: "",
       phoneNumber: "",
       category: "",
       categories: ["Medical", "Stadium", "Educational"],
       venueImages: [],
-shortDescription: "",
+      shortDescription: "",
       description: "",
       cities: {
         Cairo: [
@@ -363,9 +368,11 @@ shortDescription: "",
   },
   computed: {
     ...mapGetters(["isAuthenticated"]),
-    validImages(){ 
-      return this.firstImage && this.secondImage && this.thirdImage && this.govID;
-    }
+    validImages() {
+      return (
+        this.firstImage && this.secondImage && this.thirdImage && this.govID
+      );
+    },
   },
   methods: {
     updateAreas() {
@@ -390,7 +397,7 @@ shortDescription: "",
 
     handleNext() {
       if (store.state.isAuthenticated) {
-         let id = "id" + Math.random().toString(16).slice(2);
+        let id = "id" + Math.random().toString(16).slice(2);
         this.$store.commit("setMyFormData", {
           id,
           venueName: this.venueName,
@@ -403,9 +410,9 @@ shortDescription: "",
             governorate: this.selectedCity,
             city: this.selectedArea,
           },
-          shortDescription: this.shortDescription, 
+          shortDescription: this.shortDescription,
           longDescription: this.description,
-          pictures: [this.firstImage,this.secondImage,this.thirdImage],
+          pictures: [this.firstImage, this.secondImage, this.thirdImage],
           reviews: {},
         });
         console.log(store.state.formData);

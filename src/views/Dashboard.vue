@@ -126,9 +126,10 @@
         <li>
           <RouterLink
             to="/dashboard"
-            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
             :class="{
-              'bg-blue-50 dark:bg-blue-900/30': $route.path === '/dashboard',
+              'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+                !$route.query.tab,
             }"
             @click="closeSidebarOnMobile"
           >
@@ -138,23 +139,39 @@
         </li>
         <li>
           <RouterLink
-            to="/requests"
-            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+            to="/dashboard?tab=requests"
+            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
             :class="{
-              'bg-blue-50 dark:bg-blue-900/30': $route.path === '/requests',
+              'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+                $route.query.tab === 'requests',
             }"
             @click="closeSidebarOnMobile"
           >
             <i class="fas fa-clipboard-list mr-3"></i>
             Requests Details
           </RouterLink>
+          <!-- <RouterLink
+            to="/dashboard?tab=requests"
+            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+            :class="{
+              'bg-blue-50 dark:bg-blue-900/30': $route.query.tab === 'requests',
+            }"
+            @click="closeSidebarOnMobile"
+          >
+            <i class="fas fa-clipboard-list mr-3"></i>
+            Requests Details
+          </RouterLink> -->
         </li>
       </ul>
     </nav>
 
     <!-- Main Content -->
     <div class="flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 md:p-6">
+      <!-- Users Management Section -->
+      <div
+        v-if="$route.path === '/dashboard' && !$route.query.tab"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 md:p-6 transition-opacity duration-300"
+      >
         <h2
           class="text-xl md:text-2xl font-semibold mb-4 md:mb-6 dark:text-white"
         >
@@ -238,72 +255,282 @@
           </table>
         </div>
       </div>
+
+      <!-- Requests Details Section -->
+      <div
+        v-if="$route.path === '/dashboard' && $route.query.tab === 'requests'"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 md:p-6"
+      >
+        <h2
+          class="text-xl md:text-2xl font-semibold mb-4 md:mb-6 dark:text-white"
+        >
+          Requests Details
+        </h2>
+        <div class="overflow-x-auto">
+          <table
+            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+          >
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th
+                  class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                >
+                  Owner Name
+                </th>
+                <th
+                  class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                >
+                  Business Name
+                </th>
+                <th
+                  class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                >
+                  Business Details
+                </th>
+                <th
+                  class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                >
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+            >
+              <tr v-for="request in requests" :key="request.id">
+                <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                  <div
+                    class="text-xs md:text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {{ request.ownerName }}
+                  </div>
+                </td>
+                <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                  <div class="text-xs md:text-sm text-gray-900 dark:text-white">
+                    {{ request.venueName }}
+                  </div>
+                </td>
+                <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                  <button
+                    @click="showRequestDetails(request)"
+                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                  >
+                    More Details
+                  </button>
+                </td>
+                <td
+                  class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium"
+                >
+                  <button
+                    @click="acceptRequest(request)"
+                    class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 mr-2 md:mr-4"
+                  >
+                    <i class="fas fa-check text-base md:text-lg"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Details Modal -->
+  <div
+    v-if="showRequestModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showRequestModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-4xl w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02] overflow-y-auto max-h-[90vh]"
+      @click.stop
+    >
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+          More Details
+        </h3>
+        <button
+          @click="showRequestModal = false"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Venue Details Section -->
+      <div class="mb-8">
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">
+          Venue Details Section:
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div
+            class="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+          >
+            <div>
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-2">
+                Basic Information
+              </h5>
+              <div class="space-y-2">
+                <p class="text-gray-600 dark:text-gray-300">
+                  <span class="font-medium">Venue Name:</span>
+                  {{ selectedRequest.venueName }}
+                </p>
+                <p class="text-gray-600 dark:text-gray-300">
+                  <span class="font-medium">Owner Email:</span>
+                  {{ selectedRequest.owner }}
+                </p>
+                <p class="text-gray-600 dark:text-gray-300">
+                  <span class="font-medium">Category:</span>
+                  {{ selectedRequest.category }}
+                </p>
+                <p class="text-gray-600 dark:text-gray-300">
+                  <span class="font-medium">Price:</span>
+                  {{ selectedRequest.price }} EGP
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+          >
+            <div>
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-2">
+                Description
+              </h5>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                {{ selectedRequest.shortDescription }}
+              </p>
+              <p class="text-gray-600 dark:text-gray-300 text-sm">
+                {{ selectedRequest.longDescription }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Required Documents Section -->
+      <div class="mb-8">
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">
+          Required Documents
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+              Medical License
+            </h5>
+            <div
+              class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
+              <img
+                v-if="selectedRequest.medicalLicense"
+                :src="selectedRequest.medicalLicense"
+                alt="Medical License"
+                class="w-full h-full object-cover"
+                @error="handleImageError"
+                loading="lazy"
+              />
+              <div
+                v-else
+                class="flex items-center justify-center h-full text-gray-500"
+              >
+                <i class="fas fa-file-medical text-3xl"></i>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+              Government ID
+            </h5>
+            <div
+              class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
+              <img
+                v-if="selectedRequest.govID"
+                :src="selectedRequest.govID"
+                alt="Government ID"
+                class="w-full h-full object-cover"
+                @error="handleImageError"
+                loading="lazy"
+              />
+              <div
+                v-else
+                class="flex items-center justify-center h-full text-gray-500"
+              >
+                <i class="fas fa-id-card text-3xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venue Images Section -->
+      <div class="mb-8">
+        <h4 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">
+          Venue Images
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div
+            v-for="(image, index) in selectedRequest.pictures"
+            :key="index"
+            class="bg-white dark:bg-gray-800 p-2 rounded-lg shadow group hover:shadow-lg transition-shadow duration-300"
+          >
+            <div
+              class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden"
+            >
+              <img
+                :src="image"
+                :alt="`Venue Image ${index + 1}`"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                @error="handleImageError"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-4">
+        <button
+          @click="rejectRequest(selectedRequest)"
+          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        >
+          Reject
+        </button>
+        <button
+          @click="acceptRequest(selectedRequest)"
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+        >
+          Accept
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
-import { db, ref as dbRef, onValue, update, remove } from "@/firebase";
-import store from "@/store/store";
-import { useRouter } from "vue-router";
+import {
+  getDatabase,
+  ref as dbRef,
+  get,
+  set,
+  remove,
+  update,
+} from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 export default {
-  name: "Dashboard",
   setup() {
-    const router = useRouter();
-    const users = ref([]);
+    const sidebarOpen = ref(false);
     const showRoleModal = ref(false);
     const showDeleteModal = ref(false);
+    const showRequestModal = ref(false);
     const selectedUser = ref(null);
-    const sidebarOpen = ref(false);
-
-    const fetchUsers = () => {
-      const usersRef = dbRef(db, "users/");
-      onValue(usersRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          users.value = Object.entries(data).map(([username, userData]) => ({
-            ...userData,
-            username,
-          }));
-        }
-      });
-    };
-
-    const toggleUserRole = (user) => {
-      selectedUser.value = user;
-      showRoleModal.value = true;
-    };
-
-    const confirmRoleChange = async () => {
-      try {
-        await update(dbRef(db, `users/${selectedUser.value.username}`), {
-          isAdmin: !selectedUser.value.isAdmin,
-        });
-        console.log(
-          `User role updated successfully for ${selectedUser.value.name}`
-        );
-        showRoleModal.value = false;
-      } catch (error) {
-        console.error("Error updating user role:", error);
-      }
-    };
-
-    const deleteUser = (user) => {
-      selectedUser.value = user;
-      showDeleteModal.value = true;
-    };
-
-    const confirmDelete = async () => {
-      try {
-        await remove(dbRef(db, `users/${selectedUser.value.username}`));
-        console.log("User deleted successfully");
-        showDeleteModal.value = false;
-      } catch (error) {
-        console.error("Error deleting user:", error);
-      }
-    };
+    const selectedRequest = ref(null);
+    const users = ref([]);
+    const requests = ref([]);
 
     const toggleSidebar = () => {
       sidebarOpen.value = !sidebarOpen.value;
@@ -315,27 +542,152 @@ export default {
       }
     };
 
-    onMounted(() => {
-      if (!store.state.user?.isAdmin) {
-        router.push("/");
-        return;
+    const toggleUserRole = (user) => {
+      selectedUser.value = user;
+      showRoleModal.value = true;
+    };
+
+    const deleteUser = (user) => {
+      selectedUser.value = user;
+      showDeleteModal.value = true;
+    };
+
+    const confirmRoleChange = async () => {
+      try {
+        const db = getDatabase();
+        await update(dbRef(db, `users/${selectedUser.value.uid}`), {
+          isAdmin: !selectedUser.value.isAdmin,
+        });
+        selectedUser.value.isAdmin = !selectedUser.value.isAdmin;
+        showRoleModal.value = false;
+      } catch (error) {
+        console.error("Error updating user role:", error);
       }
-      fetchUsers();
+    };
+
+    const confirmDelete = async () => {
+      try {
+        const db = getDatabase();
+        await remove(dbRef(db, `users/${selectedUser.value.uid}`));
+        users.value = users.value.filter(
+          (u) => u.uid !== selectedUser.value.uid
+        );
+        showDeleteModal.value = false;
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    };
+
+    const showRequestDetails = (request) => {
+      selectedRequest.value = request;
+      showRequestModal.value = true;
+    };
+
+    const acceptRequest = async (request) => {
+      try {
+        const db = getDatabase();
+        // Move the request to approved venues
+        await set(dbRef(db, `venues/${request.id}`), {
+          ...request,
+          status: "approved",
+        });
+        // Remove from pending requests
+        await remove(dbRef(db, `requests/${request.id}`));
+        requests.value = requests.value.filter((r) => r.id !== request.id);
+        showRequestModal.value = false;
+      } catch (error) {
+        console.error("Error accepting request:", error);
+      }
+    };
+
+    const rejectRequest = async (request) => {
+      try {
+        const db = getDatabase();
+        await remove(dbRef(db, `requests/${request.id}`));
+        requests.value = requests.value.filter((r) => r.id !== request.id);
+        showRequestModal.value = false;
+      } catch (error) {
+        console.error("Error rejecting request:", error);
+      }
+    };
+
+    onMounted(async () => {
+      try {
+        const db = getDatabase();
+        const auth = getAuth();
+
+        // Fetch users
+        const usersSnapshot = await get(dbRef(db, "users"));
+        if (usersSnapshot.exists()) {
+          const usersData = usersSnapshot.val();
+          users.value = Object.keys(usersData).map((key) => ({
+            uid: key,
+            ...usersData[key],
+          }));
+        }
+
+        // Fetch requests
+        const requestsSnapshot = await get(dbRef(db, "requests"));
+        if (requestsSnapshot.exists()) {
+          const requestsData = requestsSnapshot.val();
+          requests.value = await Promise.all(
+            Object.keys(requestsData).map(async (key) => {
+              const request = requestsData[key];
+              // Get image URLs from Firebase Storage
+              const images = request.pictures || [];
+              const licenseDoc = request.licenseDocument || "";
+              const ownerIdImg = request.ownerIdImage || "";
+
+              return {
+                id: key,
+                ...request,
+                images: images,
+                licenseDocument: licenseDoc,
+                ownerIdImage: ownerIdImg,
+              };
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     });
 
     return {
-      users,
-      toggleUserRole,
-      deleteUser,
+      sidebarOpen,
       showRoleModal,
       showDeleteModal,
+      showRequestModal,
       selectedUser,
-      confirmRoleChange,
-      confirmDelete,
-      sidebarOpen,
+      selectedRequest,
+      users,
+      requests,
       toggleSidebar,
       closeSidebarOnMobile,
+      toggleUserRole,
+      deleteUser,
+      confirmRoleChange,
+      confirmDelete,
+      showRequestDetails,
+      acceptRequest,
+      rejectRequest,
     };
+  },
+  methods: {
+    handleImageError(event) {
+      // Replace broken image with a placeholder
+      event.target.src =
+        "https://via.placeholder.com/400x300?text=Image+Not+Available";
+      event.target.classList.add("error-image");
+    },
+    toggleSidebar() {
+      sidebarOpen.value = !sidebarOpen.value;
+    },
+    closeSidebarOnMobile() {
+      if (window.innerWidth < 768) {
+        sidebarOpen.value = false;
+      }
+    },
   },
 };
 </script>
