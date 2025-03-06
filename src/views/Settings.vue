@@ -102,6 +102,7 @@
 
 <script>
 import { db, auth, ref, set, get } from "@/firebase";
+import store from "@/store/store";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
@@ -137,58 +138,55 @@ export default {
   },
   methods: {
     async updateProfile() {
-  const user = auth.currentUser;
+      const user = auth.currentUser;
 
-  if (!user) {
-    this.profileMessage = "No user is logged in!";
-    this.profileMessageClass = "text-red-500";
-    return;
-  }
+      if (!user) {
+        this.profileMessage = "No user is logged in!";
+        this.profileMessageClass = "text-red-500";
+        return;
+      }
 
-  const newName = this.profile.fullName.trim();
-  const newPhone = this.profile.phone.trim();
-  const username = this.$store.state.user?.username; 
+      const newName = this.profile.fullName.trim();
+      const newPhone = this.profile.phone.trim();
+      const username = this.$store.state.user?.username;
 
-  if (!username) {
-    this.profileMessage = "Username not found!";
-    this.profileMessageClass = "text-red-500";
-    return;
-  }
+      if (!username) {
+        this.profileMessage = "Username not found!";
+        this.profileMessageClass = "text-red-500";
+        return;
+      }
 
-  if (newPhone) {
-    const phoneRegex = /^(011|012|015)\d{8}$/;
-    if (!phoneRegex.test(newPhone)) {
-      this.profileMessage =
-        "Phone number must be 11 digits and start with 011, 012, or 015!";
-      this.profileMessageClass = "text-red-500";
-      return;
-    }
-  }
+      if (newPhone) {
+        const phoneRegex = /^(011|012|015|010)\d{8}$/;
+        if (!phoneRegex.test(newPhone)) {
+          this.profileMessage =
+            "Phone number must be 11 digits and start with 011, 012, or 015!";
+          this.profileMessageClass = "text-red-500";
+          return;
+        }
+      }
 
-  try {
-    await update(ref(db, "users/" + username), {
-      name: newName, 
-      phone: newPhone,
-    });
+      try {
+        await update(ref(db, "users/" + store.state.user.id), {
+          name: newName,
+          phone: newPhone,
+        });
 
-    this.$store.commit("updateUserName", newName);
-    this.$store.commit("updateUserPhone", newPhone);
+        this.$store.commit("updateUserName", newName);
+        this.$store.commit("updateUserPhone", newPhone);
 
-    this.profileMessage = "Profile updated successfully!";
-    this.profileMessageClass = "text-green-500";
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    this.profileMessage = "Error updating profile.";
-    this.profileMessageClass = "text-red-500";
-  }
-}
-    ,
-    
-
+        this.profileMessage = "Profile updated successfully!";
+        this.profileMessageClass = "text-green-500";
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        this.profileMessage = "Error updating profile.";
+        this.profileMessageClass = "text-red-500";
+      }
+    },
     async changePassword() {
       if (this.password.new !== this.password.confirm) {
         this.message = "Passwords do not match!";
-        this.messageClass = "text-red-500"; 
+        this.messageClass = "text-red-500";
         return;
       }
 
@@ -197,7 +195,7 @@ export default {
 
         if (!user) {
           this.message = "No user is currently logged in!";
-          this.messageClass = "text-red-500"; 
+          this.messageClass = "text-red-500";
           return;
         }
         console.log("User UID:", user.uid);
@@ -211,15 +209,15 @@ export default {
         await updatePassword(user, this.password.new);
 
         this.message = "Password updated successfully!";
-        this.messageClass = "text-green-500"; 
+        this.messageClass = "text-green-500";
       } catch (error) {
         console.error("Error:", error);
         if (error.code === "auth/wrong-password") {
           this.message = "Current password is incorrect!";
-          this.messageClass = "text-red-500"; 
+          this.messageClass = "text-red-500";
         } else {
           this.message = `An error occurred: ${error.message}`;
-          this.messageClass = "text-red-500"; 
+          this.messageClass = "text-red-500";
         }
       }
     },
@@ -241,11 +239,11 @@ export default {
         });
 
         this.preferencesMessage = "Preferences saved successfully!";
-        this.preferencesMessageClass = "text-green-500"; 
+        this.preferencesMessageClass = "text-green-500";
       } catch (error) {
         console.error("Error saving preferences:", error);
         this.preferencesMessage = "Error saving preferences.";
-        this.preferencesMessageClass = "text-red-500"; 
+        this.preferencesMessageClass = "text-red-500";
       }
     },
 
@@ -265,23 +263,23 @@ export default {
       }
     },
     async loadProfile() {
-  const user = auth.currentUser;
+      const user = auth.currentUser;
 
-  if (user) {
-    const profileRef = ref(db, "users/" + user.uid);
-    const snapshot = await get(profileRef);
+      if (user) {
+        const profileRef = ref(db, "users/" + user.uid);
+        const snapshot = await get(profileRef);
 
-    if (snapshot.exists()) {
-      const profileData = snapshot.val();
-      this.profile.fullName = profileData.fullName || "";
-      this.profile.phone = profileData.phone || "";
-    }
-  }
-}
+        if (snapshot.exists()) {
+          const profileData = snapshot.val();
+          this.profile.fullName = profileData.fullName || "";
+          this.profile.phone = profileData.phone || "";
+        }
+      }
+    },
   },
 
   created() {
-    this.loadPreferences(); 
+    this.loadPreferences();
     this.loadProfile();
   },
 };
