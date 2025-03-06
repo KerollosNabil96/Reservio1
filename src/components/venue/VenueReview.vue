@@ -74,7 +74,7 @@
         <textarea
           v-model="reviewText"
           rows="4"
-          class="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          class="w-full resize-none px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           placeholder="Write your review here..."
         ></textarea>
       </div>
@@ -148,7 +148,7 @@ import { Profanity, CensorType } from "@2toad/profanity";
 
 // Initialize profanity filter with English
 const profanityFilter = new Profanity({
-  languages: ["en"],
+  languages: ["en", "ar"],
   wholeWord: true,
   grawlix: "****",
 });
