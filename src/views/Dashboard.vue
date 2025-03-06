@@ -275,7 +275,7 @@
                 <th
                   class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                 >
-                  Owner Name
+                  Owner Email
                 </th>
                 <th
                   class="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
@@ -302,7 +302,7 @@
                   <div
                     class="text-xs md:text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    {{ request.ownerName }}
+                    {{ request.owner }}
                   </div>
                 </td>
                 <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
@@ -322,16 +322,115 @@
                   class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium"
                 >
                   <button
-                    @click="acceptRequest(request)"
+                    @click="approveRequestConfirm(request)"
                     class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 mr-2 md:mr-4"
+                    title="Approve Request"
                   >
                     <i class="fas fa-check text-base md:text-lg"></i>
+                  </button>
+                  <button
+                    @click="rejectRequestConfirm(request)"
+                    class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                    title="Reject Request"
+                  >
+                    <i class="fas fa-times text-base md:text-lg"></i>
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approve Request Confirmation Modal -->
+  <div
+    v-if="showApproveModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showApproveModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center mb-4 sm:mb-6">
+        <i
+          class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl sm:text-2xl mr-3"
+        ></i>
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">
+          Approve Request
+        </h3>
+      </div>
+      <p
+        class="text-gray-600 dark:text-gray-300 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed"
+      >
+        Are you sure you want to approve the venue request for
+        <span class="font-semibold text-green-600 dark:text-green-400">
+          {{ selectedRequest?.venueName }} </span
+        >?
+      </p>
+      <div class="flex justify-end space-x-2 sm:space-x-4">
+        <button
+          @click="showApproveModal = false"
+          class="px-3 sm:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          @click="acceptRequest(selectedRequest)"
+          class="px-3 sm:px-6 py-2 sm:py-3 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+        >
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reject Request Confirmation Modal -->
+  <div
+    v-if="showRejectModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showRejectModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center mb-4 sm:mb-6">
+        <i
+          class="fas fa-times-circle text-red-600 text-xl sm:text-2xl mr-3"
+        ></i>
+        <h3 class="text-lg sm:text-xl font-bold text-red-600">
+          Reject Request
+        </h3>
+      </div>
+      <p
+        class="text-gray-600 dark:text-gray-300 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed"
+      >
+        Are you sure you want to reject the venue request for
+        <span class="font-semibold text-red-600">
+          {{ selectedRequest?.venueName }} </span
+        >?
+        <br />
+        <span class="text-sm text-red-500 mt-2 block"
+          >This action cannot be undone.</span
+        >
+      </p>
+      <div class="flex justify-end space-x-2 sm:space-x-4">
+        <button
+          @click="showRejectModal = false"
+          class="px-3 sm:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          @click="rejectRequest(selectedRequest)"
+          class="px-3 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
+        >
+          <i class="fas fa-times mr-2"></i>
+          Reject
+        </button>
       </div>
     </div>
   </div>
@@ -527,6 +626,8 @@ export default {
     const showRoleModal = ref(false);
     const showDeleteModal = ref(false);
     const showRequestModal = ref(false);
+    const showApproveModal = ref(false);
+    const showRejectModal = ref(false);
     const selectedUser = ref(null);
     const selectedRequest = ref(null);
     const users = ref([]);
@@ -583,6 +684,16 @@ export default {
       showRequestModal.value = true;
     };
 
+    const approveRequestConfirm = (request) => {
+      selectedRequest.value = request;
+      showApproveModal.value = true;
+    };
+
+    const rejectRequestConfirm = (request) => {
+      selectedRequest.value = request;
+      showRejectModal.value = true;
+    };
+
     const acceptRequest = async (request) => {
       try {
         const db = getDatabase();
@@ -595,6 +706,7 @@ export default {
         await remove(dbRef(db, `requests/${request.id}`));
         requests.value = requests.value.filter((r) => r.id !== request.id);
         showRequestModal.value = false;
+        showApproveModal.value = false;
       } catch (error) {
         console.error("Error accepting request:", error);
       }
@@ -606,6 +718,7 @@ export default {
         await remove(dbRef(db, `requests/${request.id}`));
         requests.value = requests.value.filter((r) => r.id !== request.id);
         showRequestModal.value = false;
+        showRejectModal.value = false;
       } catch (error) {
         console.error("Error rejecting request:", error);
       }
@@ -658,6 +771,8 @@ export default {
       showRoleModal,
       showDeleteModal,
       showRequestModal,
+      showApproveModal,
+      showRejectModal,
       selectedUser,
       selectedRequest,
       users,
@@ -669,6 +784,8 @@ export default {
       confirmRoleChange,
       confirmDelete,
       showRequestDetails,
+      approveRequestConfirm,
+      rejectRequestConfirm,
       acceptRequest,
       rejectRequest,
     };
