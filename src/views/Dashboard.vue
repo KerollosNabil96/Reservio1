@@ -1,0 +1,276 @@
+<template>
+  <div class="flex h-screen bg-gray-100">
+    <!-- Role Change Modal -->
+    <div
+      v-if="showRoleModal"
+      class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+      @click="showRoleModal = false"
+    >
+      <div
+        class="bg-white/95 backdrop-blur-sm rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+        @click.stop
+      >
+        <div class="flex items-center mb-6">
+          <i class="fas fa-user-shield text-blue-600 text-2xl mr-3"></i>
+          <h3 class="text-xl font-bold text-gray-800">Change User Role</h3>
+        </div>
+        <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+          Are you sure you want to change
+          <span class="font-semibold text-blue-600">{{
+            selectedUser.name
+          }}</span
+          >'s role from
+          <span class="font-semibold">{{
+            selectedUser.isAdmin ? "Admin to User" : "User to Admin"
+          }}</span
+          >?
+        </p>
+        <div class="flex justify-end space-x-4">
+          <button
+            @click="showRoleModal = false"
+            class="px-6 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            @click="confirmRoleChange()"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
+          >
+            Confirm Change
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete User Modal -->
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+      @click="showDeleteModal = false"
+    >
+      <div
+        class="bg-white/95 backdrop-blur-sm rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+        @click.stop
+      >
+        <div class="flex items-center mb-6">
+          <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-3"></i>
+          <h3 class="text-xl font-bold text-red-600">Delete User</h3>
+        </div>
+        <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+          Are you sure you want to delete
+          <span class="font-semibold text-red-600">{{ selectedUser.name }}</span
+          >?
+          <br />
+          <span class="text-sm text-red-500 mt-2 block"
+            >This action cannot be undone.</span
+          >
+        </p>
+        <div class="flex justify-end space-x-4">
+          <button
+            @click="showDeleteModal = false"
+            class="px-6 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            @click="confirmDelete()"
+            class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
+          >
+            <i class="fas fa-trash-alt mr-2"></i>
+            Delete User
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Side Navigation -->
+    <nav class="w-64 bg-white shadow-lg">
+      <div class="p-6">
+        <h1 class="text-2xl font-bold text-blue-600">Admin Dashboard</h1>
+      </div>
+      <ul class="space-y-2 p-4">
+        <li>
+          <RouterLink
+            to="/dashboard"
+            class="flex items-center p-3 text-gray-700 hover:bg-blue-50 rounded-lg"
+            :class="{ 'bg-blue-50': $route.path === '/dashboard' }"
+          >
+            <i class="fas fa-users mr-3"></i>
+            Users
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            to="/requests"
+            class="flex items-center p-3 text-gray-700 hover:bg-blue-50 rounded-lg"
+            :class="{ 'bg-blue-50': $route.path === '/requests' }"
+          >
+            <i class="fas fa-clipboard-list mr-3"></i>
+            Requests Details
+          </RouterLink>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8 overflow-auto">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-2xl font-semibold mb-6">Users Management</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Name
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Role
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="user in users" :key="user.email">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ user.name }}
+                      </div>
+                      <div class="text-sm text-gray-500">{{ user.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    :class="
+                      user.isAdmin
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-green-100 text-green-800'
+                    "
+                  >
+                    {{ user.isAdmin ? "Admin" : "User" }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button
+                    @click="toggleUserRole(user)"
+                    class="text-blue-600 hover:text-blue-900 mr-4"
+                    :title="user.isAdmin ? 'Make User' : 'Make Admin'"
+                  >
+                    <i class="fas fa-user-shield text-lg"></i>
+                  </button>
+                  <button
+                    @click="deleteUser(user)"
+                    class="text-red-600 hover:text-red-900"
+                    title="Delete User"
+                  >
+                    <i class="fas fa-trash text-lg"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, onMounted } from "vue";
+import { db, ref as dbRef, onValue, update, remove } from "@/firebase";
+import store from "@/store/store";
+import { useRouter } from "vue-router";
+
+export default {
+  name: "Dashboard",
+  setup() {
+    const router = useRouter();
+    const users = ref([]);
+    const showRoleModal = ref(false);
+    const showDeleteModal = ref(false);
+    const selectedUser = ref(null);
+
+    const fetchUsers = () => {
+      const usersRef = dbRef(db, "users/");
+      onValue(usersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          users.value = Object.entries(data).map(([username, userData]) => ({
+            ...userData,
+            username,
+          }));
+        }
+      });
+    };
+
+    const toggleUserRole = (user) => {
+      selectedUser.value = user;
+      showRoleModal.value = true;
+    };
+
+    const confirmRoleChange = async () => {
+      try {
+        await update(dbRef(db, `users/${selectedUser.value.username}`), {
+          isAdmin: !selectedUser.value.isAdmin,
+        });
+        console.log(
+          `User role updated successfully for ${selectedUser.value.name}`
+        );
+        showRoleModal.value = false;
+      } catch (error) {
+        console.error("Error updating user role:", error);
+      }
+    };
+
+    const deleteUser = (user) => {
+      selectedUser.value = user;
+      showDeleteModal.value = true;
+    };
+
+    const confirmDelete = async () => {
+      try {
+        await remove(dbRef(db, `users/${selectedUser.value.username}`));
+        console.log("User deleted successfully");
+        showDeleteModal.value = false;
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    };
+
+    onMounted(() => {
+      if (!store.state.user?.isAdmin) {
+        router.push("/");
+        return;
+      }
+      fetchUsers();
+    });
+
+    return {
+      users,
+      toggleUserRole,
+      deleteUser,
+      showRoleModal,
+      showDeleteModal,
+      selectedUser,
+      confirmRoleChange,
+      confirmDelete,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+}
+</style>
