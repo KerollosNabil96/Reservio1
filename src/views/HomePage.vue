@@ -81,5 +81,4 @@ export default {
 </script>
 
 <style scoped>
-/* Tailwind handles most styling; add overrides if needed */
 </style>
