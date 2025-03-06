@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative overflow-hidden bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800"
+    class="relative overflow-hidden bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-[800px]"
   >
     <!-- Background decorative elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -16,138 +16,136 @@
     </div>
 
     <div class="max-w-5xl mx-auto px-4 py-8 relative z-10">
-      <!-- Venue Title Section -->
-      <div
-        class="mb-8 transform transition-all duration-500 opacity-100 translate-y-0"
-      >
-        <h1
-          class="text-3xl md:text-4xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-        >
-          {{ currentVenue.venueName }}
-        </h1>
-        <p
-          class="text-center text-gray-500 dark:text-gray-400 mb-6 flex items-center justify-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-          {{ currentVenue.address.city }},
-          {{ currentVenue.address.governorate }}
-        </p>
+      <!-- Loading State -->
+      <div v-if="isLoading">
+        <VenueDetailsSkeleton />
+        <ReviewsSkeleton class="mt-8" />
       </div>
 
-      <!-- Image Gallery Section -->
-      <div
-        class="mb-12 transform transition-all duration-500 opacity-100 translate-y-0"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <!-- Main large image -->
-          <div
-            class="col-span-1 md:col-span-7 transform transition-all duration-500 hover:-translate-y-1"
+      <!-- Loaded Content -->
+      <div v-else>
+        <!-- Venue Title Section -->
+        <div
+          class="mb-8 transform transition-all duration-500 opacity-100 translate-y-0"
+        >
+          <h1
+            class="text-3xl md:text-4xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
           >
-            <div class="relative overflow-hidden rounded-xl shadow-2xl group">
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-              ></div>
-              <img
-                :src="currentVenue.pictures[0]"
-                alt="Venue main view"
-                class="w-full h-[300px] md:h-[400px] object-cover transition-all duration-700 group-hover:scale-105"
-                @click="openImageModal(currentVenue.pictures[0])"
+            {{ currentVenue.venueName }}
+          </h1>
+          <p
+            class="text-center text-gray-500 dark:text-gray-400 mb-6 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
               />
-              <div
-                class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
-              >
-                <p class="text-sm font-medium">Click to view gallery</p>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            {{ currentVenue.address.city }},
+            {{ currentVenue.address.governorate }}
+          </p>
+        </div>
+
+        <!-- Image Gallery Section -->
+        <div
+          class="mb-12 transform transition-all duration-500 opacity-100 translate-y-0"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <!-- Main large image -->
+            <div
+              class="col-span-1 md:col-span-7 transform transition-all duration-500 hover:-translate-y-1"
+            >
+              <div class="relative overflow-hidden rounded-xl shadow-2xl group">
+                <div
+                  class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                ></div>
+                <img
+                  :src="currentVenue.pictures[0]"
+                  alt="Venue main view"
+                  class="w-full h-[300px] md:h-[400px] object-cover transition-all duration-700 group-hover:scale-105"
+                  @click="openImageModal(currentVenue.pictures[0])"
+                />
+                <div
+                  class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
+                >
+                  <p class="text-sm font-medium">Click to view gallery</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Side images -->
-          <div
-            class="col-span-1 md:col-span-5 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-4"
-          >
+            <!-- Side images -->
             <div
-              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
+              class="col-span-1 md:col-span-5 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-4"
             >
               <div
-                class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-              ></div>
-              <img
-                :src="currentVenue.pictures[1]"
-                alt="Venue view 2"
-                class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
-                @click="openImageModal(currentVenue.pictures[1])"
-              />
-              <div
-                class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
+                class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
               >
-                <p class="text-xs font-medium">View image</p>
+                <div
+                  class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                ></div>
+                <img
+                  :src="currentVenue.pictures[1]"
+                  alt="Venue view 2"
+                  class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
+                  @click="openImageModal(currentVenue.pictures[1])"
+                />
+                <div
+                  class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
+                >
+                  <p class="text-xs font-medium">View image</p>
+                </div>
               </div>
-            </div>
 
-            <div
-              class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
-            >
               <div
-                class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-              ></div>
-              <img
-                :src="currentVenue.pictures[2]"
-                alt="Venue view 3"
-                class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
-                @click="openImageModal(currentVenue.pictures[2])"
-              />
-              <div
-                class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
+                class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
               >
-                <p class="text-xs font-medium">View image</p>
+                <div
+                  class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                ></div>
+                <img
+                  :src="currentVenue.pictures[2]"
+                  alt="Venue view 3"
+                  class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
+                  @click="openImageModal(currentVenue.pictures[2])"
+                />
+                <div
+                  class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
+                >
+                  <p class="text-xs font-medium">View image</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Venue Info and Booking Section -->
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <!-- About Venue Component -->
-        <AboutVenue :current-venue="currentVenue" :full-address="fullAddress" />
-
-        <!-- Booking Card -->
-        <div
-          class="col-span-1 md:col-span-5 transform transition-all duration-500 opacity-100 translate-y-0"
-        >
-          <div
-            class="bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 transform transition-all duration-500 hover:shadow-xl relative overflow-hidden"
-          >
-            <div
-              class="absolute -top-10 -right-10 w-24 h-24 bg-blue-200/5 dark:bg-blue-700/5 rounded-full blur-xl"
-            ></div>
-            <div
-              class="absolute -bottom-8 -left-8 w-24 h-24 bg-indigo-200/5 dark:bg-indigo-700/5 rounded-full blur-xl"
-            ></div>
-
-            <h2
-              class="text-xl font-semibold mb-6 text-blue-900 dark:text-blue-400 relative z-10"
+        <!-- Tabs Section -->
+        <div class="mb-6">
+          <div class="flex border-b border-gray-200 dark:border-gray-700">
+            <button
+              @click="switchTab('information')"
+              :class="[
+                'py-3 px-6 font-medium text-md border-b-2 transition-colors duration-200',
+                activeTab === 'information'
+                  ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
+              ]"
             >
-              <span class="flex items-center">
+              <div class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-5 w-5 mr-2"
@@ -159,30 +157,72 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Start Booking
-              </span>
-            </h2>
-
-            <div class="flex items-baseline mb-6 relative z-10">
-              <span
-                class="text-green-500 dark:text-green-400 font-bold text-3xl"
-                >{{ currentVenue.price }}EGP</span
-              >
-              <span class="text-gray-500 dark:text-gray-400 text-sm ml-2"
-                >/ Hour</span
-              >
-            </div>
-
+                Information
+              </div>
+            </button>
             <button
-              @click="goToBooking"
-              class="relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-[1.02] w-full text-center flex items-center justify-center"
+              @click="switchTab('reviews')"
+              :class="[
+                'py-3 px-6 font-medium text-md border-b-2 transition-colors duration-200',
+                activeTab === 'reviews'
+                  ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
+              ]"
+            >
+              <div class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Reviews
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="min-h-[500px]">
+          <transition name="fade" mode="out-in">
+            <component
+              :is="
+                activeTab === 'information' ? 'InformationTab' : 'ReviewsTab'
+              "
+              :current-venue="currentVenue"
+              :full-address="fullAddress"
+              :venue-id="currentVenue.id"
+              @book-now="goToBooking"
+              @show-signin="showSigninForm = true"
+            ></component>
+          </transition>
+        </div>
+
+        <!-- Image Modal -->
+        <div
+          v-if="showImageModal"
+          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
+          @click="closeImageModal"
+        >
+          <div class="relative max-w-4xl max-h-screen p-2">
+            <button
+              @click="closeImageModal"
+              class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2"
+                class="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -191,95 +231,57 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-              Book Now!
+            </button>
+
+            <button
+              @click.stop="prevImage"
+              class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            <img
+              :src="selectedImage"
+              class="w-[80vw] max-h-[90vh] object-contain"
+              @click.stop
+            />
+
+            <button
+              @click.stop="nextImage"
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </button>
           </div>
-        </div>
-      </div>
-
-      <!-- Reviews Section -->
-      <div class="mt-8">
-        <VenueReview
-          :venue-id="currentVenue.id"
-          @show-signin="showSigninForm = true"
-        />
-      </div>
-
-      <!-- Image Modal -->
-      <div
-        v-if="showImageModal"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
-        @click="closeImageModal"
-      >
-        <div class="relative max-w-4xl max-h-screen p-2">
-          <button
-            @click="closeImageModal"
-            class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-
-          <button
-            @click.stop="prevImage"
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-
-          <img
-            :src="selectedImage"
-            class="w-[80vw] max-h-[90vh] object-contain"
-            @click.stop
-          />
-
-          <button
-            @click.stop="nextImage"
-            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     </div>
@@ -307,6 +309,11 @@ import AboutVenue from "@/components/VenueDetails/AboutVenue.vue";
 import VenueReview from "@/components/venue/VenueReview.vue";
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
+import VenueDetailsSkeleton from "@/components/venue/VenueDetailsSkeleton.vue";
+import ReviewsSkeleton from "@/components/venue/ReviewsSkeleton.vue";
+import InformationTab from "@/components/VenueDetails/InformationTab.vue";
+import ReviewsTab from "@/components/VenueDetails/ReviewsTab.vue";
+import store from "@/store/store";
 
 export default {
   data() {
@@ -316,6 +323,8 @@ export default {
       currentImageIndex: 0,
       showSigninForm: false,
       showSignupForm: false,
+      isLoading: true,
+      activeTab: "information", // Default active tab
     };
   },
   components: {
@@ -323,6 +332,10 @@ export default {
     VenueReview,
     Signin,
     Signup,
+    VenueDetailsSkeleton,
+    ReviewsSkeleton,
+    InformationTab,
+    ReviewsTab,
   },
   computed: {
     currentVenue() {
@@ -330,6 +343,7 @@ export default {
       return this.$store.getters.getVenueById(id);
     },
     fullAddress() {
+      if (!this.currentVenue || !this.currentVenue.address) return "";
       return `${this.currentVenue.address.street}, ${this.currentVenue.address.city}, ${this.currentVenue.address.governorate}`;
     },
   },
@@ -365,6 +379,26 @@ export default {
         this.showSigninForm = true;
       }
     },
+    switchTab(tab) {
+      // Just update the active tab, no URL changes
+      this.activeTab = tab;
+    },
   },
+  mounted() {
+    // Simulate loading for a short time on initial mount
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 500);
+  },
+  beforeRouteUpdate(to, from, next) {
+    // Set loading to true when navigating between different venue details
+    this.isLoading = true;
+    next();
+    // After navigation completes, wait for data to load
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 500);
+  },
+  watch: {},
 };
 </script>

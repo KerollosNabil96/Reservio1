@@ -28,11 +28,15 @@
       </button>
     </div>
 
-    <div v-if="isLoading" class="text-center py-12">
-      <div class="inline-block spinner mb-4"></div>
-      <p class="text-gray-500 dark:text-gray-400 text-lg">Loading venues...</p>
+    <!-- Loading state -->
+    <div
+      v-if="isLoading"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+    >
+      <VenueCardSkeleton v-for="n in 6" :key="n" />
     </div>
 
+    <!-- Empty state -->
     <div v-else-if="filteredVenues.length === 0" class="text-center py-8">
       <p class="text-gray-500 dark:text-gray-400 text-lg">
         No venues found matching your search criteria.
@@ -45,7 +49,13 @@
       </button>
     </div>
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <!-- Results grid with fade transition -->
+    <transition-group
+      v-else
+      name="venue-fade"
+      tag="div"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+    >
       <VenueCard
         v-for="venue in filteredVenues"
         :key="venue.id"
@@ -55,17 +65,19 @@
         :price="venue.price"
         :id="venue.id"
       />
-    </div>
+    </transition-group>
   </div>
 </template>
 
 <script>
 import store from "@/store/store";
 import VenueCard from "./VenueCard.vue";
+import VenueCardSkeleton from "./VenueCardSkeleton.vue";
 
 export default {
   components: {
     VenueCard,
+    VenueCardSkeleton,
   },
   data() {
     return {};
@@ -98,26 +110,21 @@ export default {
 </script>
 
 <style scoped>
-.spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #4f46e5;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Skeleton animation is defined in the SkeletonLoader component */
+
+/* Venue card fade transition */
+.venue-fade-enter-active,
+.venue-fade-leave-active {
+  transition: all 0.3s ease;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.venue-fade-enter-from,
+.venue-fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-@media (prefers-color-scheme: dark) {
-  .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-left-color: #818cf8;
-  }
+.venue-fade-move {
+  transition: transform 0.5s ease;
 }
 </style>
