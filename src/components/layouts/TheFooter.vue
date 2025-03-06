@@ -65,7 +65,7 @@
             </li>
             <li>
               <router-link
-                to="/faq"
+                to="/FAQs"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
                 >FAQ</router-link
               >

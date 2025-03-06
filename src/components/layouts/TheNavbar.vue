@@ -156,8 +156,10 @@
                 v-if="isUserMenuOpen"
                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 dark:bg-gray-800"
               >
+
                 <RouterLink
-                  to="/profile"
+                  v-if="$store.state.user?.isAdmin"
+                  to="/dashboard"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
                   <div class="flex items-center">
@@ -171,10 +173,10 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        d="M4 6h16M4 12h16M4 18h16"
                       />
                     </svg>
-                    Profile
+                    Dashboard
                   </div>
                 </RouterLink>
                 <RouterLink
@@ -466,7 +468,7 @@ export default {
       return this.$store.state.isAuthenticated;
     },
     username() {
-      return this.$store.state.user?.name || "Guest"; 
+      return this.$store.state.user?.name || "Guest";
     },
     isDarkMode() {
       return store.state.isDarkMode;

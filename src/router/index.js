@@ -19,6 +19,7 @@ import BookingInfo from "@/views/BookingInfo.vue";
 import PaymentAccess from "@/views/PaymentAccess.vue";
 import BookingInfoPayment from "@/views/BookingInfoPayment.vue";
 import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
+import Dashboard from "@/views/Dashboard.vue";
 const routes = [
   { path: "/", component: HomePage },
   { path: "/signin", component: Signin },
@@ -61,6 +62,7 @@ const routes = [
   { path: "/payment", component: Payment, meta: { requiresAuth: true } },
   { path: "/profile", component: Profile, meta: { requiresAuth: true } },
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
+  { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/bookigInfo", component: BookingInfo, meta: { requiresAuth: true } },
   {
     path: "/bookingInfoPayment",
