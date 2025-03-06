@@ -85,6 +85,14 @@
       >
         Submit Review
       </button>
+
+      <!-- Error Message -->
+      <div
+        v-if="reviewError"
+        class="mt-3 text-sm text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900/20 p-2 rounded"
+      >
+        {{ reviewError }}
+      </div>
     </div>
 
     <!-- Sign in prompt for non-authenticated users -->
@@ -136,6 +144,16 @@
 import { ref as vueRef, onMounted, watch, computed } from "vue";
 import { db, ref, set, onValue } from "@/firebase";
 import store from "@/store/store";
+import { Profanity, CensorType } from "@2toad/profanity";
+
+// Initialize profanity filter with English
+const profanityFilter = new Profanity({
+  languages: ["en"],
+  wholeWord: true,
+  grawlix: "****",
+});
+
+// Add some common Arabic profanity words (you should expand this list)
 
 export default {
   name: "VenueReview",
@@ -151,6 +169,7 @@ export default {
     const reviewText = vueRef("");
     const venueReviews = vueRef([]);
     const isAuthenticated = vueRef(store.state.isAuthenticated);
+    const reviewError = vueRef("");
 
     // Computed properties for rating statistics
     const averageRating = computed(() => {
@@ -182,8 +201,31 @@ export default {
       }
     );
 
+    const checkAndCensorProfanity = (text) => {
+      // Check if text contains profanity
+      if (profanityFilter.exists(text)) {
+        // Censor the text
+        return {
+          hasProfanity: true,
+          censoredText: profanityFilter.censor(text, CensorType.Word),
+        };
+      }
+      return {
+        hasProfanity: false,
+        censoredText: text,
+      };
+    };
+
     const submitReview = async () => {
       if (!rating.value || !reviewText.value) return;
+
+      // Reset error
+      reviewError.value = "";
+
+      // Check and censor profanity
+      const { hasProfanity, censoredText } = checkAndCensorProfanity(
+        reviewText.value
+      );
 
       const user = store.state.user;
       const reviewId = "review_" + Date.now();
@@ -193,8 +235,9 @@ export default {
         userId: user.username,
         userName: user.name,
         rating: rating.value,
-        text: reviewText.value,
+        text: censoredText, // Use censored text
         date: new Date().toISOString(),
+        containedProfanity: hasProfanity, // Optional: track if review contained profanity
       };
 
       try {
@@ -213,8 +256,14 @@ export default {
         // Reset form
         rating.value = 0;
         reviewText.value = "";
+
+        if (hasProfanity) {
+          reviewError.value =
+            "Your review contained inappropriate language and has been censored.";
+        }
       } catch (error) {
         console.error("Error submitting review:", error);
+        reviewError.value = "Error submitting review. Please try again.";
       }
     };
 
@@ -252,6 +301,7 @@ export default {
       totalReviews,
       getRatingCount,
       calculateRatingPercentage,
+      reviewError,
     };
   },
 };

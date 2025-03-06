@@ -79,7 +79,6 @@
             >FAQs</RouterLink
           >
         </li>
-        <li></li>
       </ul>
 
       <!-- Auth Buttons (desktop) -->
@@ -156,7 +155,6 @@
                 v-if="isUserMenuOpen"
                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 dark:bg-gray-800"
               >
-
                 <RouterLink
                   v-if="$store.state.user?.isAdmin"
                   to="/dashboard"
@@ -347,8 +345,31 @@
                 <div class="flex items-center mb-4 px-2">
                   <span class="font-medium">{{ username }}</span>
                 </div>
+                <RouterLink
+                  v-if="$store.state.user?.isAdmin"
+                  to="/dashboard"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >
+                  <div class="flex items-center">
+                    <svg
+                      class="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                    Dashboard
+                  </div>
+                </RouterLink>
 
                 <RouterLink
+                  v-else
                   to="/profile"
                   class="flex items-center px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
                   @click="closeMenu"
