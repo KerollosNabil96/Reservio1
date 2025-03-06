@@ -450,7 +450,6 @@
 import store from "@/store/store";
 import Signup from "../registration/Signup.vue";
 import Signin from "../registration/Signin.vue";
-// import { logoutUser } from "@/firebase";
 import { getAuth, signOut } from "firebase/auth";
 
 export default {
@@ -467,7 +466,7 @@ export default {
       return this.$store.state.isAuthenticated;
     },
     username() {
-      return this.$store.state.user ? this.$store.state.user.username : "";
+      return this.$store.state.user?.name || "Guest"; 
     },
     isDarkMode() {
       return store.state.isDarkMode;

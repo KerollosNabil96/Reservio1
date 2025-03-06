@@ -19,6 +19,7 @@
           type="email"
           placeholder="Email Address"
           class="input-field"
+          disabled
         />
         <input
           v-model="profile.phone"
@@ -27,6 +28,9 @@
           class="input-field"
         />
         <button @click="updateProfile" class="btn">Update Profile</button>
+        <div v-if="profileMessage" class="mt-4 p-2 text-center" :class="profileMessageClass">
+          {{ profileMessage }}
+        </div>
       </div>
     </div>
 
@@ -53,6 +57,9 @@
           class="input-field"
         />
         <button @click="changePassword" class="btn">Change Password</button>
+        <div v-if="message" class="mt-4 p-2 text-center" :class="messageClass">
+          {{ message }}
+        </div>
       </div>
     </div>
 
@@ -87,12 +94,20 @@
           <span class="dark:text-gray-300">Product tips and news</span>
         </label>
         <button @click="savePreferences" class="btn">Save Preferences</button>
+        <div v-if="preferencesMessage" class="mt-4 p-2 text-center" :class="preferencesMessageClass">
+          {{ preferencesMessage }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { db, auth, ref, set, get } from '@/firebase';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';  
+import { update } from "firebase/database";
+
+
 export default {
   data() {
     return {
@@ -111,25 +126,152 @@ export default {
         digests: false,
         promotions: false,
       },
+      preferencesMessage: "",
+      preferencesMessageClass: "",
+      profileMessage: "",
+      profileMessageClass: "",
+      message: "",
+      messageClass: "",
     };
   },
   methods: {
-    updateProfile() {
-      console.log("Profile updated", this.profile);
-    },
-    changePassword() {
+    // دالة لتحديث المعلومات في قاعدة البيانات
+    async updateProfile() {
+  const user = auth.currentUser;
+
+  if (!user) {
+    this.profileMessage = "No user is logged in!";
+    this.profileMessageClass = "text-red-500";
+    return;
+  }
+
+  // جلب الاسم الحالي من Vuex (الاسم المحفوظ)
+  const currentName = this.$store.state.user?.name || "";
+  const newName = this.profile.fullName.trim() || currentName;
+
+  // جلب رقم الهاتف الحالي من Vuex أو من Firebase (في حال عدم تغييره)
+  const currentPhone = this.$store.state.user?.phone || "";
+  const newPhone = this.profile.phone.trim() || currentPhone;
+
+  // التحقق من رقم الهاتف فقط إذا تم إدخال قيمة جديدة
+  if (this.profile.phone.trim() && this.profile.phone.trim() !== currentPhone) {
+    const phoneRegex = /^(011|012|015)\d{8}$/;
+    if (!phoneRegex.test(this.profile.phone.trim())) {
+      this.profileMessage = "Phone number must be 11 digits and start with 011, 012, or 015!";
+      this.profileMessageClass = "text-red-500";
+      return;
+    }
+  }
+
+  try {
+    // تحديث البيانات في Firebase
+    await update(ref(db, 'users/' + user.uid), {
+      fullName: newName,
+      phone: newPhone, // سيتم الاحتفاظ بالقيمة القديمة إذا لم يتم إدخال جديد
+    });
+
+    // تحديث Vuex
+    this.$store.commit('updateUserName', newName);
+    this.$store.commit('updateUserPhone', newPhone);
+
+    this.profileMessage = "Profile updated successfully!";
+    this.profileMessageClass = "text-green-500";
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    this.profileMessage = "Error updating profile.";
+    this.profileMessageClass = "text-red-500";
+  }
+}
+
+
+
+,
+    async changePassword() {
       if (this.password.new !== this.password.confirm) {
-        alert("Passwords do not match!");
+        this.message = "Passwords do not match!";
+        this.messageClass = "text-red-500";  // خطأ
         return;
       }
-      console.log("Password changed", this.password);
+
+      try {
+        const user = auth.currentUser;
+
+        if (!user) {
+          this.message = 'No user is currently logged in!';
+          this.messageClass = "text-red-500";  // خطأ
+          return;
+        }
+
+        const credential = EmailAuthProvider.credential(user.email, this.password.current);
+
+        await reauthenticateWithCredential(user, credential);
+
+        await updatePassword(user, this.password.new);
+
+        this.message = "Password updated successfully!";
+        this.messageClass = "text-green-500";  // نجاح
+      } catch (error) {
+        console.error("Error:", error);
+        if (error.code === 'auth/wrong-password') {
+          this.message = 'Current password is incorrect!';
+          this.messageClass = "text-red-500";  // خطأ
+        } else {
+          this.message = `An error occurred: ${error.message}`;
+          this.messageClass = "text-red-500";  // خطأ
+        }
+      }
     },
-    savePreferences() {
-      console.log("Preferences saved", this.notifications);
+
+    async savePreferences() {
+      const user = auth.currentUser;
+
+      if (!user) {
+        this.preferencesMessage = "No user is logged in!";
+        this.preferencesMessageClass = "text-red-500";  
+        return;
+      }
+
+      try {
+        // تحديث تفضيلات الإشعارات في Firebase Realtime Database
+        await set(ref(db, 'users/' + user.uid + '/preferences'), {
+          email: this.notifications.email,
+          digests: this.notifications.digests,
+          promotions: this.notifications.promotions,
+        });
+
+        this.preferencesMessage = "Preferences saved successfully!";
+        this.preferencesMessageClass = "text-green-500";  // نجاح
+      } catch (error) {
+        console.error("Error saving preferences:", error);
+        this.preferencesMessage = "Error saving preferences.";
+        this.preferencesMessageClass = "text-red-500";  // خطأ
+      }
     },
+
+    // تحميل تفضيلات الإشعارات عند تحميل الصفحة
+    async loadPreferences() {
+      const user = auth.currentUser;
+
+      if (user) {
+        const preferencesRef = ref(db, 'users/' + user.uid + '/preferences');
+        const snapshot = await get(preferencesRef);
+
+        if (snapshot.exists()) {
+          const preferences = snapshot.val();
+          this.notifications.email = preferences.email || true;
+          this.notifications.digests = preferences.digests || false;
+          this.notifications.promotions = preferences.promotions || false;
+        }
+      }
+    }
   },
+
+  created() {
+    this.loadPreferences();  // تحميل التفضيلات عند إنشاء الكمبوننت
+  }
 };
 </script>
+
 
 <style scoped>
 .input-field {

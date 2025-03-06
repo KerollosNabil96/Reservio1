@@ -2,6 +2,11 @@ import { createStore } from "vuex";
 
 const store = createStore({
   state: {
+    userName: {
+      name: '', 
+      email: '',
+      phone: '',
+    },
     isDarkMode: true,
     showSignup: false,
     showSignin: false,
@@ -43,6 +48,16 @@ const store = createStore({
     setVenuePictures(state, venue) {
       state.selectedVenue = venue;
     },
+    updateUserName(state, fullName) {
+      if (state.user) {
+        state.user.name = fullName; 
+      }else {
+        state.user = { name: fullName, email: '', phone: '' }; 
+      }
+    },
+    updateUserProfile(state, userData) {
+      state.user = { ...state.user, ...userData };
+  }
   },
   actions: {
     async addReservation({ commit, state }, payload) {
