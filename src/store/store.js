@@ -29,6 +29,7 @@ const store = createStore({
     addReservation(state, payload) {
       state.reservations.push(payload);
     },
+
     setReservations(state, venues) {
       state.reservations = venues;
     },

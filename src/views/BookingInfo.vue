@@ -143,15 +143,50 @@ export default {
         day: "numeric",
       });
     },
-    bookNow() {
-      const bookingInfo = {
-        username: store.state.user.username,
-        venue: this.venue,
-        date: this.venue.selectedDate,
-        timeSlotId: this.selectedTime,
-      };
-      store.state.currentBookingInfo = bookingInfo;
-      this.$router.push("/bookingInfoPayment");
+    async bookNow() {
+      try {
+        store.dispatch("setLoadingState", true);
+
+        const bookingInfo = {
+          username: store.state.user.username,
+          userId: store.state.user.id, // Make sure user ID is included
+          venue: this.venue,
+          date: this.venue.selectedDate,
+          timeSlotId: this.selectedTime,
+          bookingDate: new Date().toISOString(),
+        };
+
+        // Store booking info in Vuex state
+        store.state.currentBookingInfo = bookingInfo;
+
+        // Store booking info in localStorage for retrieval after payment
+        localStorage.setItem("pendingBooking", JSON.stringify(bookingInfo));
+
+        // Create Stripe checkout session
+        const response = await fetch(
+          "http://localhost:3000/create-checkout-session",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              venue: this.venue,
+              timeSlotId: this.selectedTime,
+            }),
+          }
+        );
+
+        const { url } = await response.json();
+
+        // Redirect to Stripe Checkout
+        window.location.href = url;
+      } catch (error) {
+        console.error("Error creating checkout session:", error);
+        // Handle error (show error message to user)
+      } finally {
+        store.dispatch("setLoadingState", false);
+      }
     },
     cancelBooking() {
       this.$router.back();

@@ -2,11 +2,13 @@
 import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
 import TheFooter from "./components/layouts/TheFooter.vue";
+import LoadingOverlay from "./components/common/LoadingOverlay.vue";
 import { auth, onAuthStateChanged, db, ref, onValue } from "./firebase";
 export default {
   components: {
     TheNavbar,
     TheFooter,
+    LoadingOverlay,
   },
   computed: {
     dark() {
@@ -18,6 +20,9 @@ export default {
     showSignIn() {
       return store.state.showSignin;
     },
+    loading() {
+      return store.state.isLoading;
+    },
   },
   methods: {
     hideSignUp() {
@@ -28,6 +33,9 @@ export default {
     },
   },
   created() {
+    // Set loading state to true when app starts
+    store.dispatch("setLoadingState", true);
+
     // Set up Firebase auth state listener to persist user login
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -62,16 +70,17 @@ export default {
         const current = data[venue];
         venues.push(current);
       }
-      console.log(venues);
       store.state.reservations = venues;
+      // Set loading state to false after venues are loaded
+      store.dispatch("setLoadingState", false);
     });
-    console.log(store.state.reservations);
   },
 };
 </script>
 
 <template>
   <div class="dark:bg-gray-800" :class="{ dark: dark }">
+    <LoadingOverlay />
     <TheNavbar />
     <transition name="page" mode="out-in">
       <RouterView />
