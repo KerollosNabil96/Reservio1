@@ -18,12 +18,25 @@
 <script>
 import SearchBox from "@/components/homepage/SearchBox.vue";
 import VenueCardList from "../components/reservations/VenueCardList.vue";
+import store from "@/store/store";
 
 export default {
   name: "bookNow",
   components: {
     VenueCardList,
     SearchBox,
+  },
+  created() {
+    // Set search filters from query parameters if they exist
+    const { date, category, location } = this.$route.query;
+    if (date || category || location) {
+      store.commit("setSearchFilters", {
+        query: "",
+        date: date || null,
+        category: category || "",
+        location: location || "",
+      });
+    }
   },
 };
 </script>

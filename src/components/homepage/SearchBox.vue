@@ -152,7 +152,7 @@ export default {
       return date.toLocaleDateString();
     },
     validateAndSearch() {
-      // Check if all fields are filled
+      // For advanced search (date, category, location), we need all fields
       if (
         !this.selectedDate ||
         !this.selectedCategory ||
@@ -165,13 +165,24 @@ export default {
       // If all fields are valid, proceed with search
       this.search();
     },
-    search() {
-      console.log("Searching with:", {
+    async search() {
+      // Update the search store with all search parameters
+      store.commit("setSearchFilters", {
+        query: "",
         date: this.selectedDate,
-        category: this.selectedCategory,
+        category: this.selectedCategory === "All" ? "" : this.selectedCategory,
         location: this.selectedLocation,
       });
-      // Implement your search logic here
+
+      // Always navigate to the book now page with filters
+      await this.$router.push({
+        path: "/book-now",
+        query: {
+          date: this.selectedDate || undefined,
+          category: this.selectedCategory || undefined,
+          location: this.selectedLocation || undefined,
+        },
+      });
     },
   },
   computed: {

@@ -18,6 +18,12 @@ const store = createStore({
     selectedVenue: null,
     reservations: [],
     currentBookingInfo: null,
+    searchFilters: {
+      query: "",
+      date: null,
+      category: "",
+      location: "",
+    },
   },
   mutations: {
     addReservation(state, payload) {
@@ -71,6 +77,9 @@ const store = createStore({
         venue.ratingSum += rating;
         venue.averageRating = venue.ratingSum / venue.totalRatings;
       }
+    },
+    setSearchFilters(state, filters) {
+      state.searchFilters = { ...state.searchFilters, ...filters };
     },
   },
   actions: {
@@ -159,6 +168,64 @@ const store = createStore({
     getVenueRating: (state) => (venueId) => {
       const venue = state.reservations.find((v) => v.id === venueId);
       return venue ? venue.averageRating || 0 : 0;
+    },
+    getFilteredVenues(state) {
+      let filteredVenues = state.reservations;
+
+      // Filter by search query (search in name and description)
+      if (state.searchFilters.query) {
+        const searchQuery = state.searchFilters.query.toLowerCase();
+        filteredVenues = filteredVenues.filter(
+          (venue) =>
+            venue.venueName.toLowerCase().includes(searchQuery) ||
+            (venue.shortDescription &&
+              venue.shortDescription.toLowerCase().includes(searchQuery)) ||
+            (venue.longDescription &&
+              venue.longDescription.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      // Filter by category
+      if (state.searchFilters.category) {
+        filteredVenues = filteredVenues.filter(
+          (venue) => venue.category === state.searchFilters.category
+        );
+      }
+
+      // Filter by location
+      if (state.searchFilters.location) {
+        filteredVenues = filteredVenues.filter(
+          (venue) =>
+            venue.address && venue.address.city === state.searchFilters.location
+        );
+      }
+
+      // Filter by date (This depends on how dates are stored in your venue objects)
+      if (state.searchFilters.date) {
+        const searchDate = new Date(state.searchFilters.date).setHours(
+          0,
+          0,
+          0,
+          0
+        );
+        filteredVenues = filteredVenues.filter((venue) => {
+          // If the venue has availableDates, check if the search date is included
+          if (venue.availableDates && Array.isArray(venue.availableDates)) {
+            return venue.availableDates.some(
+              (date) => new Date(date).setHours(0, 0, 0, 0) === searchDate
+            );
+          }
+          // If the venue has a selectedDate field
+          if (venue.selectedDate) {
+            return (
+              new Date(venue.selectedDate).setHours(0, 0, 0, 0) === searchDate
+            );
+          }
+          return true; // Include venues without date information
+        });
+      }
+
+      return filteredVenues;
     },
   },
 });
