@@ -381,7 +381,7 @@ export default {
         //   "https://reservio-77386-default-rtdb.europe-west1.firebasedatabase.app/users.json",
         //   userProfile
         // );
-        const reference = ref(db, "users/" + this.username);
+        const reference = ref(db, "users/" + userProfile.id);
         set(reference, userProfile);
 
         // Update store with user info
@@ -440,7 +440,7 @@ export default {
         };
 
         // Save to database
-        const reference = ref(db, "users/" + username);
+        const reference = ref(db, "users/" + userProfile.id);
         set(reference, userProfile);
 
         // Update store with user info
