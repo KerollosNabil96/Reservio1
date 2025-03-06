@@ -15,20 +15,17 @@
           class="input-field"
         />
         <input
-          v-model="profile.email"
-          type="email"
-          placeholder="Email Address"
-          class="input-field"
-          disabled
-        />
-        <input
           v-model="profile.phone"
           type="text"
           placeholder="Phone Number"
           class="input-field"
         />
         <button @click="updateProfile" class="btn">Update Profile</button>
-        <div v-if="profileMessage" class="mt-4 p-2 text-center" :class="profileMessageClass">
+        <div
+          v-if="profileMessage"
+          class="mt-4 p-2 text-center"
+          :class="profileMessageClass"
+        >
           {{ profileMessage }}
         </div>
       </div>
@@ -94,7 +91,11 @@
           <span class="dark:text-gray-300">Product tips and news</span>
         </label>
         <button @click="savePreferences" class="btn">Save Preferences</button>
-        <div v-if="preferencesMessage" class="mt-4 p-2 text-center" :class="preferencesMessageClass">
+        <div
+          v-if="preferencesMessage"
+          class="mt-4 p-2 text-center"
+          :class="preferencesMessageClass"
+        >
           {{ preferencesMessage }}
         </div>
       </div>
@@ -103,10 +104,13 @@
 </template>
 
 <script>
-import { db, auth, ref, set, get } from '@/firebase';
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';  
+import { db, auth, ref, set, get } from "@/firebase";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 import { update } from "firebase/database";
-
 
 export default {
   data() {
@@ -137,59 +141,60 @@ export default {
   methods: {
     // دالة لتحديث المعلومات في قاعدة البيانات
     async updateProfile() {
-  const user = auth.currentUser;
+      const user = auth.currentUser;
 
-  if (!user) {
-    this.profileMessage = "No user is logged in!";
-    this.profileMessageClass = "text-red-500";
-    return;
-  }
+      if (!user) {
+        this.profileMessage = "No user is logged in!";
+        this.profileMessageClass = "text-red-500";
+        return;
+      }
 
-  // جلب الاسم الحالي من Vuex (الاسم المحفوظ)
-  const currentName = this.$store.state.user?.name || "";
-  const newName = this.profile.fullName.trim() || currentName;
+      // جلب الاسم الحالي من Vuex (الاسم المحفوظ)
+      const currentName = this.$store.state.user?.name || "";
+      const newName = this.profile.fullName.trim() || currentName;
 
-  // جلب رقم الهاتف الحالي من Vuex أو من Firebase (في حال عدم تغييره)
-  const currentPhone = this.$store.state.user?.phone || "";
-  const newPhone = this.profile.phone.trim() || currentPhone;
+      // جلب رقم الهاتف الحالي من Vuex أو من Firebase (في حال عدم تغييره)
+      const currentPhone = this.$store.state.user?.phone || "";
+      const newPhone = this.profile.phone.trim() || currentPhone;
 
-  // التحقق من رقم الهاتف فقط إذا تم إدخال قيمة جديدة
-  if (this.profile.phone.trim() && this.profile.phone.trim() !== currentPhone) {
-    const phoneRegex = /^(011|012|015)\d{8}$/;
-    if (!phoneRegex.test(this.profile.phone.trim())) {
-      this.profileMessage = "Phone number must be 11 digits and start with 011, 012, or 015!";
-      this.profileMessageClass = "text-red-500";
-      return;
-    }
-  }
+      // التحقق من رقم الهاتف فقط إذا تم إدخال قيمة جديدة
+      if (
+        this.profile.phone.trim() &&
+        this.profile.phone.trim() !== currentPhone
+      ) {
+        const phoneRegex = /^(011|012|015)\d{8}$/;
+        if (!phoneRegex.test(this.profile.phone.trim())) {
+          this.profileMessage =
+            "Phone number must be 11 digits and start with 011, 012, or 015!";
+          this.profileMessageClass = "text-red-500";
+          return;
+        }
+      }
 
-  try {
-    // تحديث البيانات في Firebase
-    await update(ref(db, 'users/' + user.uid), {
-      fullName: newName,
-      phone: newPhone, // سيتم الاحتفاظ بالقيمة القديمة إذا لم يتم إدخال جديد
-    });
+      try {
+        // تحديث البيانات في Firebase
+        await update(ref(db, "users/" + user.uid), {
+          fullName: newName,
+          phone: newPhone, // سيتم الاحتفاظ بالقيمة القديمة إذا لم يتم إدخال جديد
+        });
 
-    // تحديث Vuex
-    this.$store.commit('updateUserName', newName);
-    this.$store.commit('updateUserPhone', newPhone);
+        // تحديث Vuex
+        this.$store.commit("updateUserName", newName);
+        this.$store.commit("updateUserPhone", newPhone);
 
-    this.profileMessage = "Profile updated successfully!";
-    this.profileMessageClass = "text-green-500";
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    this.profileMessage = "Error updating profile.";
-    this.profileMessageClass = "text-red-500";
-  }
-}
+        this.profileMessage = "Profile updated successfully!";
+        this.profileMessageClass = "text-green-500";
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        this.profileMessage = "Error updating profile.";
+        this.profileMessageClass = "text-red-500";
+      }
+    },
 
-
-
-,
     async changePassword() {
       if (this.password.new !== this.password.confirm) {
         this.message = "Passwords do not match!";
-        this.messageClass = "text-red-500";  // خطأ
+        this.messageClass = "text-red-500"; // خطأ
         return;
       }
 
@@ -197,27 +202,30 @@ export default {
         const user = auth.currentUser;
 
         if (!user) {
-          this.message = 'No user is currently logged in!';
-          this.messageClass = "text-red-500";  // خطأ
+          this.message = "No user is currently logged in!";
+          this.messageClass = "text-red-500"; // خطأ
           return;
         }
 
-        const credential = EmailAuthProvider.credential(user.email, this.password.current);
+        const credential = EmailAuthProvider.credential(
+          user.email,
+          this.password.current
+        );
 
         await reauthenticateWithCredential(user, credential);
 
         await updatePassword(user, this.password.new);
 
         this.message = "Password updated successfully!";
-        this.messageClass = "text-green-500";  // نجاح
+        this.messageClass = "text-green-500"; // نجاح
       } catch (error) {
         console.error("Error:", error);
-        if (error.code === 'auth/wrong-password') {
-          this.message = 'Current password is incorrect!';
-          this.messageClass = "text-red-500";  // خطأ
+        if (error.code === "auth/wrong-password") {
+          this.message = "Current password is incorrect!";
+          this.messageClass = "text-red-500"; // خطأ
         } else {
           this.message = `An error occurred: ${error.message}`;
-          this.messageClass = "text-red-500";  // خطأ
+          this.messageClass = "text-red-500"; // خطأ
         }
       }
     },
@@ -227,24 +235,24 @@ export default {
 
       if (!user) {
         this.preferencesMessage = "No user is logged in!";
-        this.preferencesMessageClass = "text-red-500";  
+        this.preferencesMessageClass = "text-red-500";
         return;
       }
 
       try {
         // تحديث تفضيلات الإشعارات في Firebase Realtime Database
-        await set(ref(db, 'users/' + user.uid + '/preferences'), {
+        await set(ref(db, "users/" + user.uid + "/preferences"), {
           email: this.notifications.email,
           digests: this.notifications.digests,
           promotions: this.notifications.promotions,
         });
 
         this.preferencesMessage = "Preferences saved successfully!";
-        this.preferencesMessageClass = "text-green-500";  // نجاح
+        this.preferencesMessageClass = "text-green-500"; // نجاح
       } catch (error) {
         console.error("Error saving preferences:", error);
         this.preferencesMessage = "Error saving preferences.";
-        this.preferencesMessageClass = "text-red-500";  // خطأ
+        this.preferencesMessageClass = "text-red-500"; // خطأ
       }
     },
 
@@ -253,7 +261,7 @@ export default {
       const user = auth.currentUser;
 
       if (user) {
-        const preferencesRef = ref(db, 'users/' + user.uid + '/preferences');
+        const preferencesRef = ref(db, "users/" + user.uid + "/preferences");
         const snapshot = await get(preferencesRef);
 
         if (snapshot.exists()) {
@@ -263,15 +271,14 @@ export default {
           this.notifications.promotions = preferences.promotions || false;
         }
       }
-    }
+    },
   },
 
   created() {
-    this.loadPreferences();  // تحميل التفضيلات عند إنشاء الكمبوننت
-  }
+    this.loadPreferences(); // تحميل التفضيلات عند إنشاء الكمبوننت
+  },
 };
 </script>
-
 
 <style scoped>
 .input-field {
