@@ -2,13 +2,11 @@
 import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
 import TheFooter from "./components/layouts/TheFooter.vue";
-import LoadingOverlay from "./components/common/LoadingOverlay.vue";
 import { auth, onAuthStateChanged, db, ref, onValue } from "./firebase";
 export default {
   components: {
     TheNavbar,
     TheFooter,
-    LoadingOverlay,
   },
   computed: {
     dark() {
@@ -79,12 +77,16 @@ export default {
 </script>
 
 <template>
-  <div class="dark:bg-gray-800" :class="{ dark: dark }">
-    <LoadingOverlay />
+  <div
+    class="dark:bg-gray-800 min-h-screen flex flex-col"
+    :class="{ dark: dark }"
+  >
     <TheNavbar />
-    <transition name="page" mode="out-in">
-      <RouterView />
-    </transition>
+    <main class="flex-grow flex flex-col">
+      <transition name="fade" mode="out-in">
+        <RouterView />
+      </transition>
+    </main>
     <TheFooter />
   </div>
 </template>
@@ -125,18 +127,58 @@ html.dark label {
 }
 
 /* Page transitions */
-.page-enter-active,
-.page-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.page-enter-from {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
 }
 
-.page-leave-to {
+/* For components that zoom in/out */
+.zoom-enter-active,
+.zoom-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.zoom-enter-from,
+.zoom-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: scale(0.98);
+}
+
+/* For sliding transitions */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.slide-left-leave-to,
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+/* For dialog/modal animations */
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>

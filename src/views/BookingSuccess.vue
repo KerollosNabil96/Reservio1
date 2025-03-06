@@ -55,8 +55,7 @@
       </div>
 
       <p class="text-gray-600 dark:text-gray-300 mb-6">
-        Thank you for your booking. Venue availability has been updated, and
-        we've sent you an email with all the details.
+        Thank you for booking with Reservio!
       </p>
       <button
         @click="goHome"

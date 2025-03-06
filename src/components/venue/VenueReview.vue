@@ -2,9 +2,9 @@
   <div class="mt-8 p-4 bg-white rounded-lg shadow dark:bg-gray-800">
     <!-- Average Rating Display -->
     <div
-      class="flex items-center justify-between mb-6 border-b pb-4 dark:border-gray-700"
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b pb-4 dark:border-gray-700"
     >
-      <div>
+      <div class="mb-4 sm:mb-0">
         <h3 class="text-xl font-semibold mb-2 dark:text-white">Reviews</h3>
         <div class="flex items-center">
           <div class="text-yellow-400 text-2xl mr-2">
@@ -19,7 +19,7 @@
           </span>
         </div>
       </div>
-      <div class="text-right">
+      <div class="w-full sm:w-auto sm:text-right">
         <div class="text-sm text-gray-500 dark:text-gray-400">
           Rating Breakdown
         </div>
@@ -33,13 +33,15 @@
               rating
             }}</span>
             <span class="text-yellow-400 ml-1">★</span>
-            <div class="w-24 h-2 bg-gray-200 rounded-full mx-2">
+            <div
+              class="w-full sm:w-24 h-2 bg-gray-200 rounded-full mx-2 flex-grow"
+            >
               <div
                 class="h-full bg-yellow-400 rounded-full"
                 :style="{ width: calculateRatingPercentage(rating) + '%' }"
               ></div>
             </div>
-            <span class="text-gray-500 dark:text-gray-400 w-8">{{
+            <span class="text-gray-500 dark:text-gray-400 w-8 text-right">{{
               getRatingCount(rating)
             }}</span>
           </div>
@@ -59,7 +61,7 @@
             v-for="star in 5"
             :key="star"
             @click="rating = star"
-            class="text-2xl focus:outline-none"
+            class="text-3xl focus:outline-none touch-manipulation"
             :class="star <= rating ? 'text-yellow-400' : 'text-gray-300'"
           >
             ★
@@ -80,8 +82,9 @@
       </div>
       <button
         @click="submitReview"
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
         :disabled="!rating || !reviewText"
+        :class="{ 'opacity-50 cursor-not-allowed': !rating || !reviewText }"
       >
         Submit Review
       </button>
@@ -112,7 +115,7 @@
     <div class="space-y-4">
       <div
         v-if="venueReviews.length === 0"
-        class="text-gray-500 dark:text-gray-400"
+        class="text-gray-500 dark:text-gray-400 text-center py-6"
       >
         No reviews yet. Be the first to review!
       </div>
@@ -121,8 +124,10 @@
         :key="review.id"
         class="border-b last:border-b-0 pb-4 dark:border-gray-700"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex items-center mb-1 sm:mb-0">
             <span class="font-medium dark:text-white">{{
               review.userName
             }}</span>

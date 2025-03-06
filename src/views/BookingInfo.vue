@@ -21,7 +21,7 @@
         3
       </div>
     </div>
-    <h2 class="text-2xl font-bold text-center text-blue-900">
+    <h2 class="text-2xl font-bold text-center text-blue-900 dark:text-blue-400">
       Booking Information
     </h2>
     <p class="text-center text-gray-500 mb-6 dark:text-gray-200">
@@ -94,33 +94,35 @@
       </div>
     </div>
     <div class="mt-6 flex justify-center gap-4">
-      <button
+      <BaseButton
         @click="bookNow"
-        :class="{
-          'bg-gray-400 hover:bg-gray-400 cursor-not-allowed': !selectedTime,
-        }"
+        :loading="isSubmitting"
         :disabled="!selectedTime"
-        class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium shadow-lg transition-all w-full text-center"
+        variant="primary"
+        size="lg"
+        class="w-full"
       >
         Book Now
-      </button>
-      <button
-        @click="cancelBooking"
-        class="bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium shadow-lg transition-all"
-      >
+      </BaseButton>
+      <BaseButton @click="cancelBooking" variant="light" size="lg">
         Cancel
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
 
 <script>
 import store from "@/store/store";
+import BaseButton from "@/components/common/BaseButton.vue";
 
 export default {
+  components: {
+    BaseButton,
+  },
   data() {
     return {
       selectedTime: "",
+      isSubmitting: false,
     };
   },
   computed: {
@@ -145,11 +147,12 @@ export default {
     },
     async bookNow() {
       try {
+        this.isSubmitting = true;
         store.dispatch("setLoadingState", true);
 
         const bookingInfo = {
           username: store.state.user.username,
-          userId: store.state.user.id, // Make sure user ID is included
+          userId: store.state.user.id,
           venue: this.venue,
           date: this.venue.selectedDate,
           timeSlotId: this.selectedTime,
@@ -185,6 +188,7 @@ export default {
         console.error("Error creating checkout session:", error);
         // Handle error (show error message to user)
       } finally {
+        this.isSubmitting = false;
         store.dispatch("setLoadingState", false);
       }
     },

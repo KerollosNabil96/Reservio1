@@ -41,20 +41,21 @@
         </li>
         <li>
           <RouterLink
-            to="/register-venue"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
-            >Share Venue</RouterLink
-          >
-        </li>
-        <li>
-          <RouterLink
             to="/book-now"
             class="hover:text-blue-600"
             :class="{ 'text-blue-600': $route.path.includes('/book-now') }"
             >Book Now</RouterLink
           >
         </li>
+        <li>
+          <RouterLink
+            to="/register-venue"
+            class="hover:text-blue-600"
+            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
+            >Share Venue</RouterLink
+          >
+        </li>
+
         <li>
           <RouterLink
             to="/about"
