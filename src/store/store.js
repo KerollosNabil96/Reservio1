@@ -3,9 +3,9 @@ import { createStore } from "vuex";
 const store = createStore({
   state: {
     user: {
-      name: '', 
-      email: '',
-      phone: '',
+      name: "",
+      email: "",
+      phone: "",
     },
     isDarkMode: true,
     showSignup: false,
@@ -50,17 +50,28 @@ const store = createStore({
     },
     updateUserName(state, fullName) {
       if (state.user) {
-        state.user.name = fullName; 
-      }else {
-        state.user = { name: fullName, email: '', phone: '' }; 
+        state.user.name = fullName;
+      } else {
+        state.user = { name: fullName, email: "", phone: "" };
       }
     },
     updateUserProfile(state, userData) {
       state.user = { ...state.user, ...userData };
-  },
-  updateUserPhone(state, newPhone) {
-    state.user.phone = newPhone;
-  }
+    },
+    updateUserPhone(state, newPhone) {
+      state.user.phone = newPhone;
+    },
+    updateVenueRating(state, { venueId, rating }) {
+      const venue = state.reservations.find((v) => v.id === venueId);
+      if (venue) {
+        if (!venue.totalRatings) venue.totalRatings = 0;
+        if (!venue.ratingSum) venue.ratingSum = 0;
+
+        venue.totalRatings++;
+        venue.ratingSum += rating;
+        venue.averageRating = venue.ratingSum / venue.totalRatings;
+      }
+    },
   },
   actions: {
     async addReservation({ commit, state }, payload) {
@@ -124,6 +135,13 @@ const store = createStore({
     setLoadingState({ commit }, isLoading) {
       commit("setLoading", isLoading);
     },
+    async updateVenueRating({ commit }, { venueId, rating }) {
+      try {
+        commit("updateVenueRating", { venueId, rating });
+      } catch (error) {
+        console.error("Error updating venue rating:", error);
+      }
+    },
   },
   getters: {
     getReservations(state) {
@@ -138,6 +156,10 @@ const store = createStore({
       return state.selectedVenue;
     },
     isAuthenticated: (state) => state.isAuthenticated,
+    getVenueRating: (state) => (venueId) => {
+      const venue = state.reservations.find((v) => v.id === venueId);
+      return venue ? venue.averageRating || 0 : 0;
+    },
   },
 });
 

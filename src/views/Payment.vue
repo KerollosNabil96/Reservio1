@@ -178,10 +178,7 @@ export default {
         //   db,
         //   `users/${store.state.user.username}/venues/${store.state.myFormData.venueName}`
         // );
-        const requestsRef = ref(
-          db,
-          "requests/" + store.state.myFormData.venueName
-        );
+        const requestsRef = ref(db, "requests/" + store.state.myFormData.id);
         // set(reference, store.state.myFormData);
         set(requestsRef, store.state.myFormData);
         this.loading = false;

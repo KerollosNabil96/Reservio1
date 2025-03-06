@@ -201,16 +201,12 @@
       </div>
 
       <!-- Reviews Section -->
-      <h2 class="text-lg font-semibold mb-4 dark:text-white mt-5">
-        Hear from Our Visitors
-      </h2>
-      <h2
-        v-if="!currentVenue.reviews"
-        class="text-center mt-5 text-xl text-blue-600 bg-gray-200 dark:bg-gray-800 p-3 rounded-md font-bold"
-      >
-        This venue does not have any reviews yet.
-      </h2>
-      <VenueReviews v-else :current-venue="currentVenue" />
+      <div class="mt-8">
+        <VenueReview
+          :venue-id="currentVenue.id"
+          @show-signin="showSigninForm = true"
+        />
+      </div>
 
       <!-- Image Modal -->
       <div
@@ -289,29 +285,28 @@
     </div>
   </div>
   <Signin
-  :show="showSigninForm"
-  @close="showSigninForm = false"
-  @switch-to-signup="
-    showSigninForm = false;
-    showSignupForm = true;
-  "
-/>
-<Signup
-  :show="showSignupForm"
-  @close="showSignupForm = false"
-  @switch-to-signin="
-    showSignupForm = false;
-    showSigninForm = true;
-  "
-/>
-
+    :show="showSigninForm"
+    @close="showSigninForm = false"
+    @switch-to-signup="
+      showSigninForm = false;
+      showSignupForm = true;
+    "
+  />
+  <Signup
+    :show="showSignupForm"
+    @close="showSignupForm = false"
+    @switch-to-signin="
+      showSignupForm = false;
+      showSigninForm = true;
+    "
+  />
 </template>
 
 <script>
 import AboutVenue from "@/components/VenueDetails/AboutVenue.vue";
-import VenueReviews from "@/components/VenueDetails/VenueReviews.vue";
-import Signin from "@/components/registration/Signin.vue"; 
-import Signup from "@/components/registration/Signup.vue"; 
+import VenueReview from "@/components/venue/VenueReview.vue";
+import Signin from "@/components/registration/Signin.vue";
+import Signup from "@/components/registration/Signup.vue";
 
 export default {
   data() {
@@ -319,15 +314,15 @@ export default {
       showImageModal: false,
       selectedImage: null,
       currentImageIndex: 0,
-      showSigninForm: false, 
+      showSigninForm: false,
       showSignupForm: false,
     };
   },
   components: {
     AboutVenue,
-    VenueReviews, 
-    Signin ,
-    Signup
+    VenueReview,
+    Signin,
+    Signup,
   },
   computed: {
     currentVenue() {

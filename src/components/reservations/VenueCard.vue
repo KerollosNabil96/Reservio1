@@ -34,6 +34,21 @@
         {{ title }}
       </h3>
 
+      <div class="flex items-center mb-2">
+        <div class="text-yellow-400 flex">
+          <span v-for="i in 5" :key="i" class="text-lg">
+            {{ i <= Math.round(averageRating) ? "★" : "☆" }}
+          </span>
+        </div>
+        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
+          {{ averageRating ? averageRating.toFixed(1) : "No ratings" }}
+          <span v-if="totalReviews > 0" class="ml-1"
+            >({{ totalReviews }}
+            {{ totalReviews === 1 ? "review" : "reviews" }})</span
+          >
+        </span>
+      </div>
+
       <p class="text-sm text-gray-600 mb-4 dark:text-gray-300 line-clamp-2">
         {{ description }}
       </p>
@@ -75,9 +90,45 @@
 </template>
 
 <script>
+import { ref as vueRef, onMounted } from "vue";
+import { db, ref, onValue } from "@/firebase";
+
 export default {
   name: "ReservationCard",
-  props: ["source", "title", "description", "price", "id"],
+  props: {
+    source: String,
+    title: String,
+    description: String,
+    price: Number,
+    id: String,
+  },
+  data() {
+    return {
+      averageRating: 0,
+      totalReviews: 0,
+    };
+  },
+  mounted() {
+    // Fetch reviews and calculate average rating
+    if (this.id) {
+      const reviewsRef = ref(db, `venues/${this.id}/reviews`);
+      onValue(reviewsRef, (snapshot) => {
+        const reviews = snapshot.val();
+        if (reviews) {
+          const reviewsArray = Object.values(reviews);
+          this.totalReviews = reviewsArray.length;
+          const sum = reviewsArray.reduce(
+            (acc, review) => acc + review.rating,
+            0
+          );
+          this.averageRating = sum / this.totalReviews;
+        } else {
+          this.averageRating = 0;
+          this.totalReviews = 0;
+        }
+      });
+    }
+  },
 };
 </script>
 
