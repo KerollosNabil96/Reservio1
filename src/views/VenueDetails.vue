@@ -288,11 +288,30 @@
       </div>
     </div>
   </div>
+  <Signin
+  :show="showSigninForm"
+  @close="showSigninForm = false"
+  @switch-to-signup="
+    showSigninForm = false;
+    showSignupForm = true;
+  "
+/>
+<Signup
+  :show="showSignupForm"
+  @close="showSignupForm = false"
+  @switch-to-signin="
+    showSignupForm = false;
+    showSigninForm = true;
+  "
+/>
+
 </template>
 
 <script>
 import AboutVenue from "@/components/VenueDetails/AboutVenue.vue";
 import VenueReviews from "@/components/VenueDetails/VenueReviews.vue";
+import Signin from "@/components/registration/Signin.vue"; 
+import Signup from "@/components/registration/Signup.vue"; 
 
 export default {
   data() {
@@ -300,11 +319,15 @@ export default {
       showImageModal: false,
       selectedImage: null,
       currentImageIndex: 0,
+      showSigninForm: false, 
+      showSignupForm: false,
     };
   },
   components: {
     AboutVenue,
-    VenueReviews,
+    VenueReviews, 
+    Signin ,
+    Signup
   },
   computed: {
     currentVenue() {
@@ -340,8 +363,12 @@ export default {
       this.selectedImage = this.currentVenue.pictures[this.currentImageIndex];
     },
     goToBooking() {
-      this.$store.commit("setVenuePictures", this.currentVenue);
-      this.$router.push("/booking-info");
+      if (this.$store.state.isAuthenticated) {
+        this.$store.commit("setVenuePictures", this.currentVenue);
+        this.$router.push("/booking-info");
+      } else {
+        this.showSigninForm = true;
+      }
     },
   },
 };
