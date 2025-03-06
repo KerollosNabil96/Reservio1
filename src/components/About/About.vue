@@ -2,7 +2,7 @@
   <div class="About dark:bg-gray-900 bg-gray-0 overflow-x-hidden">
     <!-- Hero Section -->
     <div
-      class="hero-section bg-gradient-to-r from-blue-600 to-blue-400 py-24 md:py-32 text-white relative z-100"
+      class="hero-section bg-gradient-to-r from-blue-600 to-blue-400 py-24 md:py-32 text-white"
     >
       <div class="container mx-auto px-4">
         <h1
