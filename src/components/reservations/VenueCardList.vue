@@ -61,6 +61,7 @@
         :key="venue.id"
         :source="venue.pictures[0]"
         :title="venue.venueName"
+        :category="venue.category"
         :description="venue.shortDescription"
         :price="venue.price"
         :id="venue.id"

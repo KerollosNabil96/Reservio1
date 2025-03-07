@@ -46,7 +46,7 @@
               >{{ currentVenue.price }}EGP</span
             >
             <span class="text-gray-500 dark:text-gray-400 text-sm ml-2"
-              >/ Hour</span
+              >/ {{ perWhat }}</span
             >
           </div>
 
@@ -97,6 +97,13 @@ export default {
   methods: {
     goToBooking() {
       this.$emit("book-now");
+    },
+  },
+  computed: {
+    perWhat() {
+      const category = this.currentVenue.category;
+      if (category === "Stadium") return "Hour";
+      else return "Session";
     },
   },
 };
