@@ -201,6 +201,18 @@ export default {
             },
             { onlyOnce: true }
           );
+          const userBalanceRef = ref(
+            db,
+            `users/${this.bookingInfo.userId}/balance`
+          );
+          onValue(
+            userBalanceRef,
+            (snapshot) => {
+              const userBalance = snapshot.val();
+              set(userBalanceRef, userBalance + this.bookingInfo.price * 0.05);
+            },
+            { onlyOnce: true }
+          );
         } else if (store.state.user && store.state.user.id) {
           // If userId wasn't in the booking but we have a logged-in user
           const userBookingsRef = ref(
