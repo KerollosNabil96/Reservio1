@@ -47,6 +47,7 @@ const routes = [
     meta: { requiresAuth: true },
   },
   { path: "/payment", component: Payment, meta: { requiresAuth: true } },
+  { path: "/wallet", component: Wallet, meta: { requiresAuth: true } },
   {
     path: "/profile",
     component: DashboardView,

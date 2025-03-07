@@ -10,43 +10,58 @@
 
     <div class="main-content" :class="{ 'content-expanded': !isSidebarOpen }">
       <div class="header-section">
-        <h2>Hello, <span :style="{ color: 'rgb(18, 102, 212)'}">{{ username }}</span></h2>
+        <h2>
+          Hello,
+          <span :style="{ color: 'rgb(18, 102, 212)' }">{{ username }}</span>
+        </h2>
         <p class="subtitle">Have a nice day</p>
       </div>
 
-      <div class="search-section">
-        <div class="search-box">
-          <input type="search" v-model="searchQuery" placeholder="Search" />
-        </div>
-        <select class="filter-select" v-model="sortOption">
-          <option value="all">All</option>
-          <option value="nearest">Nearest Date</option>
-          <option value="farthest">Farthest Date</option>
-        </select>
-      </div>
-
-      <div class="dashboard">
-        <h1>Booking List</h1>
-
-        <div v-if="sortedBookings.length === 0" class="no-bookings">
-          <p>No Bookings To Display</p>
+      <div v-if="$route.path === '/profile/bookings'">
+        <div class="search-section">
+          <div class="search-box">
+            <input type="search" v-model="searchQuery" placeholder="Search" />
+          </div>
+          <select class="filter-select" v-model="sortOption">
+            <option value="all">All</option>
+            <option value="nearest">Nearest Date</option>
+            <option value="farthest">Farthest Date</option>
+          </select>
         </div>
 
-        <div v-else class="bookings-list">
-          <div v-for="booking in sortedBookings" :key="booking.id" class="booking-card">
-            <img
-              v-if="booking.venue.pictures && booking.venue.pictures.length > 0"
-              :src="booking.venue.pictures[0]"
-              alt="Booking Image"
-              class="booking-image"
-            />
-            <h3>{{ booking.venue.venueName }}</h3>
-            <p>Date: {{ formatDate(booking.date) }}</p>
-            <p>Address: {{ booking.venue.address.city }}, {{ booking.venue.address.governorate }}</p>
-            <p class="price">{{ booking.venue.price }} EGP/hour</p>
+        <div class="dashboard">
+          <h1>Booking List</h1>
+
+          <div v-if="sortedBookings.length === 0" class="no-bookings">
+            <p>No Bookings To Display</p>
+          </div>
+
+          <div v-else class="bookings-list">
+            <div
+              v-for="booking in sortedBookings"
+              :key="booking.id"
+              class="booking-card"
+            >
+              <img
+                v-if="
+                  booking.venue.pictures && booking.venue.pictures.length > 0
+                "
+                :src="booking.venue.pictures[0]"
+                alt="Booking Image"
+                class="booking-image"
+              />
+              <h3>{{ booking.venue.venueName }}</h3>
+              <p>Date: {{ formatDate(booking.date) }}</p>
+              <p>
+                Address: {{ booking.venue.address.city }},
+                {{ booking.venue.address.governorate }}
+              </p>
+              <p class="price">{{ booking.venue.price }} EGP/hour</p>
+            </div>
           </div>
         </div>
       </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -136,7 +151,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .dashboard-container {
   display: flex;
@@ -176,7 +190,6 @@ export default {
 .show-sidebar-btn:hover {
   background: #1565c0;
 }
-
 
 .header-section {
   margin-bottom: 2rem;
