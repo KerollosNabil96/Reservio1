@@ -68,6 +68,7 @@ const routes = [
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/bookigInfo", component: BookingInfo, meta: { requiresAuth: true } },
+  { path: "/pending", component: PaymentSuccess2, meta: { requiresAuth: true } },
   {
     path: "/bookingInfoPayment",
     component: BookingInfoPayment,
