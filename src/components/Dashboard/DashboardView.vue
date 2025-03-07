@@ -6,44 +6,41 @@
 
     <SideBar ref="sidebar" @sidebar-toggle="handleSidebarToggle" />
     <div class="main-content" :class="{ 'content-expanded': !isSidebarOpen }">
-      <!-- Header Section -->
       <div class="header-section">
-        <h2>Hello, {{username}}</h2>
+        <h2>Hello, <span :style="{ color: 'rgb(18, 102, 212)'}">{{ username }}</span></h2>
         <p class="subtitle">Have a nice day</p>
       </div>
 
-      <!-- Search Section -->
       <div class="search-section">
         <div class="search-box">
-          <input type="search" placeholder="Search" />
+          <input type="search" v-model="searchQuery" placeholder="Search" />
         </div>
-        <select class="filter-select">
+        <select class="filter-select" v-model="sortOption">
           <option value="all">All</option>
+          <option value="nearest">Nearest Date</option>
+          <option value="farthest">Farthest Date</option>
         </select>
       </div>
 
-      <!-- Booking List -->
-      <div class="booking-section">
-        <div class="booking-header">
-          <h3>Booking List</h3>
-          <span class="sort-by">Sort by</span>
+      <div class="dashboard">
+        <h1>Booking List</h1>
+
+        <div v-if="sortedBookings.length === 0" class="no-bookings">
+          <p>No Bookings To Display</p>
         </div>
 
-        <div class="booking-cards">
-          <div class="booking-card">
-            <img src="@/assets/stadium.jpg" alt="Stadium" class="card-image" />
-            <div class="card-content">
-              <div class="card-header">
-                <h4>Liverpool Sports Stadium</h4>
-                <button class="info-button">
-                  <i class="fas fa-info-circle"></i>
-                </button>
-              </div>
-              <p>20 Jan - 22 Jan</p>
-              <p>02 Days</p>
-              <p>Nasr City, Cairo</p>
-              <p class="price">Total Payment: 200 EGP</p>
-            </div>
+        <div v-else class="bookings-list">
+          <div v-for="booking in sortedBookings" :key="booking.id" class="booking-card">
+            <img
+              v-if="booking.venue.pictures && booking.venue.pictures.length > 0"
+              :src="booking.venue.pictures[0]"
+              alt="Booking Image"
+              class="booking-image"
+            />
+            <h3>{{ booking.venue.venueName }}</h3>
+            <p>Date: {{ formatDate(booking.date) }}</p>
+            <p>Address: {{ booking.venue.address.city }}, {{ booking.venue.address.governorate }}</p>
+            <p class="price">{{ booking.venue.price }} EGP/hour</p>
           </div>
         </div>
       </div>
@@ -52,8 +49,10 @@
 </template>
 
 <script>
+import { db } from "@/firebase";
+import { ref as firebaseRef, onValue } from "firebase/database";
 import SideBar from "../SideBar/SideBar.vue";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 export default {
   name: "DashboardView",
@@ -62,16 +61,64 @@ export default {
   },
   data() {
     return {
+      bookings: [],
+      searchQuery: "",
+      sortOption: "all",
       isSidebarOpen: true,
+      userId: null,
     };
   },
-
-  computed:{
+  computed: {
     username() {
-      return this.$store.state.user?.name || "Guest";
+      return this.$store?.state?.user?.name || "Guest";
+    },
+    filteredBookings() {
+      return this.bookings.filter((booking) => {
+        const searchLower = this.searchQuery.toLowerCase();
+        return (
+          booking.venue.venueName.toLowerCase().includes(searchLower) ||
+          booking.venue.address.city.toLowerCase().includes(searchLower) ||
+          booking.venue.address.governorate.toLowerCase().includes(searchLower)
+        );
+      });
+    },
+    sortedBookings() {
+      let sorted = [...this.filteredBookings];
+
+      if (this.sortOption === "nearest") {
+        sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else if (this.sortOption === "farthest") {
+        sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
+
+      return sorted;
     },
   },
   methods: {
+    formatDate(date) {
+      return new Date(date).toLocaleDateString();
+    },
+    setupBookingsListener() {
+      const auth = getAuth();
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          this.userId = user.uid;
+          const bookingsRef = firebaseRef(db, "bookings");
+          onValue(bookingsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              this.bookings = Object.keys(data)
+                .map((key) => ({ id: key, ...data[key] }))
+                .filter((booking) => booking.userId === this.userId);
+            } else {
+              this.bookings = [];
+            }
+          });
+        } else {
+          this.bookings = [];
+        }
+      });
+    },
     showSidebar() {
       this.isSidebarOpen = true;
       this.$refs.sidebar.isOpen = true;
@@ -80,8 +127,12 @@ export default {
       this.isSidebarOpen = isOpen;
     },
   },
+  mounted() {
+    this.setupBookingsListener();
+  },
 };
 </script>
+
 
 <style scoped>
 .dashboard-container {
@@ -122,6 +173,7 @@ export default {
 .show-sidebar-btn:hover {
   background: #1565c0;
 }
+
 .header-section {
   margin-bottom: 2rem;
 }
@@ -132,7 +184,8 @@ export default {
 
 .search-section {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -140,54 +193,102 @@ export default {
   padding: 0.5rem 1rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  width: 300px;
+  width: 100%;
 }
 
 .filter-select {
   padding: 0.5rem 1rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+  width: 100%;
 }
 
-.booking-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+.dashboard {
+  padding: 20px;
+}
+
+.bookings-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
 .booking-card {
-  max-width: 345px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  padding: 15px;
+  background-color: #f9f9f9;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-image {
+.booking-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.booking-image {
   width: 100%;
   height: 140px;
   object-fit: cover;
+  border-radius: 8px;
 }
 
-.card-content {
-  padding: 1rem;
+h1 {
+  color: green;
+  font-size: 25px;
+  font-weight: 500;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
 }
 
-.info-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666;
+h3 {
+  color: green;
+  margin: 0 0 10px 0;
 }
 
 .price {
-  color: #1976d2;
+  color: green;
   margin-top: 0.5rem;
+}
+
+.no-bookings {
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .search-section {
+    flex-direction: column;
+  }
+
+  .bookings-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .booking-card {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bookings-list {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box input,
+  .filter-select {
+    width: 100%;
+  }
 }
 </style>
