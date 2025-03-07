@@ -30,7 +30,10 @@
         </h2>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
           Your venue has been successfully registered. Our team will review your
-          submission. If approved, your venue will be added to the platform.
+          submission. If approved, your venue will be added to the platform. You
+          have also received
+          <span class="text-green-500 font-bold">{{ 200 * 0.05 }}</span> cash
+          back from our loyalty program!
         </p>
 
         <div class="border-t border-gray-200 pt-6 mt-6 dark:border-gray-700">

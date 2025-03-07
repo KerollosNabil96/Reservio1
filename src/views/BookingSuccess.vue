@@ -55,7 +55,11 @@
       </div>
 
       <p class="text-gray-600 dark:text-gray-300 mb-6">
-        Thank you for booking with Reservio!
+        You have received
+        <span class="text-green-500 font-bold"
+          >{{ bookingInfo.price * 0.05 }} EGP
+        </span>
+        cash back in your wallet. Thank you for booking with Reservio!
       </p>
       <button
         @click="goHome"
