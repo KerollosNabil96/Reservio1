@@ -6,17 +6,17 @@
     <nav class="nav-menu">
       <!-- Check if the route starts with /profile to activate Bookings -->
       <router-link
-        to="/profile"
+        to="/profile/bookings"
         class="nav-item"
-        :class="{ active: $route.path === '/profile' }"
+        :class="{ active: $route.path === '/profile/bookings' }"
       >
         <i class="fas fa-building"></i>
         <span>Bookings</span>
       </router-link>
       <router-link
-        to="/venues"
+        to="/profile/user-venues"
         class="nav-item"
-        :class="{ active: $route.path === '/venues' }"
+        :class="{ active: $route.path === '/profile/user-venues' }"
       >
         <i class="fas fa-building"></i>
         <span>Your venues</span>
