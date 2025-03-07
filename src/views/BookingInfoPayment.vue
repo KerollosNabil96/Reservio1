@@ -108,7 +108,13 @@
 </template>
 
 <script>
-import { getDatabase, ref, get, update, runTransaction  } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  get,
+  update,
+  runTransaction,
+} from "firebase/database";
 import store from "@/store/store";
 
 export default {
@@ -172,70 +178,68 @@ export default {
     },
 
     async processPayment() {
-  if (this.balanceAfterBooking < 0) {
-    this.paymentError = "Insufficient balance.";
-    return;
-  }
-
-  if (this.availableSlots <= 0) {
-    this.paymentError = "No available slots left.";
-    return;
-  }
-
-  if (this.loading) {
-    return;
-  }
-
-  this.loading = true;
-  this.paymentError = "";
-  this.paymentSuccess = false;
-
-  try {
-    const user = store.state.user;
-    if (!user) {
-      console.error("No user found!");
-      this.loading = false;
-      return;
-    }
-
-    const db = getDatabase();
-    const userRef = ref(db, `users/${user.id}`);
-
-    await update(userRef, { balance: this.balanceAfterBooking });
-
-    const venueId = this.venue.id;
-    const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
-
-    await runTransaction (timeSlotRef, (currentAvailableSlots) => {
-      console.log("Transaction executed. Current slots:", currentAvailableSlots);
-      if (currentAvailableSlots > 0) {
-        return currentAvailableSlots - 1;
-      } else {
-        this.paymentError = "No available slots left.";
-        return currentAvailableSlots; 
+      if (this.balanceAfterBooking < 0) {
+        this.paymentError = "Insufficient balance.";
+        return;
       }
-    });
 
-    const updatedSnapshot = await get(timeSlotRef);
-    if (updatedSnapshot.exists()) {
-      this.availableSlots = updatedSnapshot.val();
-      console.log("Updated slots:", this.availableSlots);
-    }
+      if (this.availableSlots <= 0) {
+        this.paymentError = "No available slots left.";
+        return;
+      }
 
-    this.paymentSuccess = true;
-    this.userBalance = this.balanceAfterBooking;
+      if (this.loading) {
+        return;
+      }
 
-    setTimeout(() => {
-      this.loading = false;
-      this.$router.push("/booking-success");
-    }, 2000);
-  } catch (error) {
-    console.error("Error processing payment:", error);
-    this.paymentError = "An error occurred while processing payment.";
-    this.loading = false;
-  }
-},
+      this.loading = true;
+      this.paymentError = "";
+      this.paymentSuccess = false;
 
+      try {
+        const user = store.state.user;
+        if (!user) {
+          console.error("No user found!");
+          this.loading = false;
+          return;
+        }
+
+        const db = getDatabase();
+        const userRef = ref(db, `users/${user.id}`);
+
+        await update(userRef, { balance: this.balanceAfterBooking });
+
+        const venueId = this.venue.id;
+        const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+
+        await runTransaction(timeSlotRef, (currentAvailableSlots) => {
+          console.log(
+            "Transaction executed. Current slots:",
+            currentAvailableSlots
+          );
+
+          return currentAvailableSlots;
+        });
+
+        const updatedSnapshot = await get(timeSlotRef);
+        if (updatedSnapshot.exists()) {
+          this.availableSlots = updatedSnapshot.val();
+          console.log("Updated slots:", this.availableSlots);
+        }
+
+        this.paymentSuccess = true;
+        this.userBalance = this.balanceAfterBooking;
+
+        setTimeout(() => {
+          this.loading = false;
+          this.$router.push("/booking-success");
+        }, 2000);
+      } catch (error) {
+        console.error("Error processing payment:", error);
+        this.paymentError = "An error occurred while processing payment.";
+        this.loading = false;
+      }
+    },
   },
 
   mounted() {
