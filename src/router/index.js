@@ -24,6 +24,8 @@ import BookingSuccess from "../views/BookingSuccess.vue";
 import BookingCancelled from "../views/BookingCancelled.vue";
 import DashboardView from '../components/Dashboard/DashboardView.vue'
 import Wallet from "@/components/Dashboard/Wallet.vue";
+import Bookings from "@/components/Dashboard/Bookings.vue";
+import UserVenues from "@/components/Dashboard/UserVenues.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -50,6 +52,14 @@ const routes = [
       {
         path: 'wallet',  
         component: Wallet,
+      },
+      {
+        path: 'bookings',  
+        component: Bookings,
+      },
+      {
+        path: 'user-venues',  
+        component: UserVenues,
       },
     ],
   },
