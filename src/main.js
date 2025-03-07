@@ -3,6 +3,7 @@ import "./assets/animations.css";
 
 import { createApp } from "vue";
 import App from "./App.vue";
+import clickOutside from "./directives/click-outside";
 import router from "./router";
 import store from "./store/store";
 import "./firebase";
@@ -15,4 +16,5 @@ app.use(router);
 app.use(store);
 
 app.component("BaseButton", BaseButton);
+app.directive("click-outside", clickOutside);
 app.mount("#app");
