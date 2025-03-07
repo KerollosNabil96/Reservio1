@@ -182,7 +182,7 @@ export default {
         // set(reference, store.state.myFormData);
         set(requestsRef, store.state.myFormData);
         this.loading = false;
-        this.$router.push(`/pending`);
+        this.$router.push(`/`);
       }, 2000);
     },
   },

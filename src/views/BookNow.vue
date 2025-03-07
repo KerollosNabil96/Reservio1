@@ -16,7 +16,7 @@
             type="text"
             v-model="searchQuery"
             placeholder="Search venues by name..."
-            class="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            class="w-full px-4 py-4 text-xl pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
             <svg

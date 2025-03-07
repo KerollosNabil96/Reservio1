@@ -141,21 +141,38 @@ export default {
         const formData = store.state.myFormData;
 
         // Create venue data object combining both forms
-        store.state.myFormData = {
+        const venueData = {
           ...formData,
           selectedDate: this.selectedDate,
           educationalLicense: this.educationalLicense,
           timeSlots: this.timeSlots,
           selectedDate: this.selectedDate,
         };
-        // Save venue data to Firestore
-        // const { id, error } = await store.dispatch('addReservation', venueData);
 
-        // Proceed to payment page
-        this.$router.push("/payment");
+        // Save to store and localStorage for later use
+        store.state.myFormData = venueData;
+        localStorage.setItem(
+          "pendingVenueRegistration",
+          JSON.stringify(venueData)
+        );
+
+        // Create Stripe checkout session
+        const response = await fetch(
+          "http://localhost:3000/create-checkout-session-register",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              venue: venueData,
+            }),
+          }
+        );
+
+        const { url } = await response.json();
+        window.location.href = url;
       } catch (error) {
         this.errorMessage =
-          error.message || "Failed to save venue data. Please try again.";
+          error.message || "Failed to process payment. Please try again.";
       } finally {
         this.isLoading = false;
       }

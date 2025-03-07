@@ -22,10 +22,12 @@ import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import BookingSuccess from "../views/BookingSuccess.vue";
 import BookingCancelled from "../views/BookingCancelled.vue";
-import DashboardView from '../components/Dashboard/DashboardView.vue'
+import DashboardView from "../components/Dashboard/DashboardView.vue";
 import Wallet from "@/components/Dashboard/Wallet.vue";
 import Bookings from "@/components/Dashboard/Bookings.vue";
 import UserVenues from "@/components/Dashboard/UserVenues.vue";
+import RegistrationSuccess from "@/views/RegistrationSuccess.vue";
+import RegistrationCancelled from "@/views/RegistrationCancelled.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -45,20 +47,20 @@ const routes = [
   },
   { path: "/payment", component: Payment, meta: { requiresAuth: true } },
   {
-    path: '/profile',
-    component: DashboardView,  
+    path: "/profile",
+    component: DashboardView,
     meta: { requiresAuth: true },
     children: [
       {
-        path: 'wallet',  
+        path: "wallet",
         component: Wallet,
       },
       {
-        path: 'bookings',  
+        path: "bookings",
         component: Bookings,
       },
       {
-        path: 'user-venues',  
+        path: "user-venues",
         component: UserVenues,
       },
     ],
@@ -89,7 +91,11 @@ const routes = [
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/bookigInfo", component: BookingInfo, meta: { requiresAuth: true } },
-  { path: "/pending", component: PaymentSuccess2, meta: { requiresAuth: true } },
+  {
+    path: "/pending",
+    component: PaymentSuccess2,
+    meta: { requiresAuth: true },
+  },
   {
     path: "/bookingInfoPayment",
     component: BookingInfoPayment,
@@ -104,6 +110,16 @@ const routes = [
     path: "/booking-cancelled",
     name: "BookingCancelled",
     component: BookingCancelled,
+  },
+  {
+    path: "/registration-success",
+    name: "RegistrationSuccess",
+    component: RegistrationSuccess,
+  },
+  {
+    path: "/registration-cancelled",
+    name: "RegistrationCancelled",
+    component: RegistrationCancelled,
   },
   { path: "/:notFound(.*)", component: NotFound },
 ];

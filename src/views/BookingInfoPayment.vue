@@ -1,15 +1,37 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800">
-    <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900">
+  <div
+    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800"
+  >
+    <div
+      class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900"
+    >
       <div class="flex items-center justify-center mb-6">
-        <div class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full">✔</div>
+        <div
+          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
+        >
+          ✔
+        </div>
         <div class="w-16 h-1 bg-gray-300 mx-2"></div>
-        <div class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full">✔</div>
+        <div
+          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
+        >
+          ✔
+        </div>
         <div class="w-16 h-1 bg-gray-300 mx-2"></div>
-        <div class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full">3</div>
+        <div
+          class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full"
+        >
+          3
+        </div>
       </div>
-      <h2 class="text-xl font-bold text-center text-gray-800 dark:text-gray-100">Payment</h2>
-      <p class="text-gray-500 text-center mb-6 dark:text-gray-200">Kindly review your balance</p>
+      <h2
+        class="text-xl font-bold text-center text-gray-800 dark:text-gray-100"
+      >
+        Payment
+      </h2>
+      <p class="text-gray-500 text-center mb-6 dark:text-gray-200">
+        Kindly review your balance
+      </p>
 
       <div class="flex flex-col md:flex-row items-center gap-6">
         <div class="w-full md:w-1/2">
@@ -21,38 +43,59 @@
           <p class="mt-2 font-semibold dark:text-gray-100">
             Time Slot: <span class="font-normal">7:00 PM - 8:00 PM</span>
           </p>
-          <img :src="venue.pictures[0]" alt="Stadium" class="w-full h-32 object-cover rounded-lg mt-2" />
+          <img
+            :src="venue.pictures[0]"
+            alt="Stadium"
+            class="w-full h-32 object-cover rounded-lg mt-2"
+          />
         </div>
 
         <div class="w-full md:w-1/2 space-y-4">
           <p class="text-lg font-semibold dark:text-gray-100">
-            Your Balance: <span class="text-blue-600">{{ userBalance }} EGP</span>
+            Your Balance:
+            <span class="text-blue-600">{{ userBalance }} EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
-            Booking Price: <span class="text-red-500">{{ venue.price }} EGP</span>
+            Booking Price:
+            <span class="text-red-500">{{ venue.price }} EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
             Balance After Booking:
-            <span :class="balanceAfterBooking < 0 ? 'text-red-500' : 'text-green-500'">
+            <span
+              :class="
+                balanceAfterBooking < 0 ? 'text-red-500' : 'text-green-500'
+              "
+            >
               {{ balanceAfterBooking }} EGP
             </span>
           </p>
         </div>
       </div>
 
-      <p v-if="paymentError" class="text-red-500 text-center mt-2">{{ paymentError }}</p>
-      <p v-if="paymentSuccess" class="text-green-500 text-center mt-2">Payment Successful!</p>
+      <p v-if="paymentError" class="text-red-500 text-center mt-2">
+        {{ paymentError }}
+      </p>
+      <p v-if="paymentSuccess" class="text-green-500 text-center mt-2">
+        Payment Successful!
+      </p>
 
       <div class="mt-6 flex flex-col space-y-2">
         <button
           @click="processPayment"
           :disabled="balanceAfterBooking < 0 || loading"
           class="w-full py-2 rounded-lg font-bold"
-          :class="balanceAfterBooking < 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-600'"
+          :class="
+            balanceAfterBooking < 0
+              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+              : 'bg-blue-600'
+          "
         >
           {{ loading ? "Processing..." : "Pay Now" }}
         </button>
-        <button class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg" @click="cancelBooking">
+        <button
+          class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg"
+          @click="cancelBooking"
+        >
           Back
         </button>
       </div>
@@ -86,9 +129,9 @@ export default {
     cancelBooking() {
       this.$router.back();
     },
-    
+
     async fetchBalance() {
-      const user = store.state.user; 
+      const user = store.state.user;
       if (!user) {
         console.error("No user found!");
         return;
@@ -138,7 +181,7 @@ export default {
 
         setTimeout(() => {
           this.loading = false;
-          this.$router.push("/PaymentSuccess");
+          this.$router.push("/booking-success");
         }, 2000);
       } catch (error) {
         console.error("Error processing payment:", error);
@@ -147,7 +190,7 @@ export default {
       }
     },
   },
-  
+
   mounted() {
     this.fetchBalance();
   },

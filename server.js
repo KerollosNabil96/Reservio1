@@ -11,8 +11,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Create a payment session
-app.post("/create-checkout-session", async (req, res) => {
+// Create a payment session (for booking venues)
+app.post("/create-checkout-session-book", async (req, res) => {
   try {
     const { venue, timeSlotId } = req.body;
 
@@ -34,6 +34,47 @@ app.post("/create-checkout-session", async (req, res) => {
       mode: "payment",
       success_url: "http://localhost:5173/booking-success",
       cancel_url: "http://localhost:5173/booking-cancelled",
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create a payment session (for registering venues)
+app.post("/create-checkout-session-register", async (req, res) => {
+  try {
+    const { venue } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "egp",
+            product_data: {
+              name: venue.venueName,
+              description: `Registration fee for ${venue.category} - ${venue.venueName}`,
+              metadata: {
+                venueId: venue.id,
+                category: venue.category,
+                owner: venue.owner,
+              },
+            },
+            unit_amount: 200 * 100, // 200 EGP registration fee
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      metadata: {
+        venueId: venue.id,
+        category: venue.category,
+        owner: venue.owner,
+      },
+      success_url: "http://localhost:5173/registration-success",
+      cancel_url: "http://localhost:5173/registration-cancelled",
     });
 
     res.json({ url: session.url });
