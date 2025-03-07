@@ -154,6 +154,7 @@
             <transition name="fade">
               <div
                 v-if="isUserMenuOpen"
+                v-click-outside="closeUserMenu"
                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 dark:bg-gray-800"
               >
                 <RouterLink
@@ -501,6 +502,7 @@ import { getAuth, signOut } from "firebase/auth";
 export default {
   data() {
     return {
+      isUserMenuOpen: false,
       isMenuOpen: false,
       isUserMenuOpen: false,
       showSignupForm: false,
@@ -523,6 +525,9 @@ export default {
     Signin,
   },
   methods: {
+    closeUserMenu() {
+      this.isUserMenuOpen = false;
+    },
     toggleDarkMode() {
       store.state.isDarkMode = !store.state.isDarkMode;
     },
@@ -532,7 +537,8 @@ export default {
     closeMenu() {
       this.isMenuOpen = false;
     },
-    toggleUserMenu() {
+    toggleUserMenu(event) {
+      event.stopPropagation(); // Prevent the click event from bubbling up
       this.isUserMenuOpen = !this.isUserMenuOpen;
     },
     async handleLogout() {
