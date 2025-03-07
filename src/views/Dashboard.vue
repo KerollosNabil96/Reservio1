@@ -506,30 +506,82 @@
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Dynamic License Section -->
-          <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-            <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
-              {{ getLicenseName(selectedRequest.category) }}
-            </h5>
-            <div
-              class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-            >
-              <img
-                v-if="selectedRequest.licenseDocument"
-                :src="selectedRequest.licenseDocument"
-                :alt="getLicenseName(selectedRequest.category)"
-                class="w-full h-full object-cover cursor-pointer"
-                @click="openImageModal(selectedRequest.licenseDocument)"
-                @error="handleImageError"
-                loading="lazy"
-              />
+          <template v-if="selectedRequest.category === 'Medical'">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                Medical License
+              </h5>
               <div
-                v-else
-                class="flex items-center justify-center h-full text-gray-500"
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
-                <i class="fas fa-file-medical text-3xl"></i>
+                <img
+                  v-if="selectedRequest.licenses?.[0]"
+                  :src="selectedRequest.licenses[0]"
+                  alt="Medical License"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-file-medical text-3xl"></i>
+                </div>
               </div>
             </div>
-          </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mt-4">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                Clinic License
+              </h5>
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  v-if="selectedRequest.licenses?.[1]"
+                  :src="selectedRequest.licenses[1]"
+                  alt="Clinic License"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[1])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-clinic-medical text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                {{ getLicenseName(selectedRequest.category) }}
+              </h5>
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  v-if="selectedRequest.licenses?.[0]"
+                  :src="selectedRequest.licenses[0]"
+                  :alt="getLicenseName(selectedRequest.category)"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-file-alt text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </template>
           <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
             <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
               Government ID
@@ -860,16 +912,12 @@ export default {
       this.currentImage = this.imageList[this.currentImageIndex];
     },
     getLicenseName(category) {
-      switch (category) {
-        case "medical":
-          return "Clinic License";
-        case "educational":
-          return "Educational License";
-        case "stadium":
-          return "Stadium License";
-        default:
-          return "Business License";
-      }
+      const licenseMap = {
+        Medical: ["Medical License", "Clinic License"],
+        Educational: ["Educational Center License"],
+        Stadium: ["Stadium License"],
+      };
+      return licenseMap[category]?.[0] || "Business License";
     },
     handleImageError(event) {
       // Replace broken image with a placeholder
