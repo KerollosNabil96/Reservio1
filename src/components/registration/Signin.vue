@@ -292,7 +292,7 @@ export default {
             name: user.displayName || username,
             email: user.email,
             phone: user.phoneNumber || "",
-            balance: 500,
+            balance: 0,
             isAdmin: false,
             username: username,
             venues: {},
