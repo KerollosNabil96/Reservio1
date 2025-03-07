@@ -115,7 +115,6 @@ export default {
     return {
       profile: {
         fullName: "",
-        email: "",
         phone: "",
       },
       password: {
@@ -271,7 +270,7 @@ export default {
 
         if (snapshot.exists()) {
           const profileData = snapshot.val();
-          this.profile.fullName = profileData.fullName || "";
+          this.profile.fullName = profileData.name || "";
           this.profile.phone = profileData.phone || "";
         }
       }

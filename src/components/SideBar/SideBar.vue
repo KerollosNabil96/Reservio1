@@ -5,33 +5,37 @@
     </div>
     <nav class="nav-menu">
       <!-- Check if the route starts with /profile to activate Bookings -->
-      <router-link 
-        to="/profile" 
-        class="nav-item" 
-        :class="{ active: $route.path === '/profile' }">
+      <router-link
+        to="/profile"
+        class="nav-item"
+        :class="{ active: $route.path === '/profile' }"
+      >
         <i class="fas fa-building"></i>
         <span>Bookings</span>
       </router-link>
-      <router-link 
-        to="/venues" 
-        class="nav-item" 
-        :class="{ active: $route.path === '/venues' }">
+      <router-link
+        to="/venues"
+        class="nav-item"
+        :class="{ active: $route.path === '/venues' }"
+      >
         <i class="fas fa-building"></i>
         <span>Your venues</span>
       </router-link>
-      <router-link 
-        to="/profile/wallet" 
-        class="nav-item" 
-        :class="{ active: $route.path === '/profile/wallet' }">
+      <router-link
+        to="/profile/wallet"
+        class="nav-item"
+        :class="{ active: $route.path === '/profile/wallet' }"
+      >
         <i class="fas fa-wallet"></i>
         <span>Your wallet</span>
       </router-link>
-      <router-link 
-        to="/settings" 
-        class="nav-item" 
-        :class="{ active: $route.path === '/settings' }">
+      <router-link
+        to="/settings"
+        class="nav-item"
+        :class="{ active: $route.path === '/settings' }"
+      >
         <i class="fas fa-cog"></i>
-        <span>Setting</span>
+        <span>Settings</span>
       </router-link>
     </nav>
   </div>
@@ -39,19 +43,19 @@
 
 <script>
 export default {
-  name: 'SideBar',
+  name: "SideBar",
   data() {
     return {
-      isOpen: true
-    }
+      isOpen: true,
+    };
   },
   methods: {
     toggleSidebar() {
       this.isOpen = !this.isOpen;
-      this.$emit('sidebar-toggle', this.isOpen);
-    }
-  }
-}
+      this.$emit("sidebar-toggle", this.isOpen);
+    },
+  },
+};
 </script>
 
 <style scoped>
