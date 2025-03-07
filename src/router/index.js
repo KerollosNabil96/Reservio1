@@ -102,7 +102,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    // If the only difference is the tab query parameter, don't scroll
     if (
       from.path === to.path &&
       to.query.tab !== from.query.tab &&
@@ -111,7 +110,6 @@ const router = createRouter({
       return false;
     }
 
-    // Otherwise, use saved position or scroll to top
     return savedPosition || { top: 0, behavior: "smooth" };
   },
 });
