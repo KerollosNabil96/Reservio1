@@ -515,11 +515,11 @@
                 class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
                 <img
-                  v-if="selectedRequest.licenses?.[0]"
-                  :src="selectedRequest.licenses[0]"
+                  v-if="selectedRequest.medicalLicense"
+                  :src="selectedRequest.medicalLicense"
                   alt="Medical License"
                   class="w-full h-full object-cover cursor-pointer"
-                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @click="openImageModal(selectedRequest.medicalLicense)"
                   @error="handleImageError"
                   loading="lazy"
                 />
@@ -531,7 +531,7 @@
                 </div>
               </div>
             </div>
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mt-4">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
               <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
                 Clinic License
               </h5>
@@ -539,11 +539,11 @@
                 class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
                 <img
-                  v-if="selectedRequest.licenses?.[1]"
-                  :src="selectedRequest.licenses[1]"
+                  v-if="selectedRequest.clinicLicense"
+                  :src="selectedRequest.clinicLicense"
                   alt="Clinic License"
                   class="w-full h-full object-cover cursor-pointer"
-                  @click="openImageModal(selectedRequest.licenses[1])"
+                  @click="openImageModal(selectedRequest.clinicLicense)"
                   @error="handleImageError"
                   loading="lazy"
                 />
@@ -556,20 +556,21 @@
               </div>
             </div>
           </template>
-          <template v-else>
+
+          <template v-else-if="selectedRequest.category === 'Educational'">
             <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
               <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
-                {{ getLicenseName(selectedRequest.category) }}
+                Educational Center License
               </h5>
               <div
                 class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
                 <img
-                  v-if="selectedRequest.licenses?.[0]"
-                  :src="selectedRequest.licenses[0]"
-                  :alt="getLicenseName(selectedRequest.category)"
+                  v-if="selectedRequest.educationalLicense"
+                  :src="selectedRequest.educationalLicense"
+                  :alt="EducationalCenterLicense"
                   class="w-full h-full object-cover cursor-pointer"
-                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @click="openImageModal(selectedRequest.educationalLicense)"
                   @error="handleImageError"
                   loading="lazy"
                 />
@@ -582,6 +583,36 @@
               </div>
             </div>
           </template>
+
+          <template v-else-if="selectedRequest.category === 'Stadium'">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                Stadium License
+              </h5>
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  v-if="selectedRequest.sportOrganizationLicense"
+                  :src="selectedRequest.sportOrganizationLicense"
+                  :alt="EducationalCenterLicense"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="
+                    openImageModal(selectedRequest.sportOrganizationLicense)
+                  "
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-file-alt text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </template>
+
           <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
             <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
               Government ID
@@ -910,14 +941,6 @@ export default {
       this.currentImageIndex =
         (this.currentImageIndex + 1) % this.imageList.length;
       this.currentImage = this.imageList[this.currentImageIndex];
-    },
-    getLicenseName(category) {
-      const licenseMap = {
-        Medical: ["Medical License", "Clinic License"],
-        Educational: ["Educational Center License"],
-        Stadium: ["Stadium License"],
-      };
-      return licenseMap[category]?.[0] || "Business License";
     },
     handleImageError(event) {
       // Replace broken image with a placeholder
