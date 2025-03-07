@@ -155,6 +155,7 @@ export default {
           userId: store.state.user.id,
           venue: this.venue,
           date: this.venue.selectedDate,
+          price: this.venue.price,
           timeSlotId: this.selectedTime,
           bookingDate: new Date().toISOString(),
         };
