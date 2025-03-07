@@ -23,6 +23,7 @@ import Dashboard from "@/views/Dashboard.vue";
 import BookingSuccess from "../views/BookingSuccess.vue";
 import BookingCancelled from "../views/BookingCancelled.vue";
 import DashboardView from '../components/Dashboard/DashboardView.vue'
+import Wallet from "@/components/Dashboard/Wallet.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -41,7 +42,17 @@ const routes = [
     meta: { requiresAuth: true },
   },
   { path: "/payment", component: Payment, meta: { requiresAuth: true } },
-  { path: "/profile", component: DashboardView, meta: { requiresAuth: true } },
+  {
+    path: '/profile',
+    component: DashboardView,  
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'wallet',  
+        component: Wallet,
+      },
+    ],
+  },
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
   {
     path: "/booking-info",

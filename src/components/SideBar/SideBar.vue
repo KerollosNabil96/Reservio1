@@ -2,24 +2,34 @@
   <div class="sidebar" :class="{ 'sidebar-closed': !isOpen }">
     <div class="logo">
       <h2>Reservio</h2>
-      <!-- <button class="back-btn" @click="toggleSidebar">
-        <i class="fas fa-chevron-left"></i>
-      </button> -->
     </div>
     <nav class="nav-menu">
-      <router-link to="/bookings" class="nav-item active">
-        <i class="fas fa-calendar"></i>
+      <!-- Check if the route starts with /profile to activate Bookings -->
+      <router-link 
+        to="/profile" 
+        class="nav-item" 
+        :class="{ active: $route.path === '/profile' }">
+        <i class="fas fa-building"></i>
         <span>Bookings</span>
       </router-link>
-      <router-link to="/venues" class="nav-item">
+      <router-link 
+        to="/venues" 
+        class="nav-item" 
+        :class="{ active: $route.path === '/venues' }">
         <i class="fas fa-building"></i>
         <span>Your venues</span>
       </router-link>
-      <router-link to="/wallet" class="nav-item">
+      <router-link 
+        to="/profile/wallet" 
+        class="nav-item" 
+        :class="{ active: $route.path === '/profile/wallet' }">
         <i class="fas fa-wallet"></i>
         <span>Your wallet</span>
       </router-link>
-      <router-link to="/settings" class="nav-item">
+      <router-link 
+        to="/settings" 
+        class="nav-item" 
+        :class="{ active: $route.path === '/settings' }">
         <i class="fas fa-cog"></i>
         <span>Setting</span>
       </router-link>
@@ -105,5 +115,10 @@ export default {
 
 .nav-item:hover {
   background: #f5f5f5;
+}
+
+.nav-item.active {
+  background: #e3f2fd;
+  color: #1976d2;
 }
 </style>

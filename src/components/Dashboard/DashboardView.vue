@@ -1,59 +1,27 @@
 <template>
   <div class="dashboard-container">
+    <!-- زر لإظهار الـ Sidebar إذا كان مغلق -->
     <button v-if="!isSidebarOpen" class="show-sidebar-btn" @click="showSidebar">
       <i class="fas fa-bars"></i>
     </button>
 
+    <!-- Sidebar ثابت مع التبديل عبر Button -->
     <SideBar ref="sidebar" @sidebar-toggle="handleSidebarToggle" />
+
     <div class="main-content" :class="{ 'content-expanded': !isSidebarOpen }">
       <!-- Header Section -->
       <div class="header-section">
-        <h2>Hello, {{username}}</h2>
+        <h2 class="font-bold text-3xl dark:text-white">Hello, {{username}}</h2>
         <p class="subtitle">Have a nice day</p>
       </div>
 
-      <!-- Search Section -->
-      <div class="search-section">
-        <div class="search-box">
-          <input type="search" placeholder="Search" />
-        </div>
-        <select class="filter-select">
-          <option value="all">All</option>
-        </select>
-      </div>
-
-      <!-- Booking List -->
-      <div class="booking-section">
-        <div class="booking-header">
-          <h3>Booking List</h3>
-          <span class="sort-by">Sort by</span>
-        </div>
-
-        <div class="booking-cards">
-          <div class="booking-card">
-            <img src="@/assets/stadium.jpg" alt="Stadium" class="card-image" />
-            <div class="card-content">
-              <div class="card-header">
-                <h4>Liverpool Sports Stadium</h4>
-                <button class="info-button">
-                  <i class="fas fa-info-circle"></i>
-                </button>
-              </div>
-              <p>20 Jan - 22 Jan</p>
-              <p>02 Days</p>
-              <p>Nasr City, Cairo</p>
-              <p class="price">Total Payment: 200 EGP</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
 import SideBar from "../SideBar/SideBar.vue";
-import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: "DashboardView",
@@ -66,7 +34,7 @@ export default {
     };
   },
 
-  computed:{
+  computed: {
     username() {
       return this.$store.state.user?.name || "Guest";
     },
@@ -122,6 +90,7 @@ export default {
 .show-sidebar-btn:hover {
   background: #1565c0;
 }
+
 .header-section {
   margin-bottom: 2rem;
 }
@@ -147,47 +116,5 @@ export default {
   padding: 0.5rem 1rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-}
-
-.booking-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.booking-card {
-  max-width: 345px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.card-image {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-}
-
-.card-content {
-  padding: 1rem;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.info-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666;
-}
-
-.price {
-  color: #1976d2;
-  margin-top: 0.5rem;
 }
 </style>
