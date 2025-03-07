@@ -69,6 +69,10 @@
               {{ balanceAfterBooking }} EGP
             </span>
           </p>
+          <p class="text-lg font-semibold dark:text-gray-100">
+            Available Slots:
+            <span class="text-green-600">{{ availableSlots }}</span>
+          </p>
         </div>
       </div>
 
@@ -82,10 +86,10 @@
       <div class="mt-6 flex flex-col space-y-2">
         <button
           @click="processPayment"
-          :disabled="balanceAfterBooking < 0 || loading"
+          :disabled="balanceAfterBooking < 0 || loading || availableSlots <= 0"
           class="w-full py-2 rounded-lg font-bold"
           :class="
-            balanceAfterBooking < 0
+            balanceAfterBooking < 0 || availableSlots <= 0
               ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
               : 'bg-blue-600'
           "
@@ -104,14 +108,15 @@
 </template>
 
 <script>
-import { getDatabase, ref, get, update } from "firebase/database";
+import { getDatabase, ref, get, update, runTransaction  } from "firebase/database";
 import store from "@/store/store";
 
 export default {
   name: "Payment",
   data() {
     return {
-      userBalance: 0, // سيتم تحديثه من قاعدة البيانات
+      userBalance: 0,
+      availableSlots: 0,
       loading: false,
       paymentSuccess: false,
       paymentError: "",
@@ -152,47 +157,90 @@ export default {
       }
     },
 
-    async processPayment() {
-      if (this.balanceAfterBooking < 0) {
-        this.paymentError = "Insufficient balance.";
-        return;
-      }
+    // جلب عدد الأماكن المتاحة من Firebase
+    async fetchAvailableSlots() {
+      const venueId = this.venue.id;
+      const db = getDatabase();
+      const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+      const snapshot = await get(timeSlotRef);
 
-      this.loading = true;
-      this.paymentError = "";
-      this.paymentSuccess = false;
-
-      try {
-        const user = store.state.user;
-        if (!user) {
-          console.error("No user found!");
-          this.loading = false;
-          return;
-        }
-
-        const db = getDatabase();
-        const userRef = ref(db, `users/${user.id}`);
-
-        // تحديث الرصيد في Firebase
-        await update(userRef, { balance: this.balanceAfterBooking });
-
-        this.paymentSuccess = true;
-        this.userBalance = this.balanceAfterBooking;
-
-        setTimeout(() => {
-          this.loading = false;
-          this.$router.push("/booking-success");
-        }, 2000);
-      } catch (error) {
-        console.error("Error processing payment:", error);
-        this.paymentError = "An error occurred while processing payment.";
-        this.loading = false;
+      if (snapshot.exists()) {
+        this.availableSlots = snapshot.val();
+      } else {
+        console.log("No available slots found.");
       }
     },
+
+    async processPayment() {
+  if (this.balanceAfterBooking < 0) {
+    this.paymentError = "Insufficient balance.";
+    return;
+  }
+
+  if (this.availableSlots <= 0) {
+    this.paymentError = "No available slots left.";
+    return;
+  }
+
+  if (this.loading) {
+    return;
+  }
+
+  this.loading = true;
+  this.paymentError = "";
+  this.paymentSuccess = false;
+
+  try {
+    const user = store.state.user;
+    if (!user) {
+      console.error("No user found!");
+      this.loading = false;
+      return;
+    }
+
+    const db = getDatabase();
+    const userRef = ref(db, `users/${user.id}`);
+
+    await update(userRef, { balance: this.balanceAfterBooking });
+
+    const venueId = this.venue.id;
+    const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+
+    await runTransaction (timeSlotRef, (currentAvailableSlots) => {
+      console.log("Transaction executed. Current slots:", currentAvailableSlots);
+      if (currentAvailableSlots > 0) {
+        return currentAvailableSlots - 1;
+      } else {
+        this.paymentError = "No available slots left.";
+        return currentAvailableSlots; 
+      }
+    });
+
+    const updatedSnapshot = await get(timeSlotRef);
+    if (updatedSnapshot.exists()) {
+      this.availableSlots = updatedSnapshot.val();
+      console.log("Updated slots:", this.availableSlots);
+    }
+
+    this.paymentSuccess = true;
+    this.userBalance = this.balanceAfterBooking;
+
+    setTimeout(() => {
+      this.loading = false;
+      this.$router.push("/booking-success");
+    }, 2000);
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    this.paymentError = "An error occurred while processing payment.";
+    this.loading = false;
+  }
+},
+
   },
 
   mounted() {
     this.fetchBalance();
+    this.fetchAvailableSlots();
   },
 };
 </script>
