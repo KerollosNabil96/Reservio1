@@ -505,18 +505,20 @@
           Required Documents
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Dynamic License Section -->
           <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
             <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
-              Medical License
+              {{ getLicenseName(selectedRequest.category) }}
             </h5>
             <div
               class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
               <img
-                v-if="selectedRequest.medicalLicense"
-                :src="selectedRequest.medicalLicense"
-                alt="Medical License"
-                class="w-full h-full object-cover"
+                v-if="selectedRequest.licenseDocument"
+                :src="selectedRequest.licenseDocument"
+                :alt="getLicenseName(selectedRequest.category)"
+                class="w-full h-full object-cover cursor-pointer"
+                @click="openImageModal(selectedRequest.licenseDocument)"
                 @error="handleImageError"
                 loading="lazy"
               />
@@ -539,7 +541,8 @@
                 v-if="selectedRequest.govID"
                 :src="selectedRequest.govID"
                 alt="Government ID"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover cursor-pointer"
+                @click="openImageModal(selectedRequest.govID)"
                 @error="handleImageError"
                 loading="lazy"
               />
@@ -786,6 +789,18 @@ export default {
     };
   },
   methods: {
+    getLicenseName(category) {
+      switch (category) {
+        case "medical":
+          return "Clinic License";
+        case "educational":
+          return "Educational License";
+        case "stadium":
+          return "Stadium License";
+        default:
+          return "Business License";
+      }
+    },
     handleImageError(event) {
       // Replace broken image with a placeholder
       event.target.src =
