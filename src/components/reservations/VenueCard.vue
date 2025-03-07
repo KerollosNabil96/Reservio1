@@ -22,7 +22,7 @@
         <span
           class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm"
         >
-          {{ price }} EGP/hr
+          {{ price }} EGP/ {{ perWhat }}
         </span>
       </div>
     </div>
@@ -101,12 +101,19 @@ export default {
     description: String,
     price: Number,
     id: String,
+    category: String,
   },
   data() {
     return {
       averageRating: 0,
       totalReviews: 0,
     };
+  },
+  computed: {
+    perWhat() {
+      if (this.category === "Stadium") return "Hour";
+      else return "Session";
+    },
   },
   mounted() {
     // Fetch reviews and calculate average rating

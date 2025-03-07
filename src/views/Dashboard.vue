@@ -505,29 +505,83 @@
           Required Documents
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-            <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
-              Medical License
-            </h5>
-            <div
-              class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-            >
-              <img
-                v-if="selectedRequest.medicalLicense"
-                :src="selectedRequest.medicalLicense"
-                alt="Medical License"
-                class="w-full h-full object-cover"
-                @error="handleImageError"
-                loading="lazy"
-              />
+          <!-- Dynamic License Section -->
+          <template v-if="selectedRequest.category === 'Medical'">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                Medical License
+              </h5>
               <div
-                v-else
-                class="flex items-center justify-center h-full text-gray-500"
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
-                <i class="fas fa-file-medical text-3xl"></i>
+                <img
+                  v-if="selectedRequest.licenses?.[0]"
+                  :src="selectedRequest.licenses[0]"
+                  alt="Medical License"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-file-medical text-3xl"></i>
+                </div>
               </div>
             </div>
-          </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mt-4">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                Clinic License
+              </h5>
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  v-if="selectedRequest.licenses?.[1]"
+                  :src="selectedRequest.licenses[1]"
+                  alt="Clinic License"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[1])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-clinic-medical text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
+                {{ getLicenseName(selectedRequest.category) }}
+              </h5>
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  v-if="selectedRequest.licenses?.[0]"
+                  :src="selectedRequest.licenses[0]"
+                  :alt="getLicenseName(selectedRequest.category)"
+                  class="w-full h-full object-cover cursor-pointer"
+                  @click="openImageModal(selectedRequest.licenses[0])"
+                  @error="handleImageError"
+                  loading="lazy"
+                />
+                <div
+                  v-else
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <i class="fas fa-file-alt text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </template>
           <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
             <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">
               Government ID
@@ -539,7 +593,8 @@
                 v-if="selectedRequest.govID"
                 :src="selectedRequest.govID"
                 alt="Government ID"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover cursor-pointer"
+                @click="openImageModal(selectedRequest.govID)"
                 @error="handleImageError"
                 loading="lazy"
               />
@@ -572,6 +627,7 @@
                 :src="image"
                 :alt="`Venue Image ${index + 1}`"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                @click="openImageModal(image, selectedRequest.pictures)"
                 @error="handleImageError"
                 loading="lazy"
               />
@@ -597,6 +653,50 @@
       </div>
     </div>
   </div>
+  <!-- Image Preview Modal -->
+  <div
+    v-if="showImageModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showImageModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-4xl w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+          Image Preview
+        </h3>
+        <button
+          @click="showImageModal = false"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <div class="relative">
+        <img
+          :src="currentImage"
+          alt="Preview"
+          class="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+        />
+        <button
+          v-if="imageList.length > 1"
+          @click="prevImage"
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-full shadow-md hover:bg-white/70 dark:hover:bg-gray-800/70 transition-colors duration-200"
+        >
+          <i class="fas fa-chevron-left text-xl"></i>
+        </button>
+        <button
+          v-if="imageList.length > 1"
+          @click="nextImage"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-full shadow-md hover:bg-white/70 dark:hover:bg-gray-800/70 transition-colors duration-200"
+        >
+          <i class="fas fa-chevron-right text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -612,6 +712,14 @@ import {
 import { getAuth } from "firebase/auth";
 
 export default {
+  data() {
+    return {
+      showImageModal: false,
+      currentImage: "",
+      imageList: [],
+      currentImageIndex: 0,
+    };
+  },
   setup() {
     const sidebarOpen = ref(false);
     const showRoleModal = ref(false);
@@ -786,6 +894,31 @@ export default {
     };
   },
   methods: {
+    openImageModal(image, images = []) {
+      this.currentImage = image;
+      this.imageList = images.length ? images : [image];
+      this.currentImageIndex = this.imageList.indexOf(image);
+      this.showImageModal = true;
+    },
+    prevImage() {
+      this.currentImageIndex =
+        (this.currentImageIndex - 1 + this.imageList.length) %
+        this.imageList.length;
+      this.currentImage = this.imageList[this.currentImageIndex];
+    },
+    nextImage() {
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.imageList.length;
+      this.currentImage = this.imageList[this.currentImageIndex];
+    },
+    getLicenseName(category) {
+      const licenseMap = {
+        Medical: ["Medical License", "Clinic License"],
+        Educational: ["Educational Center License"],
+        Stadium: ["Stadium License"],
+      };
+      return licenseMap[category]?.[0] || "Business License";
+    },
     handleImageError(event) {
       // Replace broken image with a placeholder
       event.target.src =

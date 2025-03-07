@@ -60,9 +60,9 @@
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span class="ml-2 w-full dark:text-gray-200">
-              {{ formatDate(venue.selectedDate) }}
-            </span>
+            <span class="ml-2 w-full dark:text-gray-200">{{
+              formatDate(venue.selectedDate)
+            }}</span>
           </div>
         </div>
         <div class="mt-4">
@@ -84,18 +84,21 @@
             </option>
           </select>
         </div>
+
+        <!-- تمت إضافة سعر الحجز هنا ✅ -->
         <p class="mt-4 text-gray-700 dark:text-gray-200">
           You will pay
           <span class="text-blue-600 font-bold">{{ venue.price }} EGP</span> per
-          <span class="font-bold"
-            >1 {{ venue.category === "Stadium" ? "Hour" : "Session" }}</span
-          >
+          <span class="font-bold">
+            1 {{ venue.category === "Stadium" ? "Hour" : "Session" }}
+          </span>
         </p>
       </div>
     </div>
+
     <div class="mt-6 flex justify-center gap-4">
       <BaseButton
-        @click="bookNow"
+        @click="openPaymentPopup"
         :loading="isSubmitting"
         :disabled="!selectedTime"
         variant="primary"
@@ -104,9 +107,63 @@
       >
         Book Now
       </BaseButton>
-      <BaseButton @click="cancelBooking" variant="light" size="lg">
-        Cancel
-      </BaseButton>
+      <BaseButton @click="cancelBooking" variant="light" size="lg"
+        >Cancel</BaseButton
+      >
+    </div>
+  </div>
+
+  <!-- Payment Popup with dark overlay -->
+  <div
+    v-if="showPaymentPopup"
+    class="fixed inset-0 flex items-center justify-center"
+  >
+    <div
+      @click.self="closePopUp"
+      class="absolute inset-0 bg-black opacity-70 z-20"
+    ></div>
+    <div class="bg-white p-6 rounded-lg w-96 relative z-30">
+      <button
+        @click="closePaymentPopup"
+        class="absolute top-2 right-2 text-gray-500 hover:text-gray-900 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
+      <h3 class="text-lg font-bold text-center mb-4">Choose Payment Method</h3>
+      <div class="flex flex-col gap-4">
+        <BaseButton @click="payWithCreditCard" variant="primary" size="lg">
+          <div
+            v-if="isSubmitting"
+            class="flex items-center justify-center space-x-2"
+          >
+            <div
+              class="w-6 h-6 border-4 border-t-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"
+            ></div>
+            <span>Processing...</span>
+          </div>
+          <div v-else>Pay with Credit Card</div>
+        </BaseButton>
+        <BaseButton @click="payWithWallet" variant="secondary" size="lg">
+          Pay with Your Wallet
+        </BaseButton>
+        <BaseButton @click="closePaymentPopup" variant="light" size="lg">
+          Cancel
+        </BaseButton>
+      </div>
     </div>
   </div>
 </template>
@@ -123,6 +180,7 @@ export default {
     return {
       selectedTime: "",
       isSubmitting: false,
+      showPaymentPopup: false,
     };
   },
   computed: {
@@ -130,7 +188,6 @@ export default {
       return this.$store.getters.getSelectedVenue;
     },
     availableTimeSlots() {
-      // Filter time slots to only show those with availability > 0
       return this.venue.timeSlots.filter((slot) => slot.available > 0);
     },
   },
@@ -145,7 +202,13 @@ export default {
         day: "numeric",
       });
     },
-    async bookNow() {
+    openPaymentPopup() {
+      this.showPaymentPopup = true;
+    },
+    closePaymentPopup() {
+      this.showPaymentPopup = false;
+    },
+    async payWithCreditCard() {
       try {
         this.isSubmitting = true;
         store.dispatch("setLoadingState", true);
@@ -155,24 +218,20 @@ export default {
           userId: store.state.user.id,
           venue: this.venue,
           date: this.venue.selectedDate,
+          price: this.venue.price,
+          method: "credit card",
           timeSlotId: this.selectedTime,
           bookingDate: new Date().toISOString(),
         };
 
-        // Store booking info in Vuex state
         store.state.currentBookingInfo = bookingInfo;
-
-        // Store booking info in localStorage for retrieval after payment
         localStorage.setItem("pendingBooking", JSON.stringify(bookingInfo));
 
-        // Create Stripe checkout session
         const response = await fetch(
-          "http://localhost:3000/create-checkout-session",
+          "http://localhost:3000/create-checkout-session-book",
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               venue: this.venue,
               timeSlotId: this.selectedTime,
@@ -181,29 +240,34 @@ export default {
         );
 
         const { url } = await response.json();
-
-        // Redirect to Stripe Checkout
         window.location.href = url;
       } catch (error) {
         console.error("Error creating checkout session:", error);
-        // Handle error (show error message to user)
       } finally {
         this.isSubmitting = false;
         store.dispatch("setLoadingState", false);
       }
     },
+    payWithWallet() {
+      const bookingInfo = {
+        username: store.state.user.username,
+        userId: store.state.user.id,
+        venue: this.venue,
+        date: this.venue.selectedDate,
+        price: this.venue.price,
+        method: "wallet",
+        timeSlotId: this.selectedTime,
+        bookingDate: new Date().toISOString(),
+      };
+      store.state.currentBookingInfo = bookingInfo;
+      this.$router.push("/bookingInfoPayment");
+    },
     cancelBooking() {
       this.$router.back();
+    },
+    closePopUp() {
+      this.showPaymentPopup = false;
     },
   },
 };
 </script>
-
-<style>
-body {
-  background-color: #f9f9f9;
-}
-input[type="date"] {
-  color-scheme: dark;
-}
-</style>

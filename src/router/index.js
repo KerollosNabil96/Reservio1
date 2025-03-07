@@ -22,7 +22,13 @@ import PaymentSuccess2 from "@/views/PaymentSuccess2.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import BookingSuccess from "../views/BookingSuccess.vue";
 import BookingCancelled from "../views/BookingCancelled.vue";
-import DashboardView from '../components/Dashboard/DashboardView.vue'
+import DashboardView from "../components/Dashboard/DashboardView.vue";
+import Wallet from "@/components/Dashboard/Wallet.vue";
+import Bookings from "@/components/Dashboard/Bookings.vue";
+import UserVenues from "@/components/Dashboard/UserVenues.vue";
+import RegistrationSuccess from "@/views/RegistrationSuccess.vue";
+import RegistrationCancelled from "@/views/RegistrationCancelled.vue";
+import VenueRegistrationPayment from "@/views/VenueRegistrationPayment.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -41,7 +47,25 @@ const routes = [
     meta: { requiresAuth: true },
   },
   { path: "/payment", component: Payment, meta: { requiresAuth: true } },
-  { path: "/profile", component: DashboardView, meta: { requiresAuth: true } },
+  {
+    path: "/profile",
+    component: DashboardView,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "wallet",
+        component: Wallet,
+      },
+      {
+        path: "bookings",
+        component: Bookings,
+      },
+      {
+        path: "user-venues",
+        component: UserVenues,
+      },
+    ],
+  },
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
   {
     path: "/booking-info",
@@ -51,6 +75,11 @@ const routes = [
   {
     path: "/bookingInfoPayment",
     component: BookingInfoPayment,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/venueRegistrationPayment",
+    component: VenueRegistrationPayment,
     meta: { requiresAuth: true },
   },
   {
@@ -68,7 +97,11 @@ const routes = [
   { path: "/settings", component: Settings, meta: { requiresAuth: true } },
   { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
   { path: "/bookigInfo", component: BookingInfo, meta: { requiresAuth: true } },
-  { path: "/pending", component: PaymentSuccess2, meta: { requiresAuth: true } },
+  {
+    path: "/pending",
+    component: PaymentSuccess2,
+    meta: { requiresAuth: true },
+  },
   {
     path: "/bookingInfoPayment",
     component: BookingInfoPayment,
@@ -84,6 +117,16 @@ const routes = [
     name: "BookingCancelled",
     component: BookingCancelled,
   },
+  {
+    path: "/registration-success",
+    name: "RegistrationSuccess",
+    component: RegistrationSuccess,
+  },
+  {
+    path: "/registration-cancelled",
+    name: "RegistrationCancelled",
+    component: RegistrationCancelled,
+  },
   { path: "/:notFound(.*)", component: NotFound },
 ];
 
@@ -91,7 +134,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    // If the only difference is the tab query parameter, don't scroll
     if (
       from.path === to.path &&
       to.query.tab !== from.query.tab &&
@@ -100,7 +142,6 @@ const router = createRouter({
       return false;
     }
 
-    // Otherwise, use saved position or scroll to top
     return savedPosition || { top: 0, behavior: "smooth" };
   },
 });

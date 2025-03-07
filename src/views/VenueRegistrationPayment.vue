@@ -5,29 +5,10 @@
     <div
       class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900"
     >
-      <div class="flex items-center justify-center mb-6">
-        <div
-          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
-        >
-          ✔
-        </div>
-        <div class="w-16 h-1 bg-gray-300 mx-2"></div>
-        <div
-          class="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full"
-        >
-          ✔
-        </div>
-        <div class="w-16 h-1 bg-gray-300 mx-2"></div>
-        <div
-          class="w-8 h-8 bg-gray-300 flex items-center justify-center rounded-full"
-        >
-          3
-        </div>
-      </div>
       <h2
-        class="text-xl font-bold text-center text-gray-800 dark:text-gray-100"
+        class="text-xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6"
       >
-        Payment
+        Venue Registration Payment
       </h2>
       <p class="text-gray-500 text-center mb-6 dark:text-gray-200">
         Kindly review your balance
@@ -35,19 +16,17 @@
 
       <div class="flex flex-col md:flex-row items-center gap-6">
         <div class="w-full md:w-1/2">
-          <h3 class="font-semibold dark:text-gray-200">Transfer Reservio:</h3>
+          <h3 class="font-semibold dark:text-gray-200">Venue Details:</h3>
           <p class="text-gray-700 dark:text-gray-400">{{ venue.name }}</p>
           <p class="text-gray-500 text-sm dark:text-gray-400">
             {{ venue.address.city }}, {{ venue.address.governorate }}
           </p>
-          <p class="mt-2 font-semibold dark:text-gray-100">
-            Time Slot: <span class="font-normal">7:00 PM - 8:00 PM</span>
+          <p class="text-gray-500 text-sm dark:text-gray-400">
+            Category: {{ venue.category }}
           </p>
-          <img
-            :src="venue.pictures[0]"
-            alt="Stadium"
-            class="w-full h-32 object-cover rounded-lg mt-2"
-          />
+          <p class="mt-2 font-semibold dark:text-gray-100">
+            Registration Fee: <span class="font-normal">200 EGP</span>
+          </p>
         </div>
 
         <div class="w-full md:w-1/2 space-y-4">
@@ -56,22 +35,18 @@
             <span class="text-blue-600">{{ userBalance }} EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
-            Booking Price:
-            <span class="text-red-500">{{ venue.price }} EGP</span>
+            Registration Fee:
+            <span class="text-red-500">200 EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
-            Balance After Booking:
+            Balance After Registration:
             <span
               :class="
-                balanceAfterBooking < 0 ? 'text-red-500' : 'text-green-500'
+                balanceAfterRegistration < 0 ? 'text-red-500' : 'text-green-500'
               "
             >
-              {{ balanceAfterBooking }} EGP
+              {{ balanceAfterRegistration }} EGP
             </span>
-          </p>
-          <p class="text-lg font-semibold dark:text-gray-100">
-            Available Slots:
-            <span class="text-green-600">{{ availableSlots }}</span>
           </p>
         </div>
       </div>
@@ -86,19 +61,19 @@
       <div class="mt-6 flex flex-col space-y-2">
         <button
           @click="processPayment"
-          :disabled="balanceAfterBooking < 0 || loading || availableSlots <= 0"
+          :disabled="balanceAfterRegistration < 0 || loading"
           class="w-full py-2 rounded-lg font-bold"
           :class="
-            balanceAfterBooking < 0 || availableSlots <= 0
+            balanceAfterRegistration < 0
               ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              : 'bg-blue-600'
+              : 'bg-blue-600 text-white'
           "
         >
           {{ loading ? "Processing..." : "Pay Now" }}
         </button>
         <button
           class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg"
-          @click="cancelBooking"
+          @click="cancelRegistration"
         >
           Back
         </button>
@@ -108,21 +83,15 @@
 </template>
 
 <script>
-import {
-  getDatabase,
-  ref,
-  get,
-  update,
-  runTransaction,
-} from "firebase/database";
+import { getDatabase, ref, get, set, update } from "firebase/database";
 import store from "@/store/store";
 
 export default {
-  name: "Payment",
+  name: "VenueRegistrationPayment",
   data() {
     return {
       userBalance: 0,
-      availableSlots: 0,
+      registrationFee: 200, // Fixed registration fee
       loading: false,
       paymentSuccess: false,
       paymentError: "",
@@ -130,14 +99,14 @@ export default {
   },
   computed: {
     venue() {
-      return this.$store.getters.getSelectedVenue;
+      return store.state.myFormData;
     },
-    balanceAfterBooking() {
-      return this.userBalance - this.venue.price;
+    balanceAfterRegistration() {
+      return this.userBalance - this.registrationFee;
     },
   },
   methods: {
-    cancelBooking() {
+    cancelRegistration() {
       this.$router.back();
     },
 
@@ -157,34 +126,16 @@ export default {
           this.userBalance = snapshot.val();
         } else {
           console.log("No balance found for this user.");
+          this.userBalance = 0;
         }
       } catch (error) {
         console.error("Error fetching balance:", error);
       }
     },
 
-    // جلب عدد الأماكن المتاحة من Firebase
-    async fetchAvailableSlots() {
-      const venueId = this.venue.id;
-      const db = getDatabase();
-      const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
-      const snapshot = await get(timeSlotRef);
-
-      if (snapshot.exists()) {
-        this.availableSlots = snapshot.val();
-      } else {
-        console.log("No available slots found.");
-      }
-    },
-
     async processPayment() {
-      if (this.balanceAfterBooking < 0) {
+      if (this.balanceAfterRegistration < 0) {
         this.paymentError = "Insufficient balance.";
-        return;
-      }
-
-      if (this.availableSlots <= 0) {
-        this.paymentError = "No available slots left.";
         return;
       }
 
@@ -205,34 +156,49 @@ export default {
         }
 
         const db = getDatabase();
+
+        // Update user balance
         const userRef = ref(db, `users/${user.id}`);
+        await update(userRef, { balance: this.balanceAfterRegistration });
 
-        await update(userRef, { balance: this.balanceAfterBooking });
+        const id = "id" + Math.random().toString(16).slice(2);
 
-        const venueId = this.venue.id;
-        const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+        // Prepare venue data for saving
+        const venueData = {
+          ...this.venue,
+          id,
+          ownerId: user.id,
+          createdAt: new Date().toISOString(),
+          status: "pending",
+          paymentStatus: "paid",
+          paymentMethod: "wallet",
+          paymentDate: new Date().toISOString(),
+        };
 
-        await runTransaction(timeSlotRef, (currentAvailableSlots) => {
-          console.log(
-            "Transaction executed. Current slots:",
-            currentAvailableSlots
-          );
+        // Save venue to requests collection
+        await set(ref(db, `requests/${id}`), venueData);
 
-          return currentAvailableSlots;
-        });
-
-        const updatedSnapshot = await get(timeSlotRef);
-        if (updatedSnapshot.exists()) {
-          this.availableSlots = updatedSnapshot.val();
-          console.log("Updated slots:", this.availableSlots);
+        // Also save reference to user's pending venues
+        if (user?.id) {
+          const userVenueRef = ref(db, `users/${user.id}/pendingVenues/${id}`);
+          await set(userVenueRef, {
+            venueId: venueData.id,
+            status: "pending",
+            registrationDate: new Date().toISOString(),
+            paymentStatus: "paid",
+            paymentDate: new Date().toISOString(),
+          });
         }
 
         this.paymentSuccess = true;
-        this.userBalance = this.balanceAfterBooking;
+        this.userBalance = this.balanceAfterRegistration;
+
+        // Remove pending registration from localStorage
+        localStorage.removeItem("pendingVenueRegistration");
 
         setTimeout(() => {
           this.loading = false;
-          this.$router.push("/booking-success");
+          this.$router.push("/registration-success");
         }, 2000);
       } catch (error) {
         console.error("Error processing payment:", error);
@@ -244,7 +210,18 @@ export default {
 
   mounted() {
     this.fetchBalance();
-    this.fetchAvailableSlots();
+
+    // Check if we have pending registration data
+    if (!this.venue || Object.keys(this.venue).length === 0) {
+      const pendingRegistration = localStorage.getItem(
+        "pendingVenueRegistration"
+      );
+      if (pendingRegistration) {
+        store.state.myFormData = JSON.parse(pendingRegistration);
+      } else {
+        this.$router.push("/");
+      }
+    }
   },
 };
 </script>

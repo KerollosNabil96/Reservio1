@@ -1,10 +1,13 @@
 <template>
   <div class="dashboard-container">
+    <!-- زر لإظهار الـ Sidebar إذا كان مغلق -->
     <button v-if="!isSidebarOpen" class="show-sidebar-btn" @click="showSidebar">
       <i class="fas fa-bars"></i>
     </button>
 
+    <!-- Sidebar ثابت مع التبديل عبر Button -->
     <SideBar ref="sidebar" @sidebar-toggle="handleSidebarToggle" />
+
     <div class="main-content" :class="{ 'content-expanded': !isSidebarOpen }">
       <div class="header-section">
         <h2>Hello, <span :style="{ color: 'rgb(18, 102, 212)'}">{{ username }}</span></h2>
@@ -173,6 +176,7 @@ export default {
 .show-sidebar-btn:hover {
   background: #1565c0;
 }
+
 
 .header-section {
   margin-bottom: 2rem;

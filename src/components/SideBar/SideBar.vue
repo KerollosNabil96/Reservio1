@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'SideBar',
+  name: "SideBar",
   data() {
     return {
       isOpen: false, // Sidebar is closed by default on mobile

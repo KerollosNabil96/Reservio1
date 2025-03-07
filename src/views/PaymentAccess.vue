@@ -46,18 +46,53 @@
 <script>
 import router from "@/router";
 import store from "@/store/store";
-import { db, auth, ref, set } from "@/firebase";
+import { db, auth, ref, set, onValue } from "@/firebase";
 
 export default {
   name: "PaymentSuccess",
-  created() {
-    console.log(store.state.currentBookingInfo);
-    let id = "id" + Math.random().toString(16).slice(2);
-    const userRef = ref(
-      db,
-      `users/${store.state.user.username}/bookings/${id}`
-    );
-    set(userRef, store.state.currentBookingInfo);
+  async created() {
+    // Check both Firebase auth and store state
+    const user = auth.currentUser;
+    const storeUser = store.state.user;
+
+    if (!user && storeUser) {
+      console.log("Attempting to restore user session...");
+      try {
+        // Fetch user data from database using store user ID
+        const userRef = ref(db, `users/${storeUser.id}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          console.log("Found user data, restoring session...");
+          store.dispatch("updateAuthState", userData);
+        } else {
+          console.warn("No user data found in database");
+          store.dispatch("updateAuthState", null);
+        }
+      } catch (error) {
+        console.error("Error restoring user session:", error);
+        store.dispatch("updateAuthState", null);
+      }
+    }
+
+    // Save booking info
+    if (store.state.currentBookingInfo && store.state.user) {
+      try {
+        console.log("Saving booking info:", store.state.currentBookingInfo);
+        let id = "id" + Math.random().toString(16).slice(2);
+        const userRef = ref(
+          db,
+          `users/${store.state.user.id}/bookings/${id}`
+        );
+        await set(userRef, store.state.currentBookingInfo);
+        console.log("Booking info saved successfully");
+      } catch (error) {
+        console.error("Error saving booking info:", error);
+      }
+    } else {
+      console.warn("Missing booking info or user data");
+    }
   },
 };
 </script>
