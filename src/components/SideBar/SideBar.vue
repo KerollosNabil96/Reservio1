@@ -1,128 +1,105 @@
 <template>
-  <div class="sidebar" :class="{ 'sidebar-closed': !isOpen }">
-    <div class="logo">
-      <h2>Reservio</h2>
+  <nav
+    :class="[
+      sidebarOpen ? 'block' : 'hidden',
+      'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg',
+    ]"
+  >
+    <div class="p-6 hidden md:block">
+      <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+        Reservio
+      </h1>
     </div>
-    <nav class="nav-menu">
-      <!-- Check if the route starts with /profile to activate Bookings -->
-      <router-link
-        to="/profile/bookings"
-        class="nav-item"
-        :class="{ active: $route.path === '/profile/bookings' }"
-      >
-        <i class="fas fa-building"></i>
-        <span>Bookings</span>
-      </router-link>
-      <router-link
-        to="/profile/user-venues"
-        class="nav-item"
-        :class="{ active: $route.path === '/profile/user-venues' }"
-      >
-        <i class="fas fa-building"></i>
-        <span>Your venues</span>
-      </router-link>
-      <router-link
-        to="/profile/wallet"
-        class="nav-item"
-        :class="{ active: $route.path === '/profile/wallet' }"
-      >
-        <i class="fas fa-wallet"></i>
-        <span>Your wallet</span>
-      </router-link>
-      <router-link
-        to="/settings"
-        class="nav-item"
-        :class="{ active: $route.path === '/settings' }"
-      >
-        <i class="fas fa-cog"></i>
-        <span>Settings</span>
-      </router-link>
-    </nav>
-  </div>
+    <ul class="space-y-2 p-4">
+      <li>
+        <RouterLink
+          to="/profile/bookings"
+          class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
+          :class="{
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+              $route.path === '/profile/bookings',
+          }"
+          @click="closeSidebarOnMobile"
+        >
+          <i class="fas fa-building mr-3"></i>
+          Bookings
+        </RouterLink>
+      </li>
+      <li>
+        <RouterLink
+          to="/profile/user-venues"
+          class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
+          :class="{
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+              $route.path === '/profile/user-venues',
+          }"
+          @click="closeSidebarOnMobile"
+        >
+          <i class="fas fa-calendar mr-3"></i>
+          Your Venues
+        </RouterLink>
+      </li>
+      <li>
+        <RouterLink
+          to="/profile/wallet"
+          class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
+          :class="{
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+              $route.path === '/profile/wallet',
+          }"
+          @click="closeSidebarOnMobile"
+        >
+          <i class="fas fa-wallet mr-3"></i>
+          Your Wallet
+        </RouterLink>
+      </li>
+      <li>
+        <RouterLink
+          to="/settings"
+          class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
+          :class="{
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+              $route.path === '/settings',
+          }"
+          @click="closeSidebarOnMobile"
+        >
+          <i class="fas fa-cog mr-3"></i>
+          Settings
+        </RouterLink>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+
 export default {
   name: "SideBar",
-  data() {
-    return {
-      isOpen: true,
-    };
-  },
-  methods: {
-    toggleSidebar() {
-      this.isOpen = !this.isOpen;
-      this.$emit("sidebar-toggle", this.isOpen);
+  props: {
+    sidebarOpen: {
+      type: Boolean,
+      default: true,
     },
+  },
+  setup(props, { emit }) {
+    const closeSidebarOnMobile = () => {
+      if (window.innerWidth < 768) {
+        emit("toggle-sidebar", false);
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener("resize", closeSidebarOnMobile);
+    });
+
+    return {
+      closeSidebarOnMobile,
+    };
   },
 };
 </script>
 
 <style scoped>
-.sidebar {
-  width: 240px;
-  background: white;
-  border-right: 1px solid #e0e0e0;
-  height: 100vh;
-  position: fixed;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-closed {
-  transform: translateX(-240px);
-}
-
-.logo {
-  padding: 1.5rem;
-  color: #1976d2;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  color: #1976d2;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.back-btn:hover {
-  background-color: #e3f2fd;
-}
-
-.nav-menu {
-  padding: 1rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  text-decoration: none;
-  color: #666;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-}
-
-.nav-item i {
-  margin-right: 1rem;
-}
-
-.nav-item.active {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.nav-item:hover {
-  background: #f5f5f5;
-}
-
-.nav-item.active {
-  background: #e3f2fd;
-  color: #1976d2;
-}
+/* Add any custom styles here */
 </style>

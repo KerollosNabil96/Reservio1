@@ -1,28 +1,49 @@
 <template>
-  <div class="dashboard-container">
-    <!-- زر لإظهار الـ Sidebar إذا كان مغلق -->
-    <button v-if="!isSidebarOpen" class="show-sidebar-btn" @click="showSidebar">
-      <i class="fas fa-bars"></i>
-    </button>
+  <div class="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-gray-900">
+    <!-- Mobile Menu Toggle Button -->
+    <div
+      class="md:hidden bg-white dark:bg-gray-800 p-4 flex justify-between items-center shadow-md"
+    >
+      <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">
+        User Dashboard
+      </h1>
+      <button
+        @click="toggleSidebar"
+        class="text-gray-700 dark:text-gray-300 focus:outline-none"
+      >
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
 
-    <!-- Sidebar ثابت مع التبديل عبر Button -->
-    <SideBar ref="sidebar" @sidebar-toggle="handleSidebarToggle" />
+    <!-- Side Navigation -->
+    <SideBar :sidebarOpen="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
-    <div class="main-content" :class="{ 'content-expanded': !isSidebarOpen }">
-      <div class="header-section">
-        <h2>
+    <!-- Main Content -->
+    <div class="flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900">
+      <!-- Header Section -->
+      <div class="header-section mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold dark:text-white">
           Hello,
           <span :style="{ color: 'rgb(18, 102, 212)' }">{{ username }}</span>
         </h2>
-        <p class="subtitle">Have a nice day</p>
+        <p class="text-gray-600 dark:text-gray-400">Have a nice day!</p>
       </div>
 
+      <!-- Bookings Section -->
       <div v-if="$route.path === '/profile/bookings'">
-        <div class="search-section">
+        <div class="search-section mb-6">
           <div class="search-box">
-            <input type="search" v-model="searchQuery" placeholder="Search" />
+            <input
+              type="search"
+              v-model="searchQuery"
+              placeholder="Search"
+              class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            />
           </div>
-          <select class="filter-select" v-model="sortOption">
+          <select
+            v-model="sortOption"
+            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+          >
             <option value="all">All</option>
             <option value="nearest">Nearest Date</option>
             <option value="farthest">Farthest Date</option>
@@ -30,17 +51,22 @@
         </div>
 
         <div class="dashboard">
-          <h1>Booking List</h1>
+          <h1 class="text-2xl font-bold text-green-600 mb-6">Booking List</h1>
 
           <div v-if="sortedBookings.length === 0" class="no-bookings">
-            <p>No Bookings To Display</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              No Bookings To Display
+            </p>
           </div>
 
-          <div v-else class="bookings-list">
+          <div
+            v-else
+            class="bookings-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             <div
               v-for="booking in sortedBookings"
               :key="booking.id"
-              class="booking-card"
+              class="booking-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
             >
               <img
                 v-if="
@@ -48,19 +74,29 @@
                 "
                 :src="booking.venue.pictures[0]"
                 alt="Booking Image"
-                class="booking-image"
+                class="booking-image w-full h-40 object-cover rounded-lg mb-4"
               />
-              <h3>{{ booking.venue.venueName }}</h3>
-              <p>Date: {{ formatDate(booking.date) }}</p>
-              <p>
+              <h3
+                class="text-lg font-semibold text-green-600 dark:text-green-400"
+              >
+                {{ booking.venue.venueName }}
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                Date: {{ formatDate(booking.date) }}
+              </p>
+              <p class="text-gray-600 dark:text-gray-400">
                 Address: {{ booking.venue.address.city }},
                 {{ booking.venue.address.governorate }}
               </p>
-              <p class="price">{{ booking.venue.price }} EGP/hour</p>
+              <p class="price text-green-600 dark:text-green-400">
+                {{ booking.venue.price }} EGP/hour
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Router View for Nested Routes -->
       <router-view></router-view>
     </div>
   </div>
@@ -82,7 +118,7 @@ export default {
       bookings: [],
       searchQuery: "",
       sortOption: "all",
-      isSidebarOpen: true,
+      sidebarOpen: true,
       userId: null,
     };
   },
@@ -137,12 +173,8 @@ export default {
         }
       });
     },
-    showSidebar() {
-      this.isSidebarOpen = true;
-      this.$refs.sidebar.isOpen = true;
-    },
-    handleSidebarToggle(isOpen) {
-      this.isSidebarOpen = isOpen;
+    toggleSidebar() {
+      this.sidebarOpen = !this.sidebarOpen;
     },
   },
   mounted() {
@@ -152,160 +184,5 @@ export default {
 </script>
 
 <style scoped>
-.dashboard-container {
-  display: flex;
-  min-height: 100vh;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 2rem;
-  margin-left: 240px;
-  transition: margin-left 0.3s ease;
-}
-
-.content-expanded {
-  margin-left: 0;
-}
-
-.show-sidebar-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  background: #1976d2;
-  color: white;
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.show-sidebar-btn:hover {
-  background: #1565c0;
-}
-
-.header-section {
-  margin-bottom: 2rem;
-}
-
-.subtitle {
-  color: #666;
-}
-
-.search-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.search-box input {
-  padding: 0.5rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  width: 100%;
-}
-
-.filter-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  width: 100%;
-}
-
-.dashboard {
-  padding: 20px;
-}
-
-.bookings-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.booking-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  background-color: #f9f9f9;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.booking-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.booking-image {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-h1 {
-  color: green;
-  font-size: 25px;
-  font-weight: 500;
-}
-
-h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
-h3 {
-  color: green;
-  margin: 0 0 10px 0;
-}
-
-.price {
-  color: green;
-  margin-top: 0.5rem;
-}
-
-.no-bookings {
-  text-align: center;
-  color: #666;
-  font-size: 1.2rem;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-    padding: 1rem;
-  }
-
-  .search-section {
-    flex-direction: column;
-  }
-
-  .bookings-list {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-
-  .booking-card {
-    padding: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .bookings-list {
-    grid-template-columns: 1fr;
-  }
-
-  .search-box input,
-  .filter-select {
-    width: 100%;
-  }
-}
+/* Custom styles if needed */
 </style>
