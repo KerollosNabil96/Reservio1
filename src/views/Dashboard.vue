@@ -150,17 +150,6 @@
             <i class="fas fa-clipboard-list mr-3"></i>
             Requests Details
           </RouterLink>
-          <!-- <RouterLink
-            to="/dashboard?tab=requests"
-            class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
-            :class="{
-              'bg-blue-50 dark:bg-blue-900/30': $route.query.tab === 'requests',
-            }"
-            @click="closeSidebarOnMobile"
-          >
-            <i class="fas fa-clipboard-list mr-3"></i>
-            Requests Details
-          </RouterLink> -->
         </li>
       </ul>
     </nav>
@@ -313,7 +302,7 @@
                 <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
                   <button
                     @click="showRequestDetails(request)"
-                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 cursor-pointer"
                   >
                     More Details
                   </button>
@@ -445,8 +434,10 @@
       class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-4xl w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02] overflow-y-auto max-h-[90vh]"
       @click.stop
     >
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+      <div class="flex items-center justify-between mb-6 cursor-pointer">
+        <h3
+          class="text-xl font-bold text-gray-800 dark:text-white cursor-pointer"
+        >
           More Details
         </h3>
         <button
@@ -633,6 +624,10 @@ export default {
     const users = ref([]);
     const requests = ref([]);
 
+    onMounted(() => {
+      window.addEventListener("resize", closeSidebarOnMobile);
+    });
+
     const toggleSidebar = () => {
       sidebarOpen.value = !sidebarOpen.value;
     };
@@ -796,14 +791,6 @@ export default {
       event.target.src =
         "https://via.placeholder.com/400x300?text=Image+Not+Available";
       event.target.classList.add("error-image");
-    },
-    toggleSidebar() {
-      sidebarOpen.value = !sidebarOpen.value;
-    },
-    closeSidebarOnMobile() {
-      if (window.innerWidth < 768) {
-        sidebarOpen.value = false;
-      }
     },
   },
 };
