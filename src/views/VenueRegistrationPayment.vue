@@ -83,8 +83,9 @@
 </template>
 
 <script>
-import { getDatabase, ref, get, set, update } from "firebase/database";
+import { getDatabase, ref, get, set, update, onValue } from "firebase/database";
 import store from "@/store/store";
+import BookingInfoPayment from "./BookingInfoPayment.vue";
 
 export default {
   name: "VenueRegistrationPayment",
@@ -159,7 +160,16 @@ export default {
 
         // Update user balance
         const userRef = ref(db, `users/${user.id}`);
+        const userBalanceRef = ref(db, `users/${user.id}/balance`);
         await update(userRef, { balance: this.balanceAfterRegistration });
+        onValue(
+          userBalanceRef,
+          (snapshot) => {
+            const balance = snapshot.val();
+            set(userBalanceRef, balance + 200 * 0.05);
+          },
+          { onlyOnce: true }
+        );
 
         const id = "id" + Math.random().toString(16).slice(2);
 

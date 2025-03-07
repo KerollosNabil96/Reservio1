@@ -75,6 +75,7 @@
 
 <script>
 import store from "@/store/store";
+import { onValue, ref, set } from "firebase/database";
 
 export default {
   name: "RegistrationSuccess",
@@ -112,6 +113,17 @@ export default {
       this.venueName = venueData.name || venueData.venueName || "Not available";
       this.venueCategory = venueData.category || "Not available";
     }
+
+    const userBalanceRef = ref(`/users/${store.state.user.id}/balance`);
+
+    onValue(
+      userBalanceRef,
+      (snapshot) => {
+        const balance = snapshot.val();
+        set(userBalanceRef, balance + 200 * 0.05);
+      },
+      { onlyOnce: true }
+    );
   },
 };
 </script>
