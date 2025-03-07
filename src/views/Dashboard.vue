@@ -575,6 +575,7 @@
                 :src="image"
                 :alt="`Venue Image ${index + 1}`"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                @click="openImageModal(image, selectedRequest.pictures)"
                 @error="handleImageError"
                 loading="lazy"
               />
@@ -600,6 +601,50 @@
       </div>
     </div>
   </div>
+  <!-- Image Preview Modal -->
+  <div
+    v-if="showImageModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showImageModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-4xl w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+          Image Preview
+        </h3>
+        <button
+          @click="showImageModal = false"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <div class="relative">
+        <img
+          :src="currentImage"
+          alt="Preview"
+          class="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+        />
+        <button
+          v-if="imageList.length > 1"
+          @click="prevImage"
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-full shadow-md hover:bg-white/70 dark:hover:bg-gray-800/70 transition-colors duration-200"
+        >
+          <i class="fas fa-chevron-left text-xl"></i>
+        </button>
+        <button
+          v-if="imageList.length > 1"
+          @click="nextImage"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/50 dark:bg-gray-800/50 p-2 rounded-full shadow-md hover:bg-white/70 dark:hover:bg-gray-800/70 transition-colors duration-200"
+        >
+          <i class="fas fa-chevron-right text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -615,6 +660,14 @@ import {
 import { getAuth } from "firebase/auth";
 
 export default {
+  data() {
+    return {
+      showImageModal: false,
+      currentImage: "",
+      imageList: [],
+      currentImageIndex: 0,
+    };
+  },
   setup() {
     const sidebarOpen = ref(false);
     const showRoleModal = ref(false);
@@ -789,6 +842,23 @@ export default {
     };
   },
   methods: {
+    openImageModal(image, images = []) {
+      this.currentImage = image;
+      this.imageList = images.length ? images : [image];
+      this.currentImageIndex = this.imageList.indexOf(image);
+      this.showImageModal = true;
+    },
+    prevImage() {
+      this.currentImageIndex =
+        (this.currentImageIndex - 1 + this.imageList.length) %
+        this.imageList.length;
+      this.currentImage = this.imageList[this.currentImageIndex];
+    },
+    nextImage() {
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.imageList.length;
+      this.currentImage = this.imageList[this.currentImageIndex];
+    },
     getLicenseName(category) {
       switch (category) {
         case "medical":
