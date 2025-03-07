@@ -169,6 +169,13 @@ export default {
 </script>
 
 <style scoped>
+
+footer {
+  position: relative;
+  z-index: 200;
+}
+
+
 .animate-fadeIn {
   animation: fadeIn 1s ease-in;
 }

@@ -28,6 +28,7 @@ import Bookings from "@/components/Dashboard/Bookings.vue";
 import UserVenues from "@/components/Dashboard/UserVenues.vue";
 import RegistrationSuccess from "@/views/RegistrationSuccess.vue";
 import RegistrationCancelled from "@/views/RegistrationCancelled.vue";
+import VenueRegistrationPayment from "@/views/VenueRegistrationPayment.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -74,6 +75,11 @@ const routes = [
   {
     path: "/bookingInfoPayment",
     component: BookingInfoPayment,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/venueRegistrationPayment",
+    component: VenueRegistrationPayment,
     meta: { requiresAuth: true },
   },
   {
