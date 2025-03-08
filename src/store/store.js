@@ -7,7 +7,7 @@ const store = createStore({
       email: "",
       phone: "",
     },
-    isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || false,
+    isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || true,
     showSignup: false,
     showSignin: false,
     user: null,

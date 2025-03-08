@@ -238,17 +238,32 @@ export default {
       } catch (error) {
         switch (error.code) {
           case "auth/user-not-found":
-            this.errorMessage = "No account found with this email.";
+            this.errorMessage =
+              "No account found with this email. Please check your email or sign up for a new account.";
             break;
           case "auth/wrong-password":
-            this.errorMessage = "Incorrect password.";
+            this.errorMessage =
+              "Incorrect password. Please try again or use the 'Forgot Password' option.";
             break;
           case "auth/invalid-email":
-            this.errorMessage = "Invalid email address.";
+            this.errorMessage =
+              "Invalid email format. Please enter a valid email address.";
+            break;
+          case "auth/too-many-requests":
+            this.errorMessage =
+              "Too many failed login attempts. Please try again later or reset your password.";
+            break;
+          case "auth/user-disabled":
+            this.errorMessage =
+              "This account has been disabled. Please contact support for assistance.";
+            break;
+          case "auth/network-request-failed":
+            this.errorMessage =
+              "Network error. Please check your internet connection and try again.";
             break;
           default:
             this.errorMessage =
-              error.message || "Sign in failed. Please try again.";
+              "Sign in failed. Please check your credentials and try again.";
         }
 
         return;
@@ -311,8 +326,32 @@ export default {
         this.$emit("close");
       } catch (error) {
         console.error("Google sign in error:", error);
-        this.errorMessage =
-          error.message || "Google sign in failed. Please try again.";
+
+        switch (error.code) {
+          case "auth/popup-closed-by-user":
+            this.errorMessage =
+              "Google sign in was cancelled. Please try again.";
+            break;
+          case "auth/popup-blocked":
+            this.errorMessage =
+              "Pop-up was blocked by your browser. Please allow pop-ups for this website and try again.";
+            break;
+          case "auth/cancelled-popup-request":
+            this.errorMessage =
+              "Google sign in process was interrupted. Please try again.";
+            break;
+          case "auth/account-exists-with-different-credential":
+            this.errorMessage =
+              "An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.";
+            break;
+          case "auth/network-request-failed":
+            this.errorMessage =
+              "Network error. Please check your internet connection and try again.";
+            break;
+          default:
+            this.errorMessage =
+              "Google sign in failed. Please try again or use email login.";
+        }
       } finally {
         this.isLoading = false;
       }

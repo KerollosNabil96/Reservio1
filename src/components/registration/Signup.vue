@@ -350,7 +350,30 @@ export default {
 
       // Validate passwords match
       if (this.password !== this.confirmPassword) {
-        this.errorMessage = "Passwords do not match";
+        this.errorMessage =
+          "Passwords do not match. Please check and try again.";
+        this.$nextTick(() => this.scrollToTop());
+        return;
+      }
+
+      // Validate password strength
+      if (this.password.length < 6) {
+        this.errorMessage = "Password must be at least 6 characters long.";
+        this.$nextTick(() => this.scrollToTop());
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.email)) {
+        this.errorMessage = "Please enter a valid email address.";
+        this.$nextTick(() => this.scrollToTop());
+        return;
+      }
+
+      // Validate phone number format
+      if (this.phone.trim() === "") {
+        this.errorMessage = "Phone number cannot be empty.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
@@ -388,8 +411,6 @@ export default {
         // Update store with user info
         store.dispatch("updateAuthState", userProfile);
 
-        // Create user profile object (could be stored in Firestore in a future update)
-
         // Close the form after successful registration
         this.$emit("close");
         this.$router.push("/");
@@ -397,18 +418,28 @@ export default {
         // Handle specific Firebase errors
         switch (error.code) {
           case "auth/email-already-in-use":
-            this.errorMessage = "This email is already registered.";
+            this.errorMessage =
+              "This email is already registered. Please use a different email or sign in instead.";
             break;
           case "auth/invalid-email":
-            this.errorMessage = "Invalid email address.";
+            this.errorMessage =
+              "Invalid email format. Please enter a valid email address.";
             break;
           case "auth/weak-password":
             this.errorMessage =
-              "Password is too weak. Use at least 6 characters.";
+              "Password is too weak. Please use at least 6 characters with a mix of letters, numbers, and symbols.";
+            break;
+          case "auth/operation-not-allowed":
+            this.errorMessage =
+              "Registration is currently disabled. Please contact support.";
+            break;
+          case "auth/network-request-failed":
+            this.errorMessage =
+              "Network error. Please check your internet connection and try again.";
             break;
           default:
             this.errorMessage =
-              error.message || "Registration failed. Please try again.";
+              "Registration failed. Please check your information and try again.";
         }
         this.$nextTick(() => this.scrollToTop());
       } finally {
@@ -453,8 +484,28 @@ export default {
         this.$router.push("/");
       } catch (error) {
         console.error("Google sign up error:", error);
-        this.errorMessage =
-          error.message || "Google sign up failed. Please try again.";
+
+        switch (error.code) {
+          case "auth/popup-closed-by-user":
+            this.errorMessage =
+              "Google sign up was cancelled. Please try again.";
+            break;
+          case "auth/popup-blocked":
+            this.errorMessage =
+              "Pop-up was blocked by your browser. Please allow pop-ups for this website and try again.";
+            break;
+          case "auth/account-exists-with-different-credential":
+            this.errorMessage =
+              "An account already exists with the same email but different credentials. Please sign in using your original method.";
+            break;
+          case "auth/network-request-failed":
+            this.errorMessage =
+              "Network error. Please check your internet connection and try again.";
+            break;
+          default:
+            this.errorMessage =
+              "Google sign up failed. Please try again or use email registration.";
+        }
         this.$nextTick(() => this.scrollToTop());
       } finally {
         this.isLoading = false;
