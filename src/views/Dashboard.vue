@@ -414,7 +414,10 @@
           Cancel
         </button>
         <button
-          @click="rejectRequest(selectedRequest)"
+          @click="
+            showEmailModal = true;
+            showRejectModal = false;
+          "
           class="px-3 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
         >
           <i class="fas fa-times mr-2"></i>
@@ -424,6 +427,66 @@
     </div>
   </div>
 
+  <!-- Email Rejection Reason Modal -->
+  <div
+    v-if="showEmailModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="showEmailModal = false"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center mb-4 sm:mb-6">
+        <i class="fas fa-envelope text-blue-600 text-xl sm:text-2xl mr-3"></i>
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">
+          Send Rejection Email
+        </h3>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Venue Owner's Email</label
+          >
+          <input
+            type="email"
+            v-model="selectedRequest.ownerEmail"
+            readonly
+            class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+          />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Rejection Reason</label
+          >
+          <textarea
+            v-model="rejectionReason"
+            rows="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            placeholder="Please provide a reason for rejecting this venue request..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 sm:space-x-4 mt-6">
+        <button
+          @click="showEmailModal = false"
+          class="px-3 sm:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          @click="sendRejectionEmailAndReject"
+          class="px-3 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
+          :disabled="!rejectionReason"
+        >
+          <i class="fas fa-paper-plane mr-2"></i>
+          Send & Reject
+        </button>
+      </div>
+    </div>
+  </div>
   <!-- Request Details Modal -->
   <div
     v-if="showRequestModal"
@@ -670,7 +733,7 @@
       <!-- Action Buttons -->
       <div class="flex justify-end space-x-4">
         <button
-          @click="rejectRequest(selectedRequest)"
+          @click="handleRejectFromDetails(selectedRequest)"
           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
         >
           Reject
@@ -749,6 +812,10 @@ export default {
       currentImage: "",
       imageList: [],
       currentImageIndex: 0,
+      showRejectModal: false,
+      showEmailModal: false,
+      rejectionReason: "",
+      selectedRequest: null,
     };
   },
   setup() {
@@ -885,12 +952,19 @@ export default {
               const licenseDoc = request.licenseDocument || "";
               const ownerIdImg = request.ownerIdImage || "";
 
+              // Fetch owner's email from users data
+              const ownerData = users.value.find(
+                (user) => user.uid === request.ownerId
+              );
+              const ownerEmail = ownerData ? ownerData.email : "";
+
               return {
                 id: key,
                 ...request,
                 images: images,
                 licenseDocument: licenseDoc,
                 ownerIdImage: ownerIdImg,
+                ownerEmail: ownerEmail,
               };
             })
           );
@@ -925,6 +999,11 @@ export default {
     };
   },
   methods: {
+    async handleRejectFromDetails(request) {
+      this.selectedRequest = request;
+      this.showRequestModal = false; // Close the details modal
+      this.showEmailModal = true; // Open the email modal directly
+    },
     openImageModal(image, images = []) {
       this.currentImage = image;
       this.imageList = images.length ? images : [image];
@@ -947,6 +1026,79 @@ export default {
       event.target.src =
         "https://via.placeholder.com/400x300?text=Image+Not+Available";
       event.target.classList.add("error-image");
+    },
+    async handleReject(request) {
+      this.selectedRequest = request;
+      this.showRejectModal = true;
+    },
+
+    async sendRejectionEmailAndReject() {
+      if (!this.rejectionReason) {
+        this.$toast.error("Please provide a rejection reason");
+        return;
+      }
+
+      try {
+        // First delete the request from Firebase
+        const db = getDatabase();
+        await remove(dbRef(db, `requests/${this.selectedRequest.id}`));
+
+        // Then send the rejection email
+        const response = await fetch(
+          "http://localhost:3001/send-rejection-email",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              to: this.selectedRequest.ownerEmail,
+              subject: `Venue Request Rejected - ${this.selectedRequest.venueName}`,
+              message: this.rejectionReason,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to send rejection email");
+        }
+
+        // Update local state to remove the request
+        this.requests = this.requests.filter(
+          (req) => req.id !== this.selectedRequest.id
+        );
+
+        // Reset form and close modals
+        this.rejectionReason = "";
+        this.showEmailModal = false;
+        this.showRejectModal = false;
+        this.showRequestModal = false; // Also close the request details modal
+        this.selectedRequest = null;
+
+        this.$toast.success("Request rejected and email sent successfully");
+      } catch (error) {
+        console.error("Error processing rejection:", error);
+        this.$toast.error(error.message || "Failed to process rejection");
+      }
+    },
+
+    async rejectRequest(requestId) {
+      try {
+        const db = getDatabase();
+        const requestRef = ref(db, `requests/${requestId}`);
+
+        // Remove the request from Firebase
+        await remove(requestRef);
+
+        // Update local state to remove the request
+        this.requests = this.requests.filter((req) => req.id !== requestId);
+
+        // Show success message
+        this.$toast.success("Request rejected successfully");
+      } catch (error) {
+        console.error("Error rejecting request:", error);
+        this.$toast.error(error.message || "Failed to reject request");
+      }
     },
   },
 };

@@ -1,5 +1,5 @@
 <template>
-    <h2>Your Bookings</h2>
+    <!-- <h2>Your Bookings</h2> -->
     </template>
     
     <script>

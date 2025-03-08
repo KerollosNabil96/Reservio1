@@ -11,11 +11,27 @@
       'fixed md:relative inset-0 z-50 md:z-auto', // Add fixed positioning for mobile
     ]"
   >
+    <!-- Header Section for Mobile -->
+    <div class="p-4 md:hidden flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">
+        User Dashboard
+      </h1>
+      <button
+        @click="closeSidebarOnMobile"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+      >
+        <i class="fas fa-times"></i> 
+      </button>
+    </div>
+
+    <!-- Header Section for Desktop -->
     <div class="p-6 hidden md:block">
       <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">
         Reservio
       </h1>
     </div>
+
+    <!-- Menu Items -->
     <ul class="space-y-2 p-4">
       <li>
         <RouterLink
@@ -107,5 +123,8 @@ export default {
 </script>
 
 <style scoped>
-/* Add any custom styles here */
+button {
+  font-size: 1.5rem;
+  transition: color 0.2s ease-in-out;
+}
 </style>
