@@ -31,6 +31,15 @@
       </button>
     </div>
 
+    <!-- Pagination info - showing X-Y of Z results -->
+    <div
+      v-if="!isHomePage && filteredVenues.length > 0"
+      class="text-sm text-gray-500 dark:text-gray-400 mb-4"
+    >
+      Showing {{ paginationStart }} - {{ paginationEnd }} of
+      {{ filteredVenues.length }} results
+    </div>
+
     <!-- Loading state -->
     <div
       v-if="isLoading"
@@ -60,7 +69,7 @@
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
     >
       <VenueCard
-        v-for="venue in filteredVenues"
+        v-for="venue in paginatedVenues"
         :key="venue.id"
         :source="venue.pictures ? venue.pictures[0] : ''"
         :title="venue.venueName"
@@ -71,6 +80,73 @@
         :showTopRatedBadge="isHomePage"
       />
     </transition-group>
+
+    <!-- Pagination controls -->
+    <div
+      v-if="!isHomePage && filteredVenues.length > itemsPerPage"
+      class="flex justify-center items-center mt-8 space-x-2"
+    >
+      <!-- Previous page button -->
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+
+      <!-- Page numbers -->
+      <div class="flex space-x-1">
+        <button
+          v-for="page in displayedPageNumbers"
+          :key="page"
+          @click="goToPage(page)"
+          :class="[
+            page === '...'
+              ? 'px-4 py-2 bg-transparent text-gray-500 dark:text-gray-400 cursor-default'
+              : 'px-4 py-2 rounded-md transition-colors duration-200',
+            currentPage === page
+              ? 'bg-blue-600 dark:bg-blue-500 text-white'
+              : page !== '...'
+              ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              : '',
+          ]"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <!-- Next page button -->
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -91,7 +167,10 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      currentPage: 1,
+      itemsPerPage: 9,
+    };
   },
   computed: {
     filteredVenues() {
@@ -110,6 +189,69 @@ export default {
     isLoading() {
       return store.state.isLoading;
     },
+    totalPages() {
+      return Math.ceil(this.filteredVenues.length / this.itemsPerPage);
+    },
+    displayedPageNumbers() {
+      // Logic to display a reasonable number of page numbers
+      const totalDisplayed = 5; // Max number of page buttons to show
+      const pages = [];
+
+      if (this.totalPages <= totalDisplayed) {
+        // If we have fewer pages than our display limit, show all pages
+        for (let i = 1; i <= this.totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // Always include first page
+        pages.push(1);
+
+        // Calculate start and end of the displayed range
+        let start = Math.max(
+          2,
+          this.currentPage - Math.floor(totalDisplayed / 2)
+        );
+        let end = Math.min(this.totalPages - 1, start + totalDisplayed - 3);
+
+        // Adjust start if end is at its maximum
+        if (end === this.totalPages - 1) {
+          start = Math.max(2, end - (totalDisplayed - 3));
+        }
+
+        // Add ellipsis if needed
+        if (start > 2) {
+          pages.push("...");
+        }
+
+        // Add page numbers in the middle
+        for (let i = start; i <= end; i++) {
+          pages.push(i);
+        }
+
+        // Add ellipsis if needed
+        if (end < this.totalPages - 1) {
+          pages.push("...");
+        }
+
+        // Always include last page
+        pages.push(this.totalPages);
+      }
+
+      return pages;
+    },
+    paginatedVenues() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      return this.filteredVenues.slice(start, start + this.itemsPerPage);
+    },
+    paginationStart() {
+      return (this.currentPage - 1) * this.itemsPerPage + 1;
+    },
+    paginationEnd() {
+      return Math.min(
+        this.currentPage * this.itemsPerPage,
+        this.filteredVenues.length
+      );
+    },
   },
   methods: {
     clearSearch() {
@@ -120,6 +262,38 @@ export default {
         location: "",
         sortBy: "rating",
       });
+      this.currentPage = 1; // Reset to first page when clearing search
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.scrollToTop();
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.scrollToTop();
+      }
+    },
+    goToPage(page) {
+      if (page !== "...") {
+        this.currentPage = page;
+        this.scrollToTop();
+      }
+    },
+    scrollToTop() {
+      // Smooth scroll to the top of the venue list
+      window.scrollTo({
+        top: this.$el.offsetTop - 100,
+        behavior: "smooth",
+      });
+    },
+  },
+  watch: {
+    // Reset to page 1 when filters change
+    "filteredVenues.length"() {
+      this.currentPage = 1;
     },
   },
 };
