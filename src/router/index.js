@@ -54,6 +54,10 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: "",
+        redirect: "/profile/bookings",
+      },
+      {
         path: "wallet",
         component: Wallet,
       },
