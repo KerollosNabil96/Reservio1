@@ -49,6 +49,8 @@
               <option value="rating">Highest Rated First</option>
               <option value="nearest">Nearest Date to Today</option>
               <option value="furthest">Furthest Date from Today</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700 dark:text-gray-300"

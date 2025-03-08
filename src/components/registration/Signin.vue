@@ -7,14 +7,14 @@
   >
     <!-- Form Container -->
     <div
-      class="bg-white rounded-lg overflow-hidden flex flex-col md:flex-row max-w-4xl w-full md:w-4/5 lg:w-3/4 max-h-[90vh] md:max-h-[80vh] relative my-4"
+      class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden flex flex-col md:flex-row max-w-4xl w-full md:w-4/5 lg:w-3/4 max-h-[90vh] md:max-h-[80vh] relative my-4 shadow-xl dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700"
       @click.stop
     >
       <!-- Close Button -->
       <button
         type="button"
         @click="$emit('close')"
-        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -35,53 +35,61 @@
       <!-- Map/Image Section - Will appear above form on mobile -->
       <div class="md:w-1/2 h-48 md:h-auto relative">
         <div
-          class="absolute inset-0 bg-gray-100 flex items-center justify-center"
+          class="absolute inset-0 bg-gray-100 dark:bg-gray-700 flex items-center justify-center"
         >
           <!-- Map background with logo overlay -->
           <img
             src="../../assets/pictures/signin.png"
             alt="Sign In"
-            class="w-full h-full object-cover opacity-50"
+            class="w-full h-full object-cover opacity-50 dark:opacity-30"
           />
           <div class="absolute inset-0 flex items-center justify-center">
-            <h1 class="text-5xl font-bold text-blue-600">Reservio</h1>
+            <h1 class="text-5xl font-bold text-blue-600 dark:text-blue-400">
+              Reservio
+            </h1>
           </div>
         </div>
       </div>
 
       <!-- Form Section -->
       <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto">
-        <h2 class="text-2xl font-bold mb-6">Sign In</h2>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+          Sign In
+        </h2>
 
         <form @submit.prevent="handleSubmit">
           <!-- Error Message -->
           <div
             v-if="errorMessage"
-            class="mb-4 p-3 bg-red-100 text-red-700 rounded-md"
+            class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-md"
           >
             {{ errorMessage }}
           </div>
           <!-- Email -->
           <div class="mb-4">
-            <label class="block mb-1">E mail</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-300"
+              >E mail</label
+            >
             <input
               type="email"
               v-model="email"
               placeholder="name@gmail.com"
-              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               required
             />
           </div>
 
           <!-- Password -->
           <div class="mb-4">
-            <label class="block mb-1">Password</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-300"
+              >Password</label
+            >
             <div class="relative">
               <input
                 type="password"
                 v-model="password"
                 placeholder="Enter your password"
-                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
             </div>
@@ -89,7 +97,9 @@
 
           <!-- Forgot Password Link -->
           <div class="mb-6 text-right">
-            <a href="#" class="text-sm text-blue-600 hover:underline"
+            <a
+              href="#"
+              class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
               >Forgot Password?</a
             >
           </div>
@@ -97,7 +107,7 @@
           <!-- Sign In Button with Spinner -->
           <button
             type="submit"
-            class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200 relative"
+            class="w-full bg-blue-600 dark:bg-blue-500 text-white py-3 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-200 relative"
             :disabled="isLoading"
           >
             <span v-if="!isLoading">Sign In</span>
@@ -111,7 +121,7 @@
             <button
               type="button"
               @click="signInWithGoogle"
-              class="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-50 transition duration-200"
+              class="w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 transition duration-200"
               :disabled="isLoading"
             >
               <svg
@@ -142,12 +152,14 @@
           </div>
 
           <!-- Sign Up Link -->
-          <div class="mt-4 text-center text-sm">
+          <div
+            class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400"
+          >
             Don't have an account?
             <button
               type="button"
               @click="$emit('switch-to-signup')"
-              class="text-blue-600 hover:underline font-medium"
+              class="text-blue-600 dark:text-blue-400 hover:underline font-medium"
             >
               Sign up
             </button>

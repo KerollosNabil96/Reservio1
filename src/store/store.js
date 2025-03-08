@@ -351,6 +351,24 @@ const store = createStore({
               return diffB - diffA; // Furthest first
             });
             break;
+          case "price_asc":
+            // Sort by price (lowest first)
+            filteredVenues = filteredVenues.sort((a, b) => {
+              // Ensure we're comparing numbers and handle missing prices
+              const priceA = a.price !== undefined ? Number(a.price) : 0;
+              const priceB = b.price !== undefined ? Number(b.price) : 0;
+              return priceA - priceB;
+            });
+            break;
+          case "price_desc":
+            // Sort by price (highest first)
+            filteredVenues = filteredVenues.sort((a, b) => {
+              // Ensure we're comparing numbers and handle missing prices
+              const priceA = a.price !== undefined ? Number(a.price) : 0;
+              const priceB = b.price !== undefined ? Number(b.price) : 0;
+              return priceB - priceA;
+            });
+            break;
         }
       }
 
