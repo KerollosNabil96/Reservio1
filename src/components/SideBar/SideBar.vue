@@ -1,8 +1,14 @@
 <template>
+  <div
+    v-if="sidebarOpen"
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+    @click="toggleSidebar"
+  ></div>
   <nav
     :class="[
       sidebarOpen ? 'block' : 'hidden',
       'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg',
+      'fixed md:relative inset-0 z-50 md:z-auto', // Add fixed positioning for mobile
     ]"
   >
     <div class="p-6 hidden md:block">
