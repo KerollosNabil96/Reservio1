@@ -195,7 +195,7 @@
 
         <!-- Tab Content -->
         <div class="min-h-[500px]">
-          <transition name="fade" mode="out-in">
+          <transition name="tab" mode="out-in">
             <component
               :is="
                 activeTab === 'information' ? 'InformationTab' : 'ReviewsTab'
@@ -433,29 +433,67 @@ export default {
 /* Modal Transition Effects */
 .modal-fade-enter-active,
 .modal-fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  backface-visibility: hidden;
+  will-change: opacity, transform;
 }
 
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 /* Image Slide Transition Effects */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.4s ease;
+  transition: opacity 0.55s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.55s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  backface-visibility: hidden;
+  will-change: opacity, transform;
+  position: relative;
+  z-index: 1;
 }
 
 .slide-fade-enter-from {
   opacity: 0;
-  transform: translateX(50px);
+  transform: translateX(30px) scale(0.98);
 }
 
 .slide-fade-leave-to {
   opacity: 0;
-  transform: translateX(-50px);
+  transform: translateX(-30px) scale(0.98);
+}
+
+/* Tab transitions for smooth tab switching */
+.tab-enter-active,
+.tab-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  transform-origin: top center;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.tab-enter-from {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.tab-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+}
+
+/* Make sure transitions work the same in dark mode */
+:deep(.dark) .tab-enter-active,
+:deep(.dark) .tab-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  transform-origin: top center;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 
 /* Keyboard navigation support */

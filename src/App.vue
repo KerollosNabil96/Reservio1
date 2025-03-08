@@ -107,13 +107,36 @@ export default {
 </template>
 
 <style>
+/* Prevent flash of light mode during page transitions */
+html.dark {
+  background-color: #0f172a !important; /* Darker background */
+  color: white;
+}
+
+html.dark body,
+html.dark #app,
+html.dark main,
+html.dark .page-container,
+html.dark .page-transition {
+  background-color: #0f172a !important; /* Match dark mode background */
+  color: white;
+}
+
 /* Optimize dark mode transitions */
 html {
   transition: background-color 0.2s ease;
 }
 
-html.dark * {
-  transition: background-color 0.2s ease;
+/* Make sure transitions are preserved for page transitions in dark mode */
+html.dark .page-transition,
+html.dark .page-enter-active,
+html.dark .page-leave-active,
+html.dark .page-container {
+  transition: opacity 0.65s cubic-bezier(0.33, 0.01, 0.25, 1),
+    transform 0.65s cubic-bezier(0.33, 0.01, 0.25, 1) !important;
+  will-change: opacity, transform;
+  transform-style: preserve-3d;
+  background-color: #0f172a !important; /* Match dark mode background */
 }
 
 /* Text color transitions happen immediately */
@@ -126,7 +149,7 @@ html.dark h6,
 html.dark p,
 html.dark span,
 html.dark a,
-html.dark div,
+html.dark div:not(.page-transition),
 html.dark label {
   transition: color 0s;
 }

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-full bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden flex flex-col"
+    class="h-full bg-white dark:bg-gray-800/50 backdrop-blur-sm shadow-lg rounded-lg overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700"
   >
     <!-- Image skeleton -->
     <div class="w-full h-48 relative">
@@ -8,7 +8,9 @@
     </div>
 
     <!-- Content skeletons -->
-    <div class="p-4 flex-grow flex flex-col space-y-3">
+    <div
+      class="p-4 flex-grow flex flex-col space-y-3 bg-gradient-to-br from-white/50 to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur-sm"
+    >
       <!-- Title -->
       <SkeletonLoader height="24px" width="80%" />
 

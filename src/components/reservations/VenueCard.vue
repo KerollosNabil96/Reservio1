@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+    class="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 dark:border-gray-700"
   >
     <!-- Top Image with overlay gradient and category badge -->
     <div class="relative">
@@ -30,7 +30,7 @@
       </div>
       <div class="absolute bottom-3 left-3">
         <span
-          class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm"
+          class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm backdrop-blur-sm"
         >
           {{ price }} EGP/ {{ perWhat }}
         </span>
@@ -38,7 +38,9 @@
     </div>
 
     <!-- Card Content -->
-    <div class="p-5 flex flex-col flex-grow">
+    <div
+      class="p-5 flex flex-col flex-grow bg-gradient-to-br from-white/50 to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur-sm"
+    >
       <!-- Title -->
       <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">
         {{ title }}
@@ -61,14 +63,14 @@
             v-if="
               !showTopRatedBadge && averageRating >= 4.5 && totalReviews > 0
             "
-            class="ml-2 inline-block text-xs px-1.5 py-0.5 bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 rounded-full font-medium"
+            class="ml-2 inline-block text-xs px-1.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full font-medium"
           >
             Top Rated
           </span>
         </span>
       </div>
 
-      <p class="text-sm text-gray-600 mb-4 dark:text-gray-300 line-clamp-2">
+      <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
         {{ description }}
       </p>
 
@@ -98,7 +100,7 @@
         </div>
         <RouterLink :to="`/book-now/${id}`" class="text-white">
           <BaseButton
-            class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md transform transition-all duration-300 hover:scale-105 shadow-md"
+            class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white px-4 py-2 rounded-md transform transition-all duration-300 hover:scale-105 shadow-md"
           >
             Book Now
           </BaseButton>
