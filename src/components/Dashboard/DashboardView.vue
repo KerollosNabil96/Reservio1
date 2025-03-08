@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-gray-900">
+  <div class="flex flex-col md:flex-row bg-gray-100 dark:bg-gray-900">
     <!-- Mobile Menu Toggle Button -->
     <div
       class="md:hidden bg-white dark:bg-gray-800 p-4 flex justify-between items-center shadow-md"
@@ -21,7 +21,7 @@
     <!-- Main Content -->
     <div
       :class="[
-        'flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900',
+        'flex-1 p-4 md:p-8  dark:bg-gray-900',
         sidebarOpen ? 'pt-16 md:pt-0' : '', // Add padding-top when sidebar is open on mobile
       ]"
     >
