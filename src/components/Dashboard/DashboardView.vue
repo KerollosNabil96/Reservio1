@@ -19,7 +19,12 @@
     <SideBar :sidebarOpen="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
     <!-- Main Content -->
-    <div class="flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900">
+    <div
+      :class="[
+        'flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900',
+        sidebarOpen ? 'pt-16 md:pt-0' : '', // Add padding-top when sidebar is open on mobile
+      ]"
+    >
       <!-- Header Section -->
       <div class="header-section mb-6">
         <h2 class="text-2xl md:text-3xl font-bold dark:text-white">
@@ -66,31 +71,55 @@
             <div
               v-for="booking in sortedBookings"
               :key="booking.id"
-              class="booking-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 transition-transform transform hover:scale-105"
+              class="booking-card bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col"
             >
-              <img
-                v-if="
-                  booking.venue.pictures && booking.venue.pictures.length > 0
-                "
-                :src="booking.venue.pictures[0]"
-                alt="Booking Image"
-                class="booking-image w-full h-40 object-cover rounded-lg mb-4"
-              />
+              <div class="relative w-full h-48 mb-4 overflow-hidden rounded-lg">
+                <img
+                  v-if="
+                    booking.venue.pictures && booking.venue.pictures.length > 0
+                  "
+                  :src="booking.venue.pictures[0]"
+                  alt="Booking Image"
+                  class="w-full h-full object-cover"
+                />
+                <div
+                  v-else
+                  class="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                >
+                  <i class="fas fa-image text-4xl"></i>
+                </div>
+              </div>
+
               <h3
-                class="text-lg font-semibold text-green-600 dark:text-green-400"
+                class="text-xl font-bold text-green-600 dark:text-green-400 mb-2 truncate"
               >
                 {{ booking.venue.venueName }}
               </h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Date: {{ formatDate(booking.date) }}
-              </p>
-              <p class="text-gray-600 dark:text-gray-400">
-                Address: {{ booking.venue.address.city }},
-                {{ booking.venue.address.governorate }}
-              </p>
-              <p class="price text-green-600 dark:text-green-400">
-                {{ booking.venue.price }} EGP/hour
-              </p>
+
+              <div
+                class="flex items-center text-gray-600 dark:text-gray-400 mb-2"
+              >
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span>{{ formatDate(booking.date) }}</span>
+              </div>
+
+              <div
+                class="flex items-center text-gray-600 dark:text-gray-400 mb-4"
+              >
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                <span>
+                  {{ booking.venue.address.city }},
+                  {{ booking.venue.address.governorate }}
+                </span>
+              </div>
+
+              <div class="mt-auto flex justify-between items-center">
+                <span
+                  class="text-lg font-semibold text-green-600 dark:text-green-400"
+                >
+                  {{ booking.venue.price }} EGP/hour
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -184,5 +213,20 @@ export default {
 </script>
 
 <style scoped>
-/* Custom styles if needed */
+/* Custom styles for booking card */
+.booking-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+}
+
+.booking-image {
+  transition: transform 0.3s ease;
+}
+
+.booking-card:hover .booking-image {
+  transform: scale(1.05);
+}
 </style>

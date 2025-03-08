@@ -163,6 +163,7 @@
 
 <script>
 import store from "@/store/store";
+import { getDatabase, ref, get, set } from "firebase/database";
 
 export default {
   props: ["requiredLicenses"],
@@ -285,6 +286,36 @@ export default {
           "pendingVenueRegistration",
           JSON.stringify(venueData)
         );
+
+        // Apply cashback before redirecting to Stripe payment
+        try {
+          if (store.state.user?.id) {
+            const db = getDatabase();
+            const userBalanceRef = ref(
+              db,
+              `users/${store.state.user.id}/balance`
+            );
+
+            // Get current balance
+            const snapshot = await get(userBalanceRef);
+            if (snapshot.exists()) {
+              const currentBalance = snapshot.val() || 0;
+              const cashbackAmount = 200 * 0.05; // 5% of 200 EGP
+
+              // Update balance with cashback
+              await set(userBalanceRef, currentBalance + cashbackAmount);
+              console.log(
+                `Added ${cashbackAmount} EGP cashback before Stripe payment`
+              );
+
+              // Set flag to prevent double application
+              localStorage.setItem("cashbackApplied", "true");
+            }
+          }
+        } catch (cashbackError) {
+          console.error("Error applying cashback:", cashbackError);
+          // Continue with payment even if cashback fails
+        }
 
         // Create Stripe checkout session
         const response = await fetch(

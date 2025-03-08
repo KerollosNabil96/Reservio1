@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { getDatabase, ref, get, set, update, onValue } from "firebase/database";
+import { getDatabase, ref, get, set, update } from "firebase/database";
 import store from "@/store/store";
 import BookingInfoPayment from "./BookingInfoPayment.vue";
 
@@ -162,14 +162,15 @@ export default {
         const userRef = ref(db, `users/${user.id}`);
         const userBalanceRef = ref(db, `users/${user.id}/balance`);
         await update(userRef, { balance: this.balanceAfterRegistration });
-        onValue(
-          userBalanceRef,
-          (snapshot) => {
-            const balance = snapshot.val();
-            set(userBalanceRef, balance + 200 * 0.05);
-          },
-          { onlyOnce: true }
-        );
+
+        // Get current balance after deduction and add cashback (5% of 200 EGP)
+        const snapshot = await get(userBalanceRef);
+        if (snapshot.exists()) {
+          const currentBalance = snapshot.val();
+          const cashbackAmount = 200 * 0.05;
+          await set(userBalanceRef, currentBalance + cashbackAmount);
+          console.log(`Added ${cashbackAmount} EGP cashback to user balance`);
+        }
 
         const id = "id" + Math.random().toString(16).slice(2);
 
@@ -199,6 +200,9 @@ export default {
             paymentDate: new Date().toISOString(),
           });
         }
+
+        // Set a flag to indicate cashback was already applied
+        localStorage.setItem("cashbackApplied", "true");
 
         this.paymentSuccess = true;
         this.userBalance = this.balanceAfterRegistration;
