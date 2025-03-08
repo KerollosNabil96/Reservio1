@@ -7,7 +7,7 @@ const store = createStore({
       email: "",
       phone: "",
     },
-    isDarkMode: true,
+    isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || false,
     showSignup: false,
     showSignin: false,
     user: null,
@@ -26,6 +26,10 @@ const store = createStore({
     },
   },
   mutations: {
+    toggleDarkMode(state) {
+      state.isDarkMode = !state.isDarkMode;
+      localStorage.setItem("DarkMode", state.isDarkMode); // Save to localStorage
+    },
     addReservation(state, payload) {
       state.reservations.push(payload);
     },

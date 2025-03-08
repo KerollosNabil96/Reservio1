@@ -529,7 +529,7 @@ export default {
       this.isUserMenuOpen = false;
     },
     toggleDarkMode() {
-      store.state.isDarkMode = !store.state.isDarkMode;
+      store.commit("toggleDarkMode"); // Commit the mutation
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;

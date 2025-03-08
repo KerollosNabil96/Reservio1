@@ -22,6 +22,16 @@ export default {
       return store.state.isLoading;
     },
   },
+  watch: {
+    // Watch for changes in isDarkMode and update the <html> element
+    dark(newVal) {
+      if (newVal) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    },
+  },
   methods: {
     hideSignUp() {
       store.commit("setShowSignup", false);
@@ -31,6 +41,12 @@ export default {
     },
   },
   created() {
+    // Initialize dark mode on app load
+    if (store.state.isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
     // Set loading state to true when app starts
     store.dispatch("setLoadingState", true);
 
@@ -77,10 +93,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="dark:bg-gray-800 min-h-screen flex flex-col"
-    :class="{ dark: dark }"
-  >
+  <div class="min-h-screen flex flex-col">
     <TheNavbar />
     <main class="flex-grow flex flex-col">
       <transition name="fade" mode="out-in">
