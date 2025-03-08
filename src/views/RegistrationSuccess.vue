@@ -160,6 +160,17 @@ export default {
         return;
       }
 
+      // Check if cashback was already applied when clicking "Pay with Credit Card"
+      if (
+        this.isCreditCardPayment &&
+        localStorage.getItem("pendingCashbackAmount") === null
+      ) {
+        console.log(
+          "Cashback already applied when clicking Pay with Credit Card, skipping"
+        );
+        return;
+      }
+
       if (!store.state.user?.id) {
         console.error("No user found, cannot apply cashback");
         return;
@@ -251,7 +262,14 @@ export default {
       );
       this.paymentMethod = "Credit Card";
       this.isCreditCardPayment = true;
-      // Remove any existing cashback flag to ensure we apply it
+
+      // Clear the pendingCashbackAmount since cashback was already applied when clicking "Pay with Credit Card"
+      localStorage.removeItem("pendingCashbackAmount");
+      console.log(
+        "Cleared pendingCashbackAmount as cashback was already applied"
+      );
+
+      // Remove any existing cashback flag to ensure we don't apply it again
       localStorage.removeItem("cashbackApplied");
     }
 
@@ -312,8 +330,15 @@ export default {
 
     // Apply cashback based on payment method
     if (this.isCreditCardPayment) {
-      console.log("Credit card payment detected, applying cashback");
-      await this.applyCashback();
+      // For credit card payments, check if cashback was already applied when clicking "Pay with Credit Card"
+      if (localStorage.getItem("pendingCashbackAmount") === null) {
+        console.log(
+          "Cashback already applied when clicking Pay with Credit Card, skipping"
+        );
+      } else {
+        console.log("Credit card payment detected, applying cashback");
+        await this.applyCashback();
+      }
     } else {
       console.log(
         "Wallet payment detected, checking if cashback already applied"

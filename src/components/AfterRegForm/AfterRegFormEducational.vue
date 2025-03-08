@@ -200,7 +200,10 @@
               ></path>
             </svg>
           </span>
-          Pay with Wallet ({{ userBalance }} EGP)
+          Pay with Wallet
+          <span class="text-sm ms-1">
+            (Current Balance: {{ userBalance }} EGP)</span
+          >
         </button>
 
         <button
@@ -244,13 +247,6 @@
         <p class="text-sm">
           Insufficient wallet balance. Please add funds or use a credit card.
         </p>
-      </div>
-
-      <div
-        v-if="errorMessage"
-        class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
-      >
-        <p class="text-sm">{{ errorMessage }}</p>
       </div>
     </div>
   </div>
@@ -348,6 +344,8 @@ export default {
           "Please fill in all required fields and add at least one time slot.";
         return;
       }
+      // Refresh user balance before showing the payment popup
+      this.fetchUserBalance();
       this.showPaymentPopup = true;
     },
     closePaymentPopup() {
@@ -360,6 +358,7 @@ export default {
       try {
         this.isLoading = true;
         this.errorMessage = "";
+        this.paymentMethod = "credit card";
 
         const formData = store.state.myFormData;
 
@@ -380,6 +379,10 @@ export default {
           "pendingVenueRegistration",
           JSON.stringify(venueData)
         );
+
+        // Apply cashback immediately (5% of 200 EGP registration fee)
+        const cashbackAmount = 200 * 0.05; // 10 EGP
+        await this.applyCashback(cashbackAmount);
 
         // Save venue to requests collection first
         const requestID = Math.random().toString(36).substring(2, 15);
@@ -406,12 +409,82 @@ export default {
         const { url } = await response.json();
         window.location.href = url;
       } catch (error) {
-        // If there was an error, remove the request from Firebase
+        // If there was an error, remove the request from Firebase and revert cashback
         this.removeFailedRequest();
+        await this.revertCashback();
         this.errorMessage =
           error.message || "Failed to process payment. Please try again.";
+
+        // Close the payment popup to show the error in the main component
+        this.closePaymentPopup();
       } finally {
         this.isLoading = false;
+      }
+    },
+    async applyCashback(amount) {
+      if (!store.state.user?.id) {
+        console.error("No user found, cannot apply cashback");
+        return;
+      }
+
+      try {
+        console.log("Applying cashback of", amount, "EGP");
+        const userBalanceRef = ref(db, `users/${store.state.user.id}/balance`);
+
+        // Get current balance
+        const currentBalance = this.userBalance;
+        const newBalance = currentBalance + amount;
+
+        // Update balance with cashback
+        await set(userBalanceRef, newBalance);
+        console.log(
+          `Successfully added ${amount} EGP cashback. New balance: ${newBalance} EGP`
+        );
+
+        // Store the cashback amount for potential reversion
+        localStorage.setItem("pendingCashbackAmount", amount.toString());
+
+        // Update local state
+        this.userBalance = newBalance;
+      } catch (error) {
+        console.error("Error applying cashback:", error);
+      }
+    },
+    async revertCashback() {
+      if (!store.state.user?.id) {
+        console.error("No user found, cannot revert cashback");
+        return;
+      }
+
+      const cashbackAmount = parseFloat(
+        localStorage.getItem("pendingCashbackAmount") || "0"
+      );
+      if (cashbackAmount <= 0) {
+        console.log("No cashback to revert");
+        return;
+      }
+
+      try {
+        console.log("Reverting cashback of", cashbackAmount, "EGP");
+        const userBalanceRef = ref(db, `users/${store.state.user.id}/balance`);
+
+        // Get current balance
+        const currentBalance = this.userBalance;
+        const newBalance = currentBalance - cashbackAmount;
+
+        // Update balance by removing the cashback
+        await set(userBalanceRef, newBalance);
+        console.log(
+          `Successfully reverted ${cashbackAmount} EGP cashback. New balance: ${newBalance} EGP`
+        );
+
+        // Clear the stored cashback amount
+        localStorage.removeItem("pendingCashbackAmount");
+
+        // Update local state
+        this.userBalance = newBalance;
+      } catch (error) {
+        console.error("Error reverting cashback:", error);
       }
     },
     async removeFailedRequest() {
@@ -452,6 +525,28 @@ export default {
     },
     uploadLicense(event) {
       this.requiredLicenses = event.target.files;
+    },
+    fetchUserBalance() {
+      if (store.state.user && store.state.user.balance !== undefined) {
+        this.userBalance = store.state.user.balance;
+        this.hasEnoughBalance = this.userBalance >= 200; // 200 EGP is the registration fee
+      }
+    },
+  },
+  mounted() {
+    // Fetch user balance when component is mounted
+    this.fetchUserBalance();
+  },
+  watch: {
+    // Watch for changes in the user object
+    "store.state.user": {
+      handler(newUser) {
+        if (newUser && newUser.balance !== undefined) {
+          this.userBalance = newUser.balance;
+          this.hasEnoughBalance = this.userBalance >= 200; // 200 EGP is the registration fee
+        }
+      },
+      deep: true,
     },
   },
 };
