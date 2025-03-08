@@ -1,5 +1,6 @@
 import "./assets/main.css";
 import "./assets/animations.css";
+import "./assets/page-transitions.css";
 
 import { createApp } from "vue";
 import App from "./App.vue";

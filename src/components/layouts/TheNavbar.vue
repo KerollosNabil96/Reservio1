@@ -34,24 +34,28 @@
         <li>
           <RouterLink
             to="/"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/' }"
             >Home</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/book-now"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path.includes('/book-now') }"
+            class="nav-link hover:text-blue-600"
+            :class="{
+              'text-blue-600 active': $route.path.includes('/book-now'),
+            }"
             >Book Now</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/register-venue"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
+            class="nav-link hover:text-blue-600"
+            :class="{
+              'text-blue-600 active': $route.path === '/register-venue',
+            }"
             >Share Venue</RouterLink
           >
         </li>
@@ -59,24 +63,24 @@
         <li>
           <RouterLink
             to="/about"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/about' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/about' }"
             >About</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/contact"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/contact' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/contact' }"
             >Contact</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/FAQs"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/FAQs' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/FAQs' }"
             >FAQs</RouterLink
           >
         </li>
@@ -266,14 +270,17 @@
           <!-- Mobile Nav Links -->
           <ul class="flex flex-col space-y-4 mb-4">
             <li>
-              <RouterLink to="/" class="hover:text-blue-600" @click="closeMenu"
+              <RouterLink
+                to="/"
+                class="nav-link hover:text-blue-600"
+                @click="closeMenu"
                 >Home</RouterLink
               >
             </li>
             <li>
               <RouterLink
                 to="/register-venue"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >Share Venue</RouterLink
               >
@@ -281,7 +288,7 @@
             <li>
               <RouterLink
                 to="/book-now"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >Book Now</RouterLink
               >
@@ -289,7 +296,7 @@
             <li>
               <RouterLink
                 to="/about"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >About</RouterLink
               >
@@ -297,8 +304,8 @@
             <li>
               <RouterLink
                 to="/contact"
-                class="hover:text-blue-600"
-                :class="{ 'text-blue-600': $route.path === '/contact' }"
+                class="nav-link hover:text-blue-600"
+                :class="{ 'text-blue-600 active': $route.path === '/contact' }"
                 @click="closeMenu"
                 >Contact</RouterLink
               >
@@ -306,7 +313,7 @@
             <li>
               <RouterLink
                 to="/FAQs"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >FAQs</RouterLink
               >

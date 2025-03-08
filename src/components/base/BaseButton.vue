@@ -6,7 +6,7 @@
 export default {
   computed: {
     styles() {
-      return `hover:cursor-pointer transition-all rounded-md`;
+      return `hover:cursor-pointer transition-all rounded-md btn-transition`;
     },
   },
 };

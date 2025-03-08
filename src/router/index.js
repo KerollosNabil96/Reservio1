@@ -147,7 +147,25 @@ const router = createRouter({
       return false;
     }
 
-    return savedPosition || { top: 0, behavior: "smooth" };
+    if (savedPosition) {
+      return {
+        ...savedPosition,
+        behavior: "smooth",
+      };
+    }
+
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: "smooth",
+        top: 90,
+      };
+    }
+
+    return {
+      top: 0,
+      behavior: "smooth",
+    };
   },
 });
 

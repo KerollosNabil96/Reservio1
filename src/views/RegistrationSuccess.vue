@@ -123,9 +123,9 @@ export default {
       this.$router.push("/");
     },
     async applyCashback() {
-      // If cashback has already been applied, don't apply it again
+      // Check if cashback was already applied (for wallet payments)
       if (localStorage.getItem("cashbackApplied") === "true") {
-        console.log("Cashback already applied, skipping");
+        console.log("Cashback already applied from wallet payment, skipping");
         localStorage.removeItem("cashbackApplied"); // Clear the flag
         return;
       }
@@ -138,6 +138,7 @@ export default {
       try {
         console.log("Attempting to apply cashback...");
         console.log("Payment method:", this.paymentMethod);
+        console.log("Is credit card payment:", this.isCreditCardPayment);
 
         const userBalanceRef = ref(db, `users/${store.state.user.id}/balance`);
 
@@ -165,100 +166,69 @@ export default {
     },
   },
   async mounted() {
-    // Get URL parameters
+    // Improved detection for Stripe redirects with detailed logging
     console.log("URL search params:", window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
 
-    // Check for Stripe success indicators
+    // Check multiple possible Stripe success indicators
     const hasPaymentIntent = urlParams.has("payment_intent");
     const hasStripeSuccess = urlParams.get("stripe") === "success";
     const hasSuccessParam =
       urlParams.has("success") || urlParams.get("status") === "success";
     const hasRedirectStatus = urlParams.has("redirect_status");
 
-    // If we have any indication of Stripe success, set as credit card payment
+    // If we have any indication of Stripe success, force credit card payment method
     const isStripeRedirect =
       hasPaymentIntent ||
       hasStripeSuccess ||
       hasSuccessParam ||
       hasRedirectStatus;
 
-    // Try to get venue data from localStorage first
-    const storedVenue = localStorage.getItem("pendingVenueRegistration");
-    let venueData;
-
-    if (storedVenue) {
-      venueData = JSON.parse(storedVenue);
-      this.venueName = venueData.name || venueData.venueName || "Not available";
-      this.venueCategory = venueData.category || "Not available";
-    } else if (store.state.myFormData) {
-      // Fallback to store if localStorage is empty
-      venueData = store.state.myFormData;
-      this.venueName = venueData.name || venueData.venueName || "Not available";
-      this.venueCategory = venueData.category || "Not available";
-    }
-
     if (isStripeRedirect) {
       console.log(
-        "Detected return from Stripe, processing credit card payment"
+        "Detected return from Stripe, setting payment method to credit card"
       );
       this.paymentMethod = "Credit Card";
       this.isCreditCardPayment = true;
+      // Remove any existing cashback flag to ensure we apply it
+      localStorage.removeItem("cashbackApplied");
+    }
 
-      try {
-        if (!store.state.user?.id) {
-          console.error("No user found for Stripe payment");
-          return;
-        }
-
-        const db = getDatabase();
-        const id = "id" + Math.random().toString(16).slice(2);
-
-        // Prepare venue data for saving
-        const venueToSave = {
-          ...venueData,
-          id,
-          ownerId: store.state.user.id,
-          createdAt: new Date().toISOString(),
-          status: "pending",
-          paymentStatus: "paid",
-          paymentMethod: "credit card",
-          paymentDate: new Date().toISOString(),
-        };
-
-        // Save venue to requests collection
-        await set(ref(db, `requests/${id}`), venueToSave);
-
-        // Save reference to user's pending venues
-        const userVenueRef = ref(
-          db,
-          `users/${store.state.user.id}/pendingVenues/${id}`
-        );
-        await set(userVenueRef, {
-          venueId: id,
-          status: "pending",
-          registrationDate: new Date().toISOString(),
-          paymentStatus: "paid",
-          paymentDate: new Date().toISOString(),
-        });
-
-        // Cashback should have already been applied when clicking "Pay with Credit Card"
-        // We don't need to apply it again here
-        console.log(
-          "Credit card payment successful, cashback should be already applied"
-        );
-      } catch (error) {
-        console.error("Error processing Stripe success:", error);
+    // Try to get venue data from localStorage first
+    const storedVenue = localStorage.getItem("pendingVenueRegistration");
+    if (storedVenue) {
+      const venueData = JSON.parse(storedVenue);
+      this.venueName = venueData.name || venueData.venueName || "Not available";
+      this.venueCategory = venueData.category || "Not available";
+      // Only set payment method from stored data if not already set by Stripe redirect
+      if (!isStripeRedirect) {
+        this.paymentMethod =
+          venueData.paymentMethod === "credit card" ? "Credit Card" : "Wallet";
+        this.isCreditCardPayment = venueData.paymentMethod === "credit card";
       }
-    } else {
-      // For non-Stripe payments (wallet), just set the payment method
-      this.paymentMethod =
-        venueData?.paymentMethod === "credit card" ? "Credit Card" : "Wallet";
-      this.isCreditCardPayment = venueData?.paymentMethod === "credit card";
+    } else if (store.state.myFormData) {
+      // Fallback to store if localStorage is empty
+      const venueData = store.state.myFormData;
+      this.venueName = venueData.name || venueData.venueName || "Not available";
+      this.venueCategory = venueData.category || "Not available";
+      // Only set payment method from stored data if not already set by Stripe redirect
+      if (!isStripeRedirect) {
+        this.paymentMethod =
+          venueData.paymentMethod === "credit card" ? "Credit Card" : "Wallet";
+        this.isCreditCardPayment = venueData.paymentMethod === "credit card";
+      }
+    }
 
-      // Check if cashback was already applied
+    // Apply cashback based on payment method
+    if (this.isCreditCardPayment) {
+      console.log("Credit card payment detected, applying cashback");
+      await this.applyCashback();
+    } else {
+      console.log(
+        "Wallet payment detected, checking if cashback already applied"
+      );
       if (localStorage.getItem("cashbackApplied") === "true") {
-        console.log("Cashback already applied");
+        console.log("Cashback already applied from wallet payment");
         localStorage.removeItem("cashbackApplied"); // Clear the flag
       }
     }

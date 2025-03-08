@@ -96,8 +96,10 @@ export default {
   <div class="min-h-screen flex flex-col">
     <TheNavbar />
     <main class="flex-grow flex flex-col">
-      <transition name="fade" mode="out-in">
-        <RouterView />
+      <transition name="page" mode="out-in">
+        <RouterView v-slot="{ Component }">
+          <component :is="Component" class="page-transition" />
+        </RouterView>
       </transition>
     </main>
     <TheFooter />
@@ -139,10 +141,33 @@ html.dark label {
   transition: background-color 0.2s ease;
 }
 
-/* Page transitions */
+/* Page transitions - simple fade with slight movement */
+.page-transition {
+  width: 100%;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Keep the previous fade transitions for backward compatibility */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-enter-from,
