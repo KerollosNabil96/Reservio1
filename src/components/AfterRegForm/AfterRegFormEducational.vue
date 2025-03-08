@@ -1,150 +1,256 @@
 <template>
-  <div class="mb-4">
-    <label class="block font-medium dark:text-white"
+  <div class="mb-6">
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
       >Add the link to your Educational Center License</label
     >
     <input
       type="text"
       v-model="educationalLicense"
-      class="mt-2 border p-2 w-full rounded-md dark:text-white"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+      placeholder="Enter your educational center license number or URL"
     />
   </div>
 
   <!-- Date Picker -->
-  <div class="mb-4">
-    <label class="block font-medium dark:text-white">Pick a Date</label>
+  <div class="mb-6">
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >Pick a Date</label
+    >
     <input
       type="date"
       v-model="selectedDate"
-      class="mt-2 border p-2 w-full rounded-md dark:text-white"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
     />
   </div>
 
   <!-- Time Slot Selection -->
-  <div class="mb-4">
-    <label class="block font-medium dark:text-white">Select time slot</label>
-    <div class="flex gap-2 mt-2">
-      <input
-        type="time"
-        v-model="fromTime"
-        class="border p-2 w-1/3 rounded-md dark:text-white"
-      />
-      <input
-        type="time"
-        v-model="toTime"
-        class="border p-2 w-1/3 rounded-md dark:text-white"
-      />
-      <input
-        type="number"
-        v-model.number="capacity"
-        class="border p-2 w-1/3 rounded-md dark:text-white"
-        placeholder="Capacity"
-        min="1"
-      />
+  <div class="mb-6">
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >Select time slot</label
+    >
+    <div class="flex gap-3 mt-2">
+      <div class="w-1/3">
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >From</label
+        >
+        <input
+          type="time"
+          v-model="fromTime"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+        />
+      </div>
+      <div class="w-1/3">
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >To</label
+        >
+        <input
+          type="time"
+          v-model="toTime"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+        />
+      </div>
+      <div class="w-1/3">
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >Capacity</label
+        >
+        <input
+          type="number"
+          v-model.number="capacity"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+          placeholder="Capacity"
+          min="1"
+        />
+      </div>
     </div>
     <button
       @click="addTimeSlot"
-      class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md"
+      class="mt-4 w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
     >
       Add Time Slot
     </button>
   </div>
 
-  <!-- Time Slots Table -->
-  <div class="mt-4 border rounded-md p-4">
-    <table class="w-full text-left">
-      <thead>
-        <tr class="border-b">
-          <th class="py-2 dark:text-white">From</th>
-          <th class="py-2 dark:text-white">To</th>
-          <th class="py-2 dark:text-white">Capacity</th>
-          <th class="py-2 dark:text-white">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(slot, index) in timeSlots" :key="index" class="border-b">
-          <td class="py-2 dark:text-white">{{ slot.from }}</td>
-          <td class="py-2 dark:text-white">{{ slot.to }}</td>
-          <td class="py-2 dark:text-white">{{ slot.capacity }}</td>
-          <td class="py-2 dark:text-white">
-            <button @click="removeTimeSlot(index)" class="text-red-500">
-              ✖
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Time Slots List -->
+  <div v-if="timeSlots.length > 0" class="mb-6">
+    <h3 class="font-medium text-gray-700 dark:text-gray-300 mb-3">
+      Added Time Slots
+    </h3>
+    <div class="space-y-3">
+      <div
+        v-for="(slot, index) in timeSlots"
+        :key="index"
+        class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 backdrop-blur-sm"
+      >
+        <div class="text-gray-700 dark:text-gray-300">
+          <span class="font-medium">{{ slot.from }} - {{ slot.to }}</span>
+          <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"
+            >({{ slot.capacity }} spots)</span
+          >
+        </div>
+        <button
+          @click="removeTimeSlot(index)"
+          class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Proceed Button -->
-  <button
-    @click="openPaymentPopup"
-    :disabled="!canProceed"
-    class="mt-6 w-full bg-green-600 text-white py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+  <!-- Error Message -->
+  <div
+    v-if="errorMessage"
+    class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
   >
-    Proceed to Payment
-  </button>
-  <p v-if="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Submit Button -->
+  <div class="mt-8">
+    <button
+      @click="openPaymentPopup"
+      :disabled="!canProceed"
+      class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Proceed to Payment
+    </button>
+  </div>
 
   <!-- Payment Popup with dark overlay -->
   <div
     v-if="showPaymentPopup"
-    class="fixed inset-0 flex items-center justify-center"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
   >
     <div
-      @click.self="closePopUp"
-      class="absolute inset-0 bg-black opacity-70 z-20"
-    ></div>
-    <div class="bg-white p-6 rounded-lg w-96 relative z-30">
-      <button
-        @click="closePaymentPopup"
-        class="absolute top-2 right-2 text-gray-500 hover:text-gray-900 focus:outline-none"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-
-      <h3 class="text-lg font-bold text-center mb-4">Choose Payment Method</h3>
-      <div class="flex flex-col gap-4">
-        <button
-          @click="payWithCreditCard"
-          class="bg-blue-600 text-white py-2 px-4 rounded-lg"
-        >
-          <div
-            v-if="isLoading"
-            class="flex items-center justify-center space-x-2"
-          >
-            <div
-              class="w-6 h-6 border-4 border-t-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"
-            ></div>
-            <span>Processing...</span>
-          </div>
-          <div v-else>Pay with Credit Card</div>
-        </button>
-        <button
-          @click="payWithWallet"
-          class="bg-green-600 text-white py-2 px-4 rounded-lg"
-        >
-          Pay with Your Wallet
-        </button>
+      class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          Choose Payment Method
+        </h3>
         <button
           @click="closePaymentPopup"
-          class="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          Cancel
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
+      </div>
+
+      <div class="mb-6">
+        <p class="text-gray-700 dark:text-gray-300 mb-4">
+          Registration fee: <span class="font-bold">200 EGP</span>
+        </p>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">
+          Select your preferred payment method:
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <button
+          @click="payWithWallet"
+          :disabled="isLoading || !hasEnoughBalance"
+          class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-500 dark:to-emerald-500 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          <span v-if="isLoading && paymentMethod === 'wallet'" class="mr-2">
+            <svg
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </span>
+          Pay with Wallet ({{ userBalance }} EGP)
+        </button>
+
+        <button
+          @click="payWithCreditCard"
+          :disabled="isLoading"
+          class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          <span
+            v-if="isLoading && paymentMethod === 'credit card'"
+            class="mr-2"
+          >
+            <svg
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </span>
+          Pay with Credit Card
+        </button>
+      </div>
+
+      <div
+        v-if="!hasEnoughBalance"
+        class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
+      >
+        <p class="text-sm">
+          Insufficient wallet balance. Please add funds or use a credit card.
+        </p>
+      </div>
+
+      <div
+        v-if="errorMessage"
+        class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
+      >
+        <p class="text-sm">{{ errorMessage }}</p>
       </div>
     </div>
   </div>
@@ -152,6 +258,8 @@
 
 <script>
 import store from "@/store/store";
+import { getDatabase, ref, set, push } from "firebase/database";
+import { db } from "@/firebase";
 
 export default {
   props: ["requiredLicenses"],
@@ -166,6 +274,9 @@ export default {
       educationalLicense: "",
       showPaymentPopup: false,
       isLoading: false,
+      paymentMethod: null,
+      userBalance: 0,
+      hasEnoughBalance: true,
     };
   },
   computed: {
@@ -250,7 +361,6 @@ export default {
         this.isLoading = true;
         this.errorMessage = "";
 
-        // Get form data from first registration step
         const formData = store.state.myFormData;
 
         // Create venue data object combining both forms
@@ -260,6 +370,8 @@ export default {
           educationalLicense: this.educationalLicense,
           timeSlots: this.timeSlots,
           paymentMethod: "credit card",
+          submittedAt: new Date().toISOString(),
+          status: "pending_payment",
         };
 
         // Save to store and localStorage for later use
@@ -269,6 +381,15 @@ export default {
           JSON.stringify(venueData)
         );
 
+        // Save venue to requests collection first
+        const requestID = Math.random().toString(36).substring(2, 15);
+        localStorage.setItem("pendingRequestID", requestID);
+
+        // Save the venue data to Firebase
+        const requestsRef = ref(db, `requests/${requestID}`);
+        await set(requestsRef, venueData);
+        console.log("Venue request saved with ID:", requestID);
+
         // Create Stripe checkout session
         const response = await fetch(
           "http://localhost:3000/create-checkout-session-register",
@@ -277,6 +398,7 @@ export default {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               venue: venueData,
+              requestID: requestID, // Pass the request ID to Stripe
             }),
           }
         );
@@ -284,10 +406,25 @@ export default {
         const { url } = await response.json();
         window.location.href = url;
       } catch (error) {
+        // If there was an error, remove the request from Firebase
+        this.removeFailedRequest();
         this.errorMessage =
           error.message || "Failed to process payment. Please try again.";
       } finally {
         this.isLoading = false;
+      }
+    },
+    async removeFailedRequest() {
+      try {
+        const requestID = localStorage.getItem("pendingRequestID");
+        if (requestID) {
+          const requestRef = ref(db, `requests/${requestID}`);
+          await set(requestRef, null);
+          console.log("Removed failed request:", requestID);
+          localStorage.removeItem("pendingRequestID");
+        }
+      } catch (error) {
+        console.error("Error removing failed request:", error);
       }
     },
     payWithWallet() {
