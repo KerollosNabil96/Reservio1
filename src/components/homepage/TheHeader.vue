@@ -38,13 +38,13 @@
         <div class="flex flex-col sm:flex-row gap-4 mt-2">
           <RouterLink to="/register-venue" class="flex-1">
             <BaseButton
-              class="text-white px-6 py-3 text-lg w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
+              class="text-white lg:px-4 py-3 text-sm lg:text-md w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >Share Your Venue</BaseButton
             >
           </RouterLink>
           <RouterLink to="/book-now" class="flex-1">
             <BaseButton
-              class="px-6 py-3 text-lg w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300"
+              class="lg:px-4 py-3 text-sm lg:text-md w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300"
               >Browse Venues</BaseButton
             >
           </RouterLink>
