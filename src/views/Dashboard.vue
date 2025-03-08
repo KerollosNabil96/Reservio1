@@ -473,16 +473,42 @@
         <button
           @click="showEmailModal = false"
           class="px-3 sm:px-6 py-2 sm:py-3 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 font-medium"
+          :disabled="isSubmitting"
         >
           Cancel
         </button>
         <button
           @click="sendRejectionEmailAndReject"
           class="px-3 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
-          :disabled="!rejectionReason"
+          :disabled="!rejectionReason || isSubmitting"
         >
-          <i class="fas fa-paper-plane mr-2"></i>
-          Send & Reject
+          <template v-if="isSubmitting">
+            <svg
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Processing...</span>
+          </template>
+          <template v-else>
+            <i class="fas fa-paper-plane mr-2"></i>
+            <span>Send & Reject</span>
+          </template>
         </button>
       </div>
     </div>
@@ -808,6 +834,7 @@ import { getAuth } from "firebase/auth";
 export default {
   data() {
     return {
+      isSubmitting: false,
       showImageModal: false,
       currentImage: "",
       imageList: [],
@@ -1039,33 +1066,39 @@ export default {
 
     async sendRejectionEmailAndReject() {
       if (!this.rejectionReason) {
-        this.$toast.error("Please provide a rejection reason");
+        alert("Please provide a rejection reason");
         return;
       }
+
+      this.isSubmitting = true; // Start loading
 
       try {
         // First delete the request from Firebase
         const db = getDatabase();
         await remove(dbRef(db, `requests/${this.selectedRequest.id}`));
 
-        // Then send the rejection email
-        const response = await fetch(
-          "http://localhost:3000/send-rejection-email",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              to: this.selectedRequest.ownerEmail,
-              subject: `Venue Request Rejected - ${this.selectedRequest.venueName}`,
-              message: this.rejectionReason,
-            }),
-          }
-        );
+        try {
+          // Then send the rejection email
+          const response = await fetch(
+            "http://localhost:3000/send-rejection-email",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                to: this.selectedRequest.ownerEmail,
+                subject: `Venue Request Rejected - ${this.selectedRequest.venueName}`,
+                message: this.rejectionReason,
+              }),
+            }
+          );
 
-        if (!response.ok) {
-          throw new Error("Failed to send rejection email");
+          if (!response.ok) {
+            console.error("Email sending failed");
+          }
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
         }
 
         // Update local state to remove the request
@@ -1077,13 +1110,15 @@ export default {
         this.rejectionReason = "";
         this.showEmailModal = false;
         this.showRejectModal = false;
-        this.showRequestModal = false; // Also close the request details modal
+        this.showRequestModal = false;
         this.selectedRequest = null;
 
-        this.$toast.success("Request rejected and email sent successfully");
+        console.log("Request rejected successfully");
       } catch (error) {
         console.error("Error processing rejection:", error);
-        this.$toast.error(error.message || "Failed to process rejection");
+        alert("Failed to process rejection");
+      } finally {
+        this.isSubmitting = false; // Stop loading regardless of outcome
       }
     },
 
@@ -1118,5 +1153,24 @@ export default {
   min-height: 200px;
   border-radius: 8px;
   object-fit: cover;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
