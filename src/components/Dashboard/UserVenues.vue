@@ -9,6 +9,7 @@
   <div v-if="filteredVenues.length === 0" class="no-bookings">
     <p>No Venues To Display</p>
   </div>
+  <!--  -->
   <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     <div
       v-for="venue in filteredVenues"

@@ -19,7 +19,12 @@
     <SideBar :sidebarOpen="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
     <!-- Main Content -->
-    <div class="flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900">
+    <div
+      :class="[
+        'flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900',
+        sidebarOpen ? 'pt-16 md:pt-0' : '', // Add padding-top when sidebar is open on mobile
+      ]"
+    >
       <!-- Header Section -->
       <div class="header-section mb-6">
         <h2 class="text-2xl md:text-3xl font-bold dark:text-white">
