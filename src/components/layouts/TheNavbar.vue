@@ -1,9 +1,14 @@
 <template>
   <nav
-    class="bg-white/85 shadow-sm dark:bg-gray-900/95 dark:text-white fixed top-0 left-0 right-0 z-50"
+    :class="[
+      'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out',
+      isScrolled
+        ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-md'
+        : 'bg-white dark:bg-gray-900 shadow-sm',
+    ]"
   >
     <div
-      class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto"
+      class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto text-gray-800 dark:text-white"
     >
       <!-- Logo -->
       <RouterLink to="/" class="text-2xl font-bold text-blue-600"
@@ -34,24 +39,28 @@
         <li>
           <RouterLink
             to="/"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/' }"
             >Home</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/book-now"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path.includes('/book-now') }"
+            class="nav-link hover:text-blue-600"
+            :class="{
+              'text-blue-600 active': $route.path.includes('/book-now'),
+            }"
             >Book Now</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/register-venue"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/register-venue' }"
+            class="nav-link hover:text-blue-600"
+            :class="{
+              'text-blue-600 active': $route.path === '/register-venue',
+            }"
             >Share Venue</RouterLink
           >
         </li>
@@ -59,24 +68,24 @@
         <li>
           <RouterLink
             to="/about"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/about' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/about' }"
             >About</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/contact"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/contact' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/contact' }"
             >Contact</RouterLink
           >
         </li>
         <li>
           <RouterLink
             to="/FAQs"
-            class="hover:text-blue-600"
-            :class="{ 'text-blue-600': $route.path === '/FAQs' }"
+            class="nav-link hover:text-blue-600"
+            :class="{ 'text-blue-600 active': $route.path === '/FAQs' }"
             >FAQs</RouterLink
           >
         </li>
@@ -266,14 +275,17 @@
           <!-- Mobile Nav Links -->
           <ul class="flex flex-col space-y-4 mb-4">
             <li>
-              <RouterLink to="/" class="hover:text-blue-600" @click="closeMenu"
+              <RouterLink
+                to="/"
+                class="nav-link hover:text-blue-600"
+                @click="closeMenu"
                 >Home</RouterLink
               >
             </li>
             <li>
               <RouterLink
                 to="/register-venue"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >Share Venue</RouterLink
               >
@@ -281,7 +293,7 @@
             <li>
               <RouterLink
                 to="/book-now"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >Book Now</RouterLink
               >
@@ -289,7 +301,7 @@
             <li>
               <RouterLink
                 to="/about"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >About</RouterLink
               >
@@ -297,8 +309,8 @@
             <li>
               <RouterLink
                 to="/contact"
-                class="hover:text-blue-600"
-                :class="{ 'text-blue-600': $route.path === '/contact' }"
+                class="nav-link hover:text-blue-600"
+                :class="{ 'text-blue-600 active': $route.path === '/contact' }"
                 @click="closeMenu"
                 >Contact</RouterLink
               >
@@ -306,7 +318,7 @@
             <li>
               <RouterLink
                 to="/FAQs"
-                class="hover:text-blue-600"
+                class="nav-link hover:text-blue-600"
                 @click="closeMenu"
                 >FAQs</RouterLink
               >
@@ -504,9 +516,10 @@ export default {
     return {
       isUserMenuOpen: false,
       isMenuOpen: false,
-      isUserMenuOpen: false,
       showSignupForm: false,
       showSigninForm: false,
+      isScrolled: false,
+      scrollY: 0,
     };
   },
   computed: {
@@ -524,7 +537,23 @@ export default {
     Signup,
     Signin,
   },
+  mounted() {
+    // Add scroll event listener
+    window.addEventListener("scroll", this.handleScroll, { passive: true });
+    // Check initial scroll position
+    this.handleScroll();
+  },
+  beforeUnmount() {
+    // Clean up the event listener when component is unmounted
+    window.removeEventListener("scroll", this.handleScroll);
+  },
   methods: {
+    handleScroll() {
+      // Get current scroll position
+      this.scrollY = window.scrollY;
+      // Check if page is scrolled more than 20px
+      this.isScrolled = this.scrollY > 20;
+    },
     closeUserMenu() {
       this.isUserMenuOpen = false;
     },
@@ -563,10 +592,62 @@ export default {
 /* Simple fade transition for the mobile menu */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s;
+  transition: opacity 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  will-change: opacity;
 }
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Enhanced navigation transitions */
+.nav-link {
+  position: relative;
+  transition: color 0.35s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  padding-bottom: 2px;
+  backface-visibility: hidden;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -1px;
+  left: 0;
+  background-color: currentColor;
+  transition: width 0.35s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  will-change: width;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Smooth transition for the navigation bar itself */
+nav {
+  transition: background-color 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    box-shadow 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    backdrop-filter 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  will-change: background-color, box-shadow, backdrop-filter;
+  backface-visibility: hidden;
+}
+
+/* Add a subtle animation for dropdown menus */
+.nav-dropdown-enter-active,
+.nav-dropdown-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  transform-origin: top;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.nav-dropdown-enter-from,
+.nav-dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
 }
 </style>

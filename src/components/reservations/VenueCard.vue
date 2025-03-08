@@ -13,10 +13,20 @@
         class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"
       ></div>
       <div
-        v-if="$route.path === '/'"
-        class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full"
+        v-if="showTopRatedBadge"
+        class="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md flex items-center"
       >
-        Popular
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 w-3 mr-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+          />
+        </svg>
+        Top Rated
       </div>
       <div class="absolute bottom-3 left-3">
         <span
@@ -46,6 +56,15 @@
             >({{ totalReviews }}
             {{ totalReviews === 1 ? "review" : "reviews" }})</span
           >
+          <!-- High rating badge -->
+          <span
+            v-if="
+              !showTopRatedBadge && averageRating >= 4.5 && totalReviews > 0
+            "
+            class="ml-2 inline-block text-xs px-1.5 py-0.5 bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 rounded-full font-medium"
+          >
+            Top Rated
+          </span>
         </span>
       </div>
 
@@ -92,6 +111,7 @@
 <script>
 import { ref as vueRef, onMounted } from "vue";
 import { db, ref, onValue } from "@/firebase";
+import store from "@/store/store";
 
 export default {
   name: "ReservationCard",
@@ -102,6 +122,10 @@ export default {
     price: Number,
     id: String,
     category: String,
+    showTopRatedBadge: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -116,8 +140,22 @@ export default {
     },
   },
   mounted() {
-    // Fetch reviews and calculate average rating
+    // Get cached ratings from the store if available
     if (this.id) {
+      const venue = store.getters.getVenueById(this.id);
+      if (venue && venue.averageRating !== undefined) {
+        this.averageRating = venue.averageRating;
+        this.totalReviews = venue.totalReviews || 0;
+      } else {
+        // Fallback to fetching reviews if not available in store
+        this.fetchRatingsFromFirebase();
+      }
+    }
+  },
+  methods: {
+    fetchRatingsFromFirebase() {
+      if (!this.id) return;
+
       const reviewsRef = ref(db, `venues/${this.id}/reviews`);
       onValue(reviewsRef, (snapshot) => {
         const reviews = snapshot.val();
@@ -129,12 +167,19 @@ export default {
             0
           );
           this.averageRating = sum / this.totalReviews;
+
+          // Update the store with this rating
+          store.commit("updateVenueAverageRating", {
+            venueId: this.id,
+            averageRating: this.averageRating,
+            totalReviews: this.totalReviews,
+          });
         } else {
           this.averageRating = 0;
           this.totalReviews = 0;
         }
       });
-    }
+    },
   },
 };
 </script>

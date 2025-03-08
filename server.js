@@ -75,8 +75,7 @@ app.post("/create-checkout-session-register", async (req, res) => {
         category: venue.category,
         owner: venue.owner,
       },
-      success_url:
-        "http://localhost:5173/registration-success?stripe=success&payment_intent={CHECKOUT_SESSION_ID}",
+      success_url: "http://localhost:5173/registration-success",
       cancel_url: "http://localhost:5173/registration-cancelled",
     });
 

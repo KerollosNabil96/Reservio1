@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { db, ref, get, onValue } from "@/firebase"; // Add get here
 
 const store = createStore({
   state: {
@@ -23,6 +24,7 @@ const store = createStore({
       date: null,
       category: "",
       location: "",
+      sortBy: "rating", // Default sort by rating
     },
   },
   mutations: {
@@ -86,6 +88,16 @@ const store = createStore({
     setSearchFilters(state, filters) {
       state.searchFilters = { ...state.searchFilters, ...filters };
     },
+    setSortBy(state, sortBy) {
+      state.searchFilters.sortBy = sortBy;
+    },
+    updateVenueAverageRating(state, { venueId, averageRating, totalReviews }) {
+      const venue = state.reservations.find((v) => v.id === venueId);
+      if (venue) {
+        venue.averageRating = averageRating;
+        venue.totalReviews = totalReviews;
+      }
+    },
   },
   actions: {
     async addReservation({ commit, state }, payload) {
@@ -106,7 +118,7 @@ const store = createStore({
         return { id: null, error: error.message };
       }
     },
-    async fetchVenues({ commit }) {
+    async fetchVenues({ commit, dispatch }) {
       try {
         commit("setLoading", true);
         const { venues, error } = await getVenues();
@@ -118,6 +130,9 @@ const store = createStore({
         // Replace the hardcoded venues with ones from Firebase
         if (venues && venues.length > 0) {
           commit("setReservations", venues);
+
+          // Calculate average ratings for all venues
+          dispatch("calculateAllVenueRatings");
         }
 
         return { venues, error: null };
@@ -125,6 +140,40 @@ const store = createStore({
         return { venues: [], error: error.message };
       } finally {
         commit("setLoading", false);
+      }
+    },
+    async calculateAllVenueRatings({ state, commit }) {
+      try {
+        // Process each venue to get its ratings
+        for (const venue of state.reservations) {
+          if (!venue.id) continue;
+
+          const reviewsRef = ref(db, `venues/${venue.id}/reviews`);
+          const snapshot = await get(reviewsRef);
+
+          if (snapshot.exists()) {
+            const reviews = snapshot.val();
+            const reviewsArray = Object.values(reviews);
+            const totalReviews = reviewsArray.length;
+
+            if (totalReviews > 0) {
+              const sum = reviewsArray.reduce(
+                (acc, review) => acc + review.rating,
+                0
+              );
+              const averageRating = sum / totalReviews;
+
+              // Update the venue with its calculated average rating
+              commit("updateVenueAverageRating", {
+                venueId: venue.id,
+                averageRating,
+                totalReviews,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error calculating venue ratings:", error);
       }
     },
     async initAuth({ commit, dispatch }) {
@@ -173,6 +222,22 @@ const store = createStore({
     getVenueRating: (state) => (venueId) => {
       const venue = state.reservations.find((v) => v.id === venueId);
       return venue ? venue.averageRating || 0 : 0;
+    },
+    getTopRatedVenues(state) {
+      // Create a copy of the venues to avoid modifying the original array
+      const venuesCopy = [...state.reservations];
+
+      // Sort venues by average rating in descending order using the improved comparison
+      return venuesCopy
+        .sort((a, b) => {
+          // Ensure we're comparing numbers and handle missing ratings
+          const ratingA =
+            a.averageRating !== undefined ? Number(a.averageRating) : 0;
+          const ratingB =
+            b.averageRating !== undefined ? Number(b.averageRating) : 0;
+          return ratingB - ratingA;
+        })
+        .slice(0, 6); // Return only the top 6
     },
     getFilteredVenues(state) {
       let filteredVenues = state.reservations;
@@ -228,6 +293,65 @@ const store = createStore({
           }
           return true; // Include venues without date information
         });
+      }
+
+      // Sort results based on sortBy
+      if (state.searchFilters.sortBy) {
+        const sortBy = state.searchFilters.sortBy;
+
+        switch (sortBy) {
+          case "rating":
+            // Sort by rating (highest first)
+            filteredVenues = filteredVenues.sort((a, b) => {
+              // Ensure we're comparing numbers and handle missing ratings
+              const ratingA =
+                a.averageRating !== undefined ? Number(a.averageRating) : 0;
+              const ratingB =
+                b.averageRating !== undefined ? Number(b.averageRating) : 0;
+              return ratingB - ratingA;
+            });
+            break;
+          case "nearest":
+            // Sort by nearest date to today
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to beginning of day for fair comparison
+
+            filteredVenues = filteredVenues.sort((a, b) => {
+              const dateA = a.selectedDate
+                ? new Date(a.selectedDate)
+                : new Date(0);
+              const dateB = b.selectedDate
+                ? new Date(b.selectedDate)
+                : new Date(0);
+
+              // Calculate absolute difference from today
+              const diffA = Math.abs(dateA - today);
+              const diffB = Math.abs(dateB - today);
+
+              return diffA - diffB; // Nearest first
+            });
+            break;
+          case "furthest":
+            // Sort by furthest date from today
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0); // Reset time to beginning of day for fair comparison
+
+            filteredVenues = filteredVenues.sort((a, b) => {
+              const dateA = a.selectedDate
+                ? new Date(a.selectedDate)
+                : new Date(0);
+              const dateB = b.selectedDate
+                ? new Date(b.selectedDate)
+                : new Date(0);
+
+              // Calculate absolute difference from today
+              const diffA = Math.abs(dateA - todayDate);
+              const diffB = Math.abs(dateB - todayDate);
+
+              return diffB - diffA; // Furthest first
+            });
+            break;
+        }
       }
 
       return filteredVenues;
