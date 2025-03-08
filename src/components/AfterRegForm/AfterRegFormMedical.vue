@@ -192,18 +192,58 @@ export default {
   },
   methods: {
     addTimeSlot() {
-      if (this.fromTime && this.toTime && this.capacity > 0) {
-        this.timeSlots.push({
-          id: this.timeSlots.length,
-          from: this.fromTime,
-          to: this.toTime,
-          capacity: this.capacity,
-          available: this.capacity,
-        });
-        this.fromTime = "";
-        this.toTime = "";
-        this.capacity = 5;
+      // Reset error message
+      this.errorMessage = "";
+
+      if (!this.fromTime || !this.toTime) {
+        this.errorMessage = "Please select both from and to times.";
+        return;
       }
+
+      if (this.capacity <= 0) {
+        this.errorMessage = "Capacity must be greater than 0.";
+        return;
+      }
+
+      // Convert times to Date objects for comparison
+      const fromTimeDate = new Date(`2000-01-01T${this.fromTime}`);
+      const toTimeDate = new Date(`2000-01-01T${this.toTime}`);
+
+      // Check if "to" time is before "from" time
+      if (toTimeDate <= fromTimeDate) {
+        this.errorMessage = "End time must be after start time.";
+        return;
+      }
+
+      // Check for overlapping time slots
+      for (const slot of this.timeSlots) {
+        const slotFromTime = new Date(`2000-01-01T${slot.from}`);
+        const slotToTime = new Date(`2000-01-01T${slot.to}`);
+
+        // Check if new slot overlaps with existing slot
+        if (
+          (fromTimeDate >= slotFromTime && fromTimeDate < slotToTime) || // New start time falls within existing slot
+          (toTimeDate > slotFromTime && toTimeDate <= slotToTime) || // New end time falls within existing slot
+          (fromTimeDate <= slotFromTime && toTimeDate >= slotToTime) // New slot completely contains existing slot
+        ) {
+          this.errorMessage = "Time slot overlaps with an existing slot.";
+          return;
+        }
+      }
+
+      // If all validations pass, add the time slot
+      this.timeSlots.push({
+        id: this.timeSlots.length,
+        from: this.fromTime,
+        to: this.toTime,
+        capacity: this.capacity,
+        available: this.capacity,
+      });
+
+      // Clear inputs after adding
+      this.fromTime = "";
+      this.toTime = "";
+      this.capacity = 5;
     },
     removeTimeSlot(index) {
       this.timeSlots.splice(index, 1);

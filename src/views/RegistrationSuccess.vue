@@ -30,10 +30,14 @@
         </h2>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
           Your venue has been successfully registered. Our team will review your
-          submission. If approved, your venue will be added to the platform. You
-          have also received
-          <span class="text-green-500 font-bold">{{ 200 * 0.05 }}</span> cash
-          back from our loyalty program!
+          submission. If approved, your venue will be added to the platform.
+          <span v-if="isCreditCardPayment" class="block mt-2">
+            You have also received
+            <span class="text-green-500 font-bold"
+              >{{ (200 * 0.05).toFixed(2) }} EGP</span
+            >
+            cash back from our loyalty program!
+          </span>
         </p>
 
         <div class="border-t border-gray-200 pt-6 mt-6 dark:border-gray-700">
@@ -53,6 +57,18 @@
             <p class="text-gray-600 dark:text-gray-300 mb-2">
               <span class="font-medium">Registration Date:</span>
               {{ formattedDate }}
+            </p>
+            <p class="text-gray-600 dark:text-gray-300 mb-2">
+              <span class="font-medium">Payment Method:</span>
+              <span
+                class="font-medium"
+                :class="{
+                  'text-blue-500': isCreditCardPayment,
+                  'text-green-500': !isCreditCardPayment,
+                }"
+              >
+                {{ paymentMethod }}
+              </span>
             </p>
             <p class="text-gray-600 dark:text-gray-300 mb-2">
               <span class="font-medium">Status: </span>
@@ -78,7 +94,7 @@
 
 <script>
 import store from "@/store/store";
-import { onValue, ref, set } from "firebase/database";
+import { getDatabase, onValue, ref, set, get } from "firebase/database";
 
 export default {
   name: "RegistrationSuccess",
@@ -87,6 +103,9 @@ export default {
       venueName: "",
       venueCategory: "",
       registrationDate: new Date(),
+      paymentMethod: "",
+      isCreditCardPayment: false,
+      cashbackAmount: 0,
     };
   },
   computed: {
@@ -102,31 +121,57 @@ export default {
     goHome() {
       this.$router.push("/");
     },
+    async addCashbackForCreditCardPayment() {
+      if (!this.isCreditCardPayment || !store.state.user?.id) {
+        return;
+      }
+
+      try {
+        const db = getDatabase();
+        const userBalanceRef = ref(db, `users/${store.state.user.id}/balance`);
+
+        // Get current balance
+        const snapshot = await get(userBalanceRef);
+        if (snapshot.exists()) {
+          const currentBalance = snapshot.val() || 0;
+          const cashback = 200 * 0.05; // 5% of 200 EGP registration fee
+          this.cashbackAmount = cashback;
+
+          // Update balance with cashback
+          await set(userBalanceRef, currentBalance + cashback);
+          console.log(`Added ${cashback} EGP cashback to user balance`);
+        } else {
+          console.log("No balance found for user");
+        }
+      } catch (error) {
+        console.error("Error adding cashback:", error);
+      }
+    },
   },
-  mounted() {
+  async mounted() {
     // Try to get venue data from localStorage first
     const storedVenue = localStorage.getItem("pendingVenueRegistration");
     if (storedVenue) {
       const venueData = JSON.parse(storedVenue);
       this.venueName = venueData.name || venueData.venueName || "Not available";
       this.venueCategory = venueData.category || "Not available";
+      this.paymentMethod =
+        venueData.paymentMethod === "credit card" ? "Credit Card" : "Wallet";
+      this.isCreditCardPayment = venueData.paymentMethod === "credit card";
     } else if (store.state.myFormData) {
       // Fallback to store if localStorage is empty
       const venueData = store.state.myFormData;
       this.venueName = venueData.name || venueData.venueName || "Not available";
       this.venueCategory = venueData.category || "Not available";
+      this.paymentMethod =
+        venueData.paymentMethod === "credit card" ? "Credit Card" : "Wallet";
+      this.isCreditCardPayment = venueData.paymentMethod === "credit card";
     }
 
-    const userBalanceRef = ref(`/users/${store.state.user.id}/balance`);
-
-    onValue(
-      userBalanceRef,
-      (snapshot) => {
-        const balance = snapshot.val();
-        set(userBalanceRef, balance + 200 * 0.05);
-      },
-      { onlyOnce: true }
-    );
+    // Add cashback if payment was made with credit card
+    if (this.isCreditCardPayment) {
+      await this.addCashbackForCreditCardPayment();
+    }
   },
 };
 </script>
