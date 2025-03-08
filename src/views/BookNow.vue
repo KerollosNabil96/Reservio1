@@ -44,7 +44,7 @@
           <div class="relative min-w-[200px]">
             <select
               v-model="sortBy"
-              class="appearance-none w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 py-4 px-4 pr-10 rounded-lg text-gray-700 dark:text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="appearance-none w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 py-4 px-4 pr-10 rounded-lg text-gray-700 dark:text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all duration-300"
             >
               <option value="rating">Highest Rated First</option>
               <option value="nearest">Nearest Date to Today</option>
@@ -69,7 +69,7 @@
               </svg>
             </div>
             <div
-              class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-1 text-xs font-medium text-blue-600 dark:text-blue-400"
+              class="absolute left-3 -top-2.5 px-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-gradient-to-r from-white/90 via-white/90 to-white/90 dark:from-gray-700/90 dark:via-gray-700/90 dark:to-gray-700/90 rounded-md backdrop-blur-sm shadow-sm"
             >
               Sort by
             </div>

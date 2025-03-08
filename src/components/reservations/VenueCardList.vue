@@ -131,16 +131,25 @@ export default {
 /* Venue card fade transition */
 .venue-fade-enter-active,
 .venue-fade-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99);
 }
 
 .venue-fade-enter-from,
 .venue-fade-leave-to {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px) scale(0.9);
 }
 
+/* This is the key animation for smooth sorting */
 .venue-fade-move {
-  transition: transform 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  transform-origin: center center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Add a subtle scale effect during movement */
+.venue-fade-move:hover {
+  z-index: 2;
 }
 </style>
