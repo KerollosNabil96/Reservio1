@@ -1022,9 +1022,14 @@ export default {
       this.currentImage = this.imageList[this.currentImageIndex];
     },
     handleImageError(event) {
-      // Replace broken image with a placeholder
-      event.target.src =
-        "https://via.placeholder.com/400x300?text=Image+Not+Available";
+      // Remove the src attribute and add a background color
+      event.target.removeAttribute("src");
+      event.target.style.backgroundColor = "#eeeeee";
+      event.target.style.display = "flex";
+      event.target.style.alignItems = "center";
+      event.target.style.justifyContent = "center";
+      event.target.innerHTML =
+        '<span style="color: #999999;">Image Not Available</span>';
       event.target.classList.add("error-image");
     },
     async handleReject(request) {
@@ -1045,7 +1050,7 @@ export default {
 
         // Then send the rejection email
         const response = await fetch(
-          "http://localhost:3001/send-rejection-email",
+          "http://localhost:3000/send-rejection-email",
           {
             method: "POST",
             headers: {
@@ -1107,5 +1112,11 @@ export default {
 <style scoped>
 .container {
   max-width: 1200px;
+}
+
+.error-image {
+  min-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 </style>

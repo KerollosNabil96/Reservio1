@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import Stripe from "stripe";
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 const stripe = Stripe(
   "sk_test_51QzGvr4GbI5RMdqvTvuYwrzUdOWVOuDQnldCbUjww32ZJYW0Fs3J8ggLvBeJZcyCC6cCBlDX6UsUUgmKfJxR5oj100ZXKXEPqr"
@@ -91,15 +91,15 @@ dotenv.config();
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
 // Email sending endpoint
-app.post('/send-rejection-email', async (req, res) => {
+app.post("/send-rejection-email", async (req, res) => {
   try {
     const { to, subject, message } = req.body;
 
@@ -107,28 +107,32 @@ app.post('/send-rejection-email', async (req, res) => {
       from: process.env.EMAIL_USER,
       to,
       subject,
-      text: message
+      text: message,
     };
 
     await transporter.sendMail(mailOptions);
-    res.json({ success: true, message: 'Email sent successfully' });
+    res.json({ success: true, message: "Email sent successfully" });
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ success: false, message: 'Failed to send email' });
+    console.error("Error sending email:", error);
+    res.status(500).json({ success: false, message: "Failed to send email" });
   }
 });
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}).on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Please try a different port.`);
-    process.exit(1);
-  } else {
-    console.error('Server error:', error);
-    process.exit(1);
-  }
-});
+const server = app
+  .listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  })
+  .on("error", (error) => {
+    if (error.code === "EADDRINUSE") {
+      console.error(
+        `Port ${PORT} is already in use. Please try a different port.`
+      );
+      process.exit(1);
+    } else {
+      console.error("Server error:", error);
+      process.exit(1);
+    }
+  });
