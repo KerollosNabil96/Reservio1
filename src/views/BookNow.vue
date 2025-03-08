@@ -11,34 +11,74 @@
 
       <!-- Real-time search bar -->
       <div class="px-6 md:px-16 mt-8">
-        <div class="relative">
-          <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search venues by name..."
-            class="w-full px-4 py-4 text-xl pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-          <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div
+          class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0"
+        >
+          <!-- Search input -->
+          <div class="relative flex-grow">
+            <input
+              type="text"
+              v-model="searchQuery"
+              placeholder="Search venues by name..."
+              class="w-full px-4 py-4 text-xl pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sort options -->
+          <div class="relative min-w-[200px]">
+            <select
+              v-model="sortBy"
+              class="appearance-none w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 py-4 px-4 pr-10 rounded-lg text-gray-700 dark:text-white leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+              <option value="rating">Highest Rated First</option>
+              <option value="nearest">Nearest Date to Today</option>
+              <option value="furthest">Furthest Date from Today</option>
+            </select>
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700 dark:text-gray-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+            <div
+              class="absolute left-3 -top-2.5 bg-white dark:bg-gray-800 px-1 text-xs font-medium text-blue-600 dark:text-blue-400"
+            >
+              Sort by
+            </div>
           </div>
         </div>
       </div>
 
       <section class="mt-8 px-6 md:px-16">
-        <VenueCardList />
+        <VenueCardList :isHomePage="false" />
       </section>
     </div>
   </div>
@@ -59,6 +99,7 @@ export default {
     return {
       searchQuery: "",
       searchDebounce: null,
+      sortBy: "rating", // Default sort by rating
     };
   },
   watch: {
@@ -73,6 +114,12 @@ export default {
           });
         }, 300); // Wait 300ms after typing stops
       },
+    },
+    sortBy: {
+      handler(newValue) {
+        store.commit("setSortBy", newValue);
+      },
+      immediate: true, // Set initial value
     },
   },
   created() {

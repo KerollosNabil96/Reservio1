@@ -1,7 +1,10 @@
 <template>
   <!-- Responsive grid of reservation cards -->
   <div class="mb-6">
-    <div v-if="searchApplied" class="flex items-center justify-between mb-4">
+    <div
+      v-if="searchApplied && !isHomePage"
+      class="flex items-center justify-between mb-4"
+    >
       <p class="text-gray-600 dark:text-gray-300">
         {{ filteredVenues.length }}
         {{ filteredVenues.length === 1 ? "result" : "results" }} found
@@ -59,12 +62,13 @@
       <VenueCard
         v-for="venue in filteredVenues"
         :key="venue.id"
-        :source="venue.pictures[0]"
+        :source="venue.pictures ? venue.pictures[0] : ''"
         :title="venue.venueName"
         :category="venue.category"
         :description="venue.shortDescription"
         :price="venue.price"
         :id="venue.id"
+        :showTopRatedBadge="isHomePage"
       />
     </transition-group>
   </div>
@@ -80,12 +84,22 @@ export default {
     VenueCard,
     VenueCardSkeleton,
   },
+  props: {
+    isHomePage: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {};
   },
   computed: {
     filteredVenues() {
-      return store.getters.getFilteredVenues;
+      // On the home page, show top rated venues
+      // On other pages, show filtered venues
+      return this.isHomePage
+        ? store.getters.getTopRatedVenues
+        : store.getters.getFilteredVenues;
     },
     searchApplied() {
       const filters = store.state.searchFilters;
@@ -104,6 +118,7 @@ export default {
         date: null,
         category: "",
         location: "",
+        sortBy: "rating",
       });
     },
   },

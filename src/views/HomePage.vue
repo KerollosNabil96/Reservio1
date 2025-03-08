@@ -14,11 +14,12 @@
         <h2 class="text-3xl font-bold mb-8 text-center animate-fade-in-up">
           <span
             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-            >Popular</span
+            >Top Rated</span
           >
+          Venues
         </h2>
         <div class="animate-fade-in-up">
-          <VenueCardList />
+          <VenueCardList :isHomePage="true" />
         </div>
       </section>
 
@@ -34,6 +35,7 @@ import SearchBox from "@/components/homepage/SearchBox.vue";
 import TheHeader from "@/components/homepage/TheHeader.vue";
 import VenueCardList from "@/components/reservations/VenueCardList.vue";
 import TestimonialSection from "@/components/homepage/TestimonialSection.vue";
+import store from "@/store/store";
 
 export default {
   name: "Home",
@@ -42,6 +44,10 @@ export default {
     TheHeader,
     SearchBox,
     TestimonialSection,
+  },
+  async created() {
+    // Ensure venue ratings are calculated for proper sorting
+    await store.dispatch("calculateAllVenueRatings");
   },
   data() {
     return {
