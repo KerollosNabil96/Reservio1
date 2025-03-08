@@ -277,7 +277,11 @@ export default {
   },
   computed: {
     canProceed() {
-      return this.selectedDate && this.timeSlots.length > 0;
+      return (
+        this.selectedDate &&
+        this.timeSlots.length > 0 &&
+        this.educationalLicense
+      );
     },
   },
   methods: {
@@ -344,6 +348,13 @@ export default {
           "Please fill in all required fields and add at least one time slot.";
         return;
       }
+
+      // Check if educational license is provided
+      if (!this.educationalLicense) {
+        this.errorMessage = "Please enter your educational center license.";
+        return;
+      }
+
       // Refresh user balance before showing the payment popup
       this.fetchUserBalance();
       this.showPaymentPopup = true;
@@ -360,13 +371,19 @@ export default {
         this.errorMessage = "";
         this.paymentMethod = "credit card";
 
-        const formData = store.state.myFormData;
+        // Get form data from first registration step
+        const formData = { ...store.state.myFormData };
 
         // Create venue data object combining both forms
+        const requestID = Math.random().toString(36).substring(2, 15);
         const venueData = {
           ...formData,
+          id: requestID,
+          ownerId: store.state.user.id,
+          createdAt: new Date().toISOString(),
+          paymentStatus: "paid",
           selectedDate: this.selectedDate,
-          educationalLicense: this.educationalLicense,
+          educationalLicense: this.educationalLicense || "", // Ensure this is never undefined
           timeSlots: this.timeSlots,
           paymentMethod: "credit card",
           submittedAt: new Date().toISOString(),
@@ -385,7 +402,6 @@ export default {
         await this.applyCashback(cashbackAmount);
 
         // Save venue to requests collection first
-        const requestID = Math.random().toString(36).substring(2, 15);
         localStorage.setItem("pendingRequestID", requestID);
 
         // Save the venue data to Firebase

@@ -402,13 +402,25 @@ export default {
         this.errorMessage = "";
         this.paymentMethod = "credit card";
 
-        const formData = store.state.myFormData;
+        // Get form data from first registration step
+        const formData = { ...store.state.myFormData };
+
+        // Remove any educationalLicense property if it exists
+        if ("educationalLicense" in formData) {
+          delete formData.educationalLicense;
+        }
 
         // Create venue data object combining both forms
+        const requestID = Math.random().toString(36).substring(2, 15);
         const venueData = {
           ...formData,
+          id: requestID,
+          ownerId: store.state.user.id,
+          createdAt: new Date().toISOString(),
+          paymentStatus: "paid",
           selectedDate: this.selectedDate,
           medicalLicense: this.medicalLicense,
+          clinicLicense: this.clinicLicense,
           timeSlots: this.timeSlots,
           paymentMethod: "credit card",
           submittedAt: new Date().toISOString(),
@@ -427,7 +439,6 @@ export default {
         await this.applyCashback(cashbackAmount);
 
         // Save venue to requests collection first
-        const requestID = Math.random().toString(36).substring(2, 15);
         localStorage.setItem("pendingRequestID", requestID);
 
         // Save the venue data to Firebase
