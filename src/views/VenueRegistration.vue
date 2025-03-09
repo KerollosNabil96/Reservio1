@@ -120,21 +120,28 @@
             </div>
 
             <div class="form-group">
-  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-    Venue Phone Number
-  </label>
-  <input
-    type="tel"
-    v-model="phoneNumber"
-    @input="validatePhoneNumber"
-    placeholder="Phone number for bookings"
-    required
-    :class="['w-full px-4 py-3 rounded-lg border bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm', phoneNumberError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600']"
-  />
-  <p v-if="phoneNumberError" class="text-sm text-red-500 mt-1">
-    {{ phoneNumberError }}
-  </p>
-</div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Venue Phone Number
+              </label>
+              <input
+                type="tel"
+                v-model="phoneNumber"
+                @input="validatePhoneNumber"
+                placeholder="Phone number for bookings"
+                required
+                :class="[
+                  'w-full px-4 py-3 rounded-lg border bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm',
+                  phoneNumberError
+                    ? 'border-red-500'
+                    : 'border-gray-300 dark:border-gray-600',
+                ]"
+              />
+              <p v-if="phoneNumberError" class="text-sm text-red-500 mt-1">
+                {{ phoneNumberError }}
+              </p>
+            </div>
 
             <div class="form-group">
               <label
@@ -453,7 +460,7 @@ export default {
       shortDescription: "",
       description: "",
       phoneNumber: "",
-    phoneNumberError: "",
+      phoneNumberError: "",
       cities: {
         Cairo: [
           "Nasr City",
@@ -595,34 +602,184 @@ export default {
       );
     },
   },
+  mounted() {
+    const savedData = localStorage.getItem("venueRegistrationForm");
+    if (savedData) {
+      const formData = JSON.parse(savedData);
+      this.venueName = formData.venueName || "";
+      this.venueAddress = formData.venueAddress || "";
+      this.selectedCity = formData.selectedCity || "";
+      this.selectedArea = formData.selectedArea || "";
+      this.zipCode = formData.zipCode || "";
+      this.category = formData.category || "";
+      this.govID = formData.govID || "";
+      this.price = formData.price || "";
+      this.shortDescription = formData.shortDescription || "";
+      this.description = formData.description || "";
+      this.firstImage = formData.firstImage || "";
+      this.secondImage = formData.secondImage || "";
+      this.thirdImage = formData.thirdImage || "";
+      this.phoneNumber = formData.phoneNumber || "";
+
+      if (formData.selectedCity) {
+        // Update areas first, then set the selected area
+        this.$nextTick(() => {
+          this.updateAreas();
+          this.selectedArea = formData.selectedArea || "";
+        });
+      }
+    }
+  },
   methods: {
     updateAreas() {
-      this.selectedArea = "";
-    },
-    uploadImages(event) {
-      const files = event.target.files;
-      if (files.length !== 3) {
-        this.isVisible = true;
-        return;
+      // Only clear selectedArea if it's not part of form data restoration
+      if (
+        !this.$el
+          .querySelector('select[v-model="selectedArea"]')
+          ?.hasAttribute("data-restoring")
+      ) {
+        this.selectedArea = "";
       }
-      this.isVisible = false;
-      this.venueImages = [];
-      Array.from(files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.venueImages.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
     },
-    imageError(imageNumber) {
-      console.error(`Image ${imageNumber} failed to load`);
-      // You could set an error state or show a message here
+    clearFormData() {
+      localStorage.removeItem("venueRegistrationForm");
+      localStorage.removeItem("pendingVenueRegistration");
+      this.venueName = "";
+      this.venueAddress = "";
+      this.selectedCity = "";
+      this.selectedArea = "";
+      this.zipCode = "";
+      this.category = "";
+      this.govID = "";
+      this.price = "";
+      this.shortDescription = "";
+      this.description = "";
+      this.firstImage = "";
+      this.secondImage = "";
+      this.thirdImage = "";
+      this.phoneNumber = "";
+    },
+    saveFormData() {
+      const formData = {
+        venueName: this.venueName,
+        venueAddress: this.venueAddress,
+        selectedCity: this.selectedCity,
+        selectedArea: this.selectedArea,
+        zipCode: this.zipCode,
+        category: this.category,
+        govID: this.govID,
+        price: this.price,
+        shortDescription: this.shortDescription,
+        description: this.description,
+        firstImage: this.firstImage,
+        secondImage: this.secondImage,
+        thirdImage: this.thirdImage,
+        phoneNumber: this.phoneNumber,
+      };
+      localStorage.setItem("venueRegistrationForm", JSON.stringify(formData));
     },
     handleNext() {
+      this.saveFormData();
       if (store.state.isAuthenticated) {
         let id = "id" + Math.random().toString(16).slice(2);
-        this.$store.commit("setMyFormData", {
+        const formData = {
+          id,
+          venueName: this.venueName,
+          owner: store.state.user.email,
+          category: this.category,
+          govID: this.govID,
+          price: this.price,
+          address: {
+            street: this.venueAddress,
+            governorate: this.selectedCity,
+            city: this.selectedArea,
+            zipCode: this.zipCode,
+          },
+          shortDescription: this.shortDescription,
+          longDescription: this.description,
+          pictures: [this.firstImage, this.secondImage, this.thirdImage],
+          reviews: {},
+        };
+        this.$store.commit("setMyFormData", formData);
+        localStorage.setItem(
+          "pendingVenueRegistration",
+          JSON.stringify(formData)
+        );
+        this.$router.push({
+          path: "/afterRegForm",
+          query: { category: this.category },
+        });
+      } else {
+        this.showSigninForm = true;
+      }
+    },
+    selectCategory(event) {
+      this.$emit("categorySelected", event.target.value);
+    },
+    validatePhoneNumber() {
+      const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/;
+      if (!regex.test(this.phoneNumber)) {
+        this.phoneNumberError =
+          "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
+      } else {
+        this.phoneNumberError = "";
+      }
+    },
+    handleNext2() {
+      this.validatePhoneNumber();
+      if (this.phoneNumberError) {
+        return;
+      }
+    },
+    ...mapActions(["logout"]),
+    handleLogout() {
+      this.logout();
+      this.$router.push("/");
+    },
+    saveFormData() {
+      const formData = {
+        venueName: this.venueName,
+        venueAddress: this.venueAddress,
+        selectedCity: this.selectedCity,
+        selectedArea: this.selectedArea,
+        zipCode: this.zipCode,
+        phoneNumber: this.phoneNumber,
+        govID: this.govID,
+        category: this.category,
+        price: this.price,
+        shortDescription: this.shortDescription,
+        description: this.description,
+        firstImage: this.firstImage,
+        secondImage: this.secondImage,
+        thirdImage: this.thirdImage,
+      };
+      localStorage.setItem("venueRegistrationForm", JSON.stringify(formData));
+    },
+
+    loadFormData() {
+      const savedData = localStorage.getItem("venueRegistrationForm");
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        // Store the selected area temporarily
+        const tempSelectedArea = formData.selectedArea;
+        // Load all other form data
+        Object.assign(this, formData);
+        // If there's a selected city, update areas first
+        if (formData.selectedCity) {
+          this.updateAreas();
+          // Restore the selected area after areas are updated
+          this.$nextTick(() => {
+            this.selectedArea = tempSelectedArea;
+          });
+        }
+      }
+    },
+
+    handleNext() {
+      this.saveFormData();
+      if (store.state.isAuthenticated) {
+        let id = "id" + Math.random().toString(16).slice(2);
+        const formData = {
           id,
           venueName: this.venueName,
           owner: store.state.user.email,
@@ -638,7 +795,12 @@ export default {
           longDescription: this.description,
           pictures: [this.firstImage, this.secondImage, this.thirdImage],
           reviews: {},
-        });
+        };
+        this.$store.commit("setMyFormData", formData);
+        localStorage.setItem(
+          "pendingVenueRegistration",
+          JSON.stringify(formData)
+        );
         console.log(store.state.formData);
         this.$router.push({
           path: "/afterRegForm",
@@ -650,22 +812,22 @@ export default {
     },
     selectCategory(event) {
       this.$emit("categorySelected", event.target.value);
-    }, 
+    },
     validatePhoneNumber() {
-    const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/; 
-    if (!regex.test(this.phoneNumber)) {
-      this.phoneNumberError = "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
-    } else {
-      this.phoneNumberError = ""; 
-    }
-  },
-  handleNext2() {
-    this.validatePhoneNumber(); 
-    if (this.phoneNumberError) {
-      return; 
-    }
-
-  },
+      const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/;
+      if (!regex.test(this.phoneNumber)) {
+        this.phoneNumberError =
+          "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
+      } else {
+        this.phoneNumberError = "";
+      }
+    },
+    handleNext2() {
+      this.validatePhoneNumber();
+      if (this.phoneNumberError) {
+        return;
+      }
+    },
     ...mapActions(["logout"]),
     handleLogout() {
       this.logout();
@@ -734,6 +896,6 @@ textarea {
   resize: none !important;
 }
 .border-red-500 {
-  border-color: #ef4444; 
+  border-color: #ef4444;
 }
 </style>

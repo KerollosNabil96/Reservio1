@@ -411,12 +411,16 @@ export default {
           status: "pending_payment",
         };
 
-        // Save to store and localStorage for later use
+        // Save to store and localStorage temporarily for payment processing
         store.state.myFormData = venueData;
         localStorage.setItem(
           "pendingVenueRegistration",
           JSON.stringify(venueData)
         );
+
+        // Clear form data immediately
+        localStorage.removeItem("venueRegistrationForm");
+        store.commit("setMyFormData", null);
 
         // Apply cashback immediately (5% of 200 EGP registration fee)
         const cashbackAmount = 200 * 0.05; // 10 EGP

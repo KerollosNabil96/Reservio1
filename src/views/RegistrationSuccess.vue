@@ -263,14 +263,12 @@ export default {
       this.paymentMethod = "Credit Card";
       this.isCreditCardPayment = true;
 
-      // Clear the pendingCashbackAmount since cashback was already applied when clicking "Pay with Credit Card"
+      // Clear all form data and registration data
       localStorage.removeItem("pendingCashbackAmount");
-      console.log(
-        "Cleared pendingCashbackAmount as cashback was already applied"
-      );
-
-      // Remove any existing cashback flag to ensure we don't apply it again
       localStorage.removeItem("cashbackApplied");
+      localStorage.removeItem("pendingVenueRegistration");
+      localStorage.removeItem("venueRegistrationForm");
+      console.log("Cleared all registration form data");
     }
 
     // Try to get venue data from localStorage first

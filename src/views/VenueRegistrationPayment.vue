@@ -207,8 +207,9 @@ export default {
         this.paymentSuccess = true;
         this.userBalance = this.balanceAfterRegistration;
 
-        // Remove pending registration from localStorage
+        // Remove all registration-related data from localStorage
         localStorage.removeItem("pendingVenueRegistration");
+        localStorage.removeItem("venueRegistrationForm");
 
         setTimeout(() => {
           this.loading = false;
