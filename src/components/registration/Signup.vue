@@ -5,13 +5,11 @@
     class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 overflow-auto"
     @click="$emit('close')"
   >
-    <!-- Form Container -->
     <div
       class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden flex flex-col md:flex-row max-w-4xl w-full md:w-4/5 lg:w-3/4 max-h-[90vh] md:max-h-[80vh] relative my-4 shadow-xl dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700"
       @click.stop
       ref="formContainer"
     >
-      <!-- Close Button - Moved to top right of form container -->
       <button
         type="button"
         @click="$emit('close')"
@@ -296,32 +294,33 @@ export default {
       // Reset error message
       this.errorMessage = "";
 
+      // Regex patterns
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const mobileRegex = /^(010|011|012|015)\d{8}$|^(02|03)\d{7}$/;
+
       // Validate passwords match
       if (this.password !== this.confirmPassword) {
-        this.errorMessage =
-          "Passwords do not match. Please check and try again.";
+        this.errorMessage = "Passwords do not match. Please check and try again.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
 
       // Validate password strength
-      if (this.password.length < 6) {
-        this.errorMessage = "Password must be at least 6 characters long.";
+      if (!passwordRegex.test(this.password)) {
+        this.errorMessage = "Password must be at least 6 characters long and contain at least one letter and one number.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
 
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(this.email)) {
         this.errorMessage = "Please enter a valid email address.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
 
-      // Validate phone number format
-      if (this.phone.trim() === "") {
-        this.errorMessage = "Phone number cannot be empty.";
+      if (!mobileRegex.test(this.phone)) {
+        this.errorMessage = "Invalid phone number. Please enter a valid mobile or landline number.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
@@ -329,7 +328,6 @@ export default {
       try {
         this.isLoading = true;
 
-        // Register user with Firebase
         const auth = getAuth();
         const { user } = await createUserWithEmailAndPassword(
           auth,
@@ -349,21 +347,15 @@ export default {
           venues: {},
           reservations: {},
         };
-        // axios.post(
-        //   "https://reservio-77386-default-rtdb.europe-west1.firebasedatabase.app/users.json",
-        //   userProfile
-        // );
+
         const reference = ref(db, "users/" + userProfile.id);
         set(reference, userProfile);
 
-        // Update store with user info
         store.dispatch("updateAuthState", userProfile);
 
-        // Close the form after successful registration
         this.$emit("close");
         this.$router.push("/");
       } catch (error) {
-        // Handle specific Firebase errors
         switch (error.code) {
           case "auth/email-already-in-use":
             this.errorMessage =
@@ -404,10 +396,8 @@ export default {
         const provider = new GoogleAuthProvider();
         const { user } = await signInWithPopup(auth, provider);
 
-        // Generate a username from email if not already taken
         const username = user.email.split("@")[0];
 
-        // Create user profile
         const userProfile = {
           id: user.uid,
           name: user.displayName || username,
