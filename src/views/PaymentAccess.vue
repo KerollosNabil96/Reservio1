@@ -61,7 +61,7 @@ export default {
         // Fetch user data from database using store user ID
         const userRef = ref(db, `users/${storeUser.id}`);
         const snapshot = await get(userRef);
-        
+
         if (snapshot.exists()) {
           const userData = snapshot.val();
           console.log("Found user data, restoring session...");
@@ -81,10 +81,7 @@ export default {
       try {
         console.log("Saving booking info:", store.state.currentBookingInfo);
         let id = "id" + Math.random().toString(16).slice(2);
-        const userRef = ref(
-          db,
-          `users/${store.state.user.id}/bookings/${id}`
-        );
+        const userRef = ref(db, `users/${store.state.user.id}/bookings/${id}`);
         await set(userRef, store.state.currentBookingInfo);
         console.log("Booking info saved successfully");
       } catch (error) {

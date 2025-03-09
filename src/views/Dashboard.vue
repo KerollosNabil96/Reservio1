@@ -451,7 +451,7 @@
           >
           <input
             type="email"
-            v-model="selectedRequest.ownerEmail"
+            v-model="selectedRequest.owner"
             readonly
             class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
           />
@@ -1119,25 +1119,6 @@ export default {
         alert("Failed to process rejection");
       } finally {
         this.isSubmitting = false; // Stop loading regardless of outcome
-      }
-    },
-
-    async rejectRequest(requestId) {
-      try {
-        const db = getDatabase();
-        const requestRef = ref(db, `requests/${requestId}`);
-
-        // Remove the request from Firebase
-        await remove(requestRef);
-
-        // Update local state to remove the request
-        this.requests = this.requests.filter((req) => req.id !== requestId);
-
-        // Show success message
-        this.$toast.success("Request rejected successfully");
-      } catch (error) {
-        console.error("Error rejecting request:", error);
-        this.$toast.error(error.message || "Failed to reject request");
       }
     },
   },
