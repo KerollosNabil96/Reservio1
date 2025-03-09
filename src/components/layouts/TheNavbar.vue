@@ -92,7 +92,7 @@
       </ul>
 
       <!-- Auth Buttons (desktop) -->
-      <div class="hidden md:flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2">
         <!-- Show these buttons when user is NOT authenticated -->
         <button class="hover:cursor-pointer" @click="toggleDarkMode">
           <svg
@@ -123,13 +123,13 @@
         <template v-if="!isAuthenticated">
           <BaseButton
             @click="showSigninForm = true"
-            class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+            class="bg-blue-600 text-white px-2 lg:px-4 py-2 hover:bg-blue-700"
           >
             Sign In
           </BaseButton>
           <BaseButton
             @click="showSignupForm = true"
-            class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
+            class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-2 lg:px-4 py-2"
           >
             Sign Up
           </BaseButton>

@@ -17,7 +17,7 @@
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
+            class="h-5 w-5 text-gray-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -31,7 +31,7 @@
           </svg>
         </div>
         <span
-          class="pointer-events-none absolute inset-y-0 left-10 flex items-center"
+          class="pointer-events-none absolute inset-y-0 left-10 flex items-center text-gray-600"
         >
           {{ selectedDate ? formatDate(selectedDate) : "Pick a date" }}
         </span>
@@ -41,10 +41,10 @@
       <div class="relative flex-grow min-h-[40px]">
         <select
           v-model="selectedCategory"
-          class="w-full appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer pr-10"
+          class="w-full text-gray-600 appearance-none bg-white px-4 py-2 rounded-lg shadow cursor-pointer pr-10"
         >
           <option value="" disabled selected hidden>Category</option>
-          <option>All</option>
+          <option class="text-gray-900">All</option>
           <option value="Stadium">Stadium</option>
           <option value="Educational">Educational</option>
           <option value="Medical">Medical</option>
@@ -73,7 +73,7 @@
       <div class="relative flex-grow min-h-[40px]">
         <select
           v-model="selectedLocation"
-          class="w-full appearance-none bg-white pl-10 pr-4 py-2 rounded-lg shadow cursor-pointer"
+          class="w-full appearance-none bg-white pl-10 text-gray-600 pr-4 py-2 rounded-lg shadow cursor-pointer"
         >
           <option value="" disabled selected hidden>Select Location</option>
           <option v-for="city in cities" :value="city">{{ city }}</option>
@@ -83,7 +83,7 @@
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
+            class="h-5 w-5 text-gray-600"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
