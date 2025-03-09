@@ -8,7 +8,7 @@
     ]"
   >
     <div
-      class="flex items-center justify-between py-4 px-6 md:px-16 w-11/12 mx-auto text-gray-800 dark:text-white"
+      class="flex items-center justify-between py-4 px-6 w-11/12 mx-auto text-gray-800 dark:text-white"
     >
       <!-- Logo -->
       <RouterLink to="/" class="text-2xl font-bold text-blue-600"
@@ -35,11 +35,11 @@
       </div>
 
       <!-- Navigation Links (desktop) -->
-      <ul class="hidden md:flex items-center space-x-6">
+      <ul class="hidden md:flex items-center space-x-4">
         <li>
           <RouterLink
             to="/"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/' }"
             >Home</RouterLink
           >
@@ -47,7 +47,7 @@
         <li>
           <RouterLink
             to="/book-now"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text-md"
             :class="{
               'text-blue-600 active': $route.path.includes('/book-now'),
             }"
@@ -57,7 +57,7 @@
         <li>
           <RouterLink
             to="/register-venue"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text-md"
             :class="{
               'text-blue-600 active': $route.path === '/register-venue',
             }"
@@ -68,7 +68,7 @@
         <li>
           <RouterLink
             to="/about"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/about' }"
             >About</RouterLink
           >
@@ -76,7 +76,7 @@
         <li>
           <RouterLink
             to="/contact"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/contact' }"
             >Contact</RouterLink
           >
@@ -84,7 +84,7 @@
         <li>
           <RouterLink
             to="/FAQs"
-            class="nav-link hover:text-blue-600"
+            class="nav-link hover:text-blue-600 text-sm lg:text:lg"
             :class="{ 'text-blue-600 active': $route.path === '/FAQs' }"
             >FAQs</RouterLink
           >
@@ -92,7 +92,7 @@
       </ul>
 
       <!-- Auth Buttons (desktop) -->
-      <div class="hidden md:flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2">
         <!-- Show these buttons when user is NOT authenticated -->
         <button class="hover:cursor-pointer" @click="toggleDarkMode">
           <svg
@@ -123,13 +123,13 @@
         <template v-if="!isAuthenticated">
           <BaseButton
             @click="showSigninForm = true"
-            class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+            class="bg-blue-600 text-white px-2 lg:px-4 py-2 hover:bg-blue-700"
           >
             Sign In
           </BaseButton>
           <BaseButton
             @click="showSignupForm = true"
-            class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2"
+            class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-2 lg:px-4 py-2"
           >
             Sign Up
           </BaseButton>

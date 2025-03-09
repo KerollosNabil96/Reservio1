@@ -1,6 +1,6 @@
 <template>
   <header
-    class="relative overflow-hidden py-12 px-6 md:px-16 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-xl mb-8"
+    class="relative overflow-hidden py-12 px-6 lg:px-16 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-xl mb-8"
   >
     <!-- Background Elements (Decorative) -->
     <div
@@ -19,7 +19,7 @@
     >
       <!-- Text Section -->
       <div
-        class="w-full md:w-5/12 md:pr-8 flex flex-col gap-5 animate-fade-in-up"
+        class="w-full md:w-5/12 md:pr-8 flex flex-col gap-5 animate-fade-in-up text-center md:text-start"
       >
         <h1
           class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white"
@@ -30,21 +30,23 @@
           >
           or Share Your Venue
         </h1>
-        <p class="text-lg text-gray-600 mb-6 dark:text-gray-300">
+        <p class="text-gray-600 mb-6 dark:text-gray-300">
           Find the perfect space for your next event or share your venue with
           others looking for unique locations.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 mt-2">
-          <RouterLink to="/register-venue" class="flex-1">
+        <div
+          class="flex flex-col sm:flex-row gap-4 mt-2 justify-center md:justify-start"
+        >
+          <RouterLink to="/register-venue">
             <BaseButton
-              class="text-white px-6 py-3 text-lg w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
+              class="text-white px-2 lg:px-4 py-3 text-sm lg:text-md w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
               >Share Your Venue</BaseButton
             >
           </RouterLink>
-          <RouterLink to="/book-now" class="flex-1">
+          <RouterLink to="/book-now">
             <BaseButton
-              class="px-6 py-3 text-lg w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300"
+              class="px-2 lg:px-4 py-3 text-sm lg:text-md w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300"
               >Browse Venues</BaseButton
             >
           </RouterLink>
