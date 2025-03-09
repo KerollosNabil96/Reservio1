@@ -78,6 +78,7 @@
         :price="venue.price"
         :id="venue.id"
         :showTopRatedBadge="isHomePage"
+        :location="venue.address"
       />
     </transition-group>
 
@@ -306,6 +307,8 @@ export default {
 .venue-fade-enter-active,
 .venue-fade-leave-active {
   transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 
 .venue-fade-enter-from,
@@ -320,10 +323,27 @@ export default {
   transform-origin: center center;
   position: relative;
   z-index: 1;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Add a subtle scale effect during movement */
 .venue-fade-move:hover {
   z-index: 2;
+}
+
+/* Ensure dark mode respects our transitions */
+:deep(.dark) .venue-fade-enter-active,
+:deep(.dark) .venue-fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+:deep(.dark) .venue-fade-move {
+  transition: transform 0.8s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 </style>

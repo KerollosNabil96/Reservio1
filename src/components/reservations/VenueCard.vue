@@ -39,7 +39,7 @@
 
     <!-- Card Content -->
     <div
-      class="p-5 flex flex-col flex-grow bg-gradient-to-br from-white/50 to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur-sm"
+      class="p-5 flex flex-col flex-grow bg-gradient-to-br from-white/50 to-gray-50/50 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur-sm h-64"
     >
       <!-- Title -->
       <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">
@@ -75,7 +75,7 @@
       </p>
 
       <!-- Bottom section with location and button -->
-      <div class="mt-3 flex items-center justify-between">
+      <div class="mt-auto flex items-center justify-between">
         <div class="flex items-center text-gray-500 dark:text-gray-400">
           <svg
             class="w-4 h-4 mr-1"
@@ -96,7 +96,9 @@
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <span class="text-xs">Cairo</span>
+          <span class="text-xs"
+            >{{ location.city }}, {{ location.governorate }}</span
+          >
         </div>
         <RouterLink :to="`/book-now/${id}`" class="text-white">
           <BaseButton
@@ -128,6 +130,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    location: Object,
   },
   data() {
     return {

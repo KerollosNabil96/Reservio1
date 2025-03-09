@@ -122,3 +122,26 @@ html.dark .tab-leave-active {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
+/* Venue card sorting animations for dark mode */
+html.dark .venue-fade-enter-active,
+html.dark .venue-fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+html.dark .venue-fade-enter-from,
+html.dark .venue-fade-leave-to {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
+
+html.dark .venue-fade-move {
+  transition: transform 0.8s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
+  transform-origin: center center;
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+  backface-visibility: hidden;
+}

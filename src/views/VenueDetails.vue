@@ -213,16 +213,17 @@
         <transition name="modal-fade">
           <div
             v-if="showImageModal"
-            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
+            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 dark:bg-black/95 backdrop-blur-sm"
             @click="closeImageModal"
           >
             <div
-              class="relative max-w-4xl max-h-screen p-2 transform transition-all duration-500"
+              class="relative w-full h-full md:w-auto md:h-auto md:max-w-5xl md:max-h-[90vh] p-2 transform transition-all duration-500"
               :class="{ 'scale-95 opacity-0': isImageChanging }"
             >
+              <!-- Close button -->
               <button
                 @click="closeImageModal"
-                class="absolute top-4 right-4 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700 transition-all duration-300 z-20 hover:scale-110"
+                class="absolute top-4 right-4 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 backdrop-blur-sm"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -240,9 +241,10 @@
                 </svg>
               </button>
 
+              <!-- Navigation buttons -->
               <button
                 @click.stop="prevImage"
-                class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-all duration-300 z-20 hover:scale-110 hover:-translate-x-1"
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 hover:-translate-x-1 backdrop-blur-sm"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -260,20 +262,24 @@
                 </svg>
               </button>
 
-              <div class="overflow-hidden">
+              <!-- Image container -->
+              <div
+                class="h-full w-full flex items-center justify-center overflow-hidden"
+              >
                 <transition name="slide-fade" mode="out-in">
                   <img
                     :key="selectedImage"
                     :src="selectedImage"
-                    class="w-[80vw] max-h-[90vh] object-contain"
+                    class="max-w-full max-h-[85vh] md:max-h-[85vh] object-contain rounded-lg select-none"
                     @click.stop
+                    draggable="false"
                   />
                 </transition>
               </div>
 
               <button
                 @click.stop="nextImage"
-                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/70 rounded-full p-2 hover:bg-gray-700 transition-all duration-300 z-20 hover:scale-110 hover:translate-x-1"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 hover:translate-x-1 backdrop-blur-sm"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +299,7 @@
 
               <!-- Image counter -->
               <div
-                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-4 py-1 rounded-full text-sm transition-all duration-300"
+                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-gray-800/80 dark:bg-gray-700/80 px-4 py-2 rounded-full text-sm transition-all duration-300 backdrop-blur-sm font-medium"
               >
                 {{ currentImageIndex + 1 }} / {{ currentVenue.pictures.length }}
               </div>
@@ -499,5 +505,16 @@ export default {
 /* Keyboard navigation support */
 .img-gallery:focus {
   outline: none;
+}
+
+/* Dark mode specific styles */
+:deep(.dark) .modal-fade-enter-active,
+:deep(.dark) .modal-fade-leave-active,
+:deep(.dark) .slide-fade-enter-active,
+:deep(.dark) .slide-fade-leave-active {
+  transition: opacity 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
+    transform 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  backface-visibility: hidden;
+  will-change: opacity, transform;
 }
 </style>

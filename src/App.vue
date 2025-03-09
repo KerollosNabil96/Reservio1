@@ -139,6 +139,15 @@ html.dark .page-container {
   background-color: #0f172a !important; /* Match dark mode background */
 }
 
+/* Ensure venue card sorting animations work in dark mode */
+html.dark .venue-fade-enter-active,
+html.dark .venue-fade-leave-active,
+html.dark .venue-fade-move {
+  transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
 /* Text color transitions happen immediately */
 html.dark h1,
 html.dark h2,
