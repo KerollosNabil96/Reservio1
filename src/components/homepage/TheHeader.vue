@@ -1,6 +1,6 @@
 <template>
   <header
-    class="relative overflow-hidden py-12 px-6 lg:px-16 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-xl mb-8"
+    class="relative overflow-hidden py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-16 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 rounded-xl mb-6 sm:mb-8"
   >
     <!-- Background Elements (Decorative) -->
     <div
@@ -15,14 +15,14 @@
     </div>
 
     <div
-      class="flex flex-col-reverse md:flex-row items-center md:justify-between relative z-10"
+      class="flex flex-col-reverse md:flex-row items-center md:justify-between relative z-10 gap-6 md:gap-8"
     >
       <!-- Text Section -->
       <div
-        class="w-full md:w-5/12 md:pr-8 flex flex-col gap-5 animate-fade-in-up text-center md:text-start"
+        class="w-full md:w-5/12 md:pr-8 flex flex-col gap-4 sm:gap-5 animate-fade-in-up text-center md:text-start"
       >
         <h1
-          class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white"
+          class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 text-gray-900 dark:text-white leading-tight"
         >
           <span
             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
@@ -30,23 +30,25 @@
           >
           or Share Your Venue
         </h1>
-        <p class="text-gray-600 mb-6 dark:text-gray-300">
+        <p
+          class="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 dark:text-gray-300"
+        >
           Find the perfect space for your next event or share your venue with
           others looking for unique locations.
         </p>
 
         <div
-          class="flex flex-col sm:flex-row gap-4 mt-2 justify-center md:justify-start"
+          class="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-2 sm:mt-4 justify-center md:justify-start"
         >
-          <RouterLink to="/register-venue">
+          <RouterLink to="/register-venue" class="w-full sm:w-auto">
             <BaseButton
-              class="text-white px-2 lg:px-4 py-3 text-sm lg:text-md w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg"
+              class="text-white px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg rounded-lg font-medium"
               >Share Your Venue</BaseButton
             >
           </RouterLink>
-          <RouterLink to="/book-now">
+          <RouterLink to="/book-now" class="w-full sm:w-auto">
             <BaseButton
-              class="px-2 lg:px-4 py-3 text-sm lg:text-md w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300"
+              class="px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300 rounded-lg font-medium"
               >Browse Venues</BaseButton
             >
           </RouterLink>
@@ -55,13 +57,13 @@
 
       <!-- Illustration/Image -->
       <div
-        class="flex justify-center grow-1 sm:justify-end mb-8 md:mb-0 animate-fade-in"
+        class="flex justify-center grow-1 sm:justify-end mb-4 sm:mb-6 md:mb-0 animate-fade-in w-full md:w-auto"
       >
         <div class="relative">
           <img
             src="../../assets/pictures/hero illustration.svg"
             alt="Hero Illustration"
-            class="relative w-full max-w-md animate-float transform hover:scale-105 transition-all duration-500 hover:rotate-2"
+            class="relative w-full max-w-xs sm:max-w-sm md:max-w-md animate-float transform hover:scale-105 transition-all duration-500 hover:rotate-2"
           />
           <!-- Decorative elements around the illustration -->
           <div

@@ -8,18 +8,23 @@
     ]"
   >
     <div
-      class="flex items-center justify-between py-4 px-6 w-11/12 mx-auto text-gray-800 dark:text-white"
+      class="flex items-center justify-between py-3 sm:py-4 px-4 sm:px-6 w-full sm:w-11/12 mx-auto text-gray-800 dark:text-white"
     >
       <!-- Logo -->
-      <RouterLink to="/" class="text-2xl font-bold text-blue-600"
+      <RouterLink
+        to="/"
+        class="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400"
         >Reservio</RouterLink
       >
 
       <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
 
-      <div class="md:hidden text-gray-800 dark:text-white" @click="toggleMenu">
+      <div
+        class="md:hidden text-gray-800 dark:text-white p-2"
+        @click="toggleMenu"
+      >
         <svg
-          class="w-6 h-6"
+          class="w-5 h-5 sm:w-6 sm:h-6"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -35,11 +40,13 @@
       </div>
 
       <!-- Navigation Links (desktop) -->
-      <ul class="hidden md:flex items-center space-x-4">
+      <ul
+        class="hidden md:flex items-center space-x-2 md:space-x-4 lg:space-x-10 justify-between"
+      >
         <li>
           <RouterLink
             to="/"
-            class="nav-link hover:text-blue-600 text-sm lg:text-md"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/' }"
             >Home</RouterLink
           >
@@ -47,7 +54,7 @@
         <li>
           <RouterLink
             to="/book-now"
-            class="nav-link hover:text-blue-600 text-sm lg:text-md"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{
               'text-blue-600 active': $route.path.includes('/book-now'),
             }"
@@ -57,7 +64,7 @@
         <li>
           <RouterLink
             to="/register-venue"
-            class="nav-link hover:text-blue-600 text-sm lg:text-md"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{
               'text-blue-600 active': $route.path === '/register-venue',
             }"
@@ -68,7 +75,7 @@
         <li>
           <RouterLink
             to="/about"
-            class="nav-link hover:text-blue-600 text-sm lg:text-md"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/about' }"
             >About</RouterLink
           >
@@ -76,7 +83,7 @@
         <li>
           <RouterLink
             to="/contact"
-            class="nav-link hover:text-blue-600 text-sm lg:text-md"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/contact' }"
             >Contact</RouterLink
           >
@@ -84,7 +91,7 @@
         <li>
           <RouterLink
             to="/FAQs"
-            class="nav-link hover:text-blue-600 text-sm lg:text:lg"
+            class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/FAQs' }"
             >FAQs</RouterLink
           >
@@ -270,10 +277,10 @@
       <transition name="fade">
         <div
           v-if="isMenuOpen"
-          class="absolute top-16 left-0 w-full bg-white shadow-md p-4 md:hidden dark:bg-gray-700 dark:text-white"
+          class="absolute top-12 sm:top-16 left-0 w-full bg-white shadow-md p-4 md:hidden dark:bg-gray-800 dark:text-white rounded-b-lg border-t dark:border-gray-700"
         >
           <!-- Mobile Nav Links -->
-          <ul class="flex flex-col space-y-4 mb-4">
+          <ul class="flex flex-col space-y-3 mb-4">
             <li>
               <RouterLink
                 to="/"
@@ -360,7 +367,7 @@
                   closeMenu;
                   showSigninForm = true;
                 "
-                class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 w-full"
+                class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 w-full rounded-lg text-sm font-medium"
               >
                 Sign In
               </BaseButton>
@@ -369,7 +376,7 @@
                   closeMenu;
                   showSignupForm = true;
                 "
-                class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-4 py-2 w-full"
+                class="text-blue-600 hover:text-blue-800 border border-blue-600 px-4 py-2 w-full rounded-lg text-sm font-medium"
               >
                 Sign Up
               </BaseButton>
@@ -384,7 +391,8 @@
                 <RouterLink
                   v-if="$store.state.user?.isAdmin"
                   to="/dashboard"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="flex items-center px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
+                  @click="closeMenu"
                 >
                   <div class="flex items-center">
                     <svg
@@ -458,7 +466,7 @@
                     handleLogout();
                     closeMenu();
                   "
-                  class="flex items-center w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
+                  class="flex items-center w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md hover:cursor-pointer"
                 >
                   <svg
                     class="w-5 h-5 mr-2"
@@ -484,7 +492,7 @@
   </nav>
 
   <!-- Add a spacer to prevent content from being hidden under the navbar -->
-  <div class="h-16"></div>
+  <div class="h-14 sm:h-16"></div>
 
   <!-- Signup and Signin components -->
   <Signup
