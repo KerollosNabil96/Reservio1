@@ -717,7 +717,7 @@ export default {
       this.$emit("categorySelected", event.target.value);
     },
     validatePhoneNumber() {
-      const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/;
+      const regex = /^(011|012|015|010)\d{8}$|^(02|03)\d{8}$/;
       if (!regex.test(this.phoneNumber)) {
         this.phoneNumberError =
           "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
