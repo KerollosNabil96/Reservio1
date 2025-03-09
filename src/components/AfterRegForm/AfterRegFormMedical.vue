@@ -27,16 +27,20 @@
 
   <!-- Date Picker -->
   <div class="mb-6">
-    <label
-      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Pick a Date</label
-    >
-    <input
-      type="date"
-      v-model="selectedDate"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-    />
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+    Pick a Date
+  </label>
+  <input
+    type="date"
+    v-model="selectedDate"
+    @change="validateDate"
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+  />
+  <!-- Error message for invalid date -->
+  <div v-if="dateError" class="text-red-500 text-sm mt-2">
+    {{ dateError }}
   </div>
+</div>
 
   <!-- Time Slot Selection -->
   <div class="mb-6">
@@ -135,12 +139,12 @@
   <!-- Submit Button -->
   <div class="mt-8">
     <button
-      @click="openPaymentPopup"
-      :disabled="!canProceed"
-      class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      Proceed to Payment
-    </button>
+  @click="openPaymentPopup"
+  :disabled="!canProceed"
+  class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  Proceed to Payment
+</button>
   </div>
 
   <!-- Payment Popup with dark overlay -->
@@ -287,15 +291,23 @@ export default {
       paymentMethod: null,
       userBalance: 0,
       hasEnoughBalance: false,
+      selectedDate: "",
+      dateError: "",
     };
   },
   computed: {
     canProceed() {
+      const selectedDate = new Date(this.selectedDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const isDateValid = selectedDate >= today;
+
       return (
         this.selectedDate &&
         this.timeSlots.length > 0 &&
         this.medicalLicense &&
-        this.clinicLicense
+        this.clinicLicense && 
+        isDateValid 
       );
     },
   },
@@ -304,6 +316,9 @@ export default {
     this.fetchUserBalance();
   },
   watch: {
+    selectedDate(newDate) {
+    this.validateDate();
+  },
     // Watch for changes in the user object
     "store.state.user": {
       handler(newUser) {
@@ -316,6 +331,17 @@ export default {
     },
   },
   methods: {
+    validateDate() {
+    const selectedDate = new Date(this.selectedDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+
+    if (selectedDate < today) {
+      this.dateError = "You cannot select a date before today.";
+    } else {
+      this.dateError = ""; 
+    }
+  },
     // Fetch user balance from store
     fetchUserBalance() {
       if (store.state.user && store.state.user.balance !== undefined) {
