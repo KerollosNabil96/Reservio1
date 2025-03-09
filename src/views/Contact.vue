@@ -200,6 +200,39 @@ export default {
     };
   },
   methods: {
+    async handleSubmit() {
+      if (!this.validateForm()) return;
+
+      this.isSubmitting = true;
+
+      try {
+        const response = await fetch("http://localhost:3000/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...this.formData,
+            to: "reservio362@gmail.com",
+            subject: "New Contact Form Submission",
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          this.showSuccess = true;
+          this.resetForm();
+        } else {
+          throw new Error(data.message || "Failed to send message");
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+        alert("Failed to send message. Please try again later.");
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
     validateForm() {
       this.errors = {};
       let isValid = true;
@@ -221,7 +254,9 @@ export default {
         this.errors.phone = "Phone number is required";
         isValid = false;
       } else if (
-        !/^\+?[1-9]\d{1,14}$/.test(this.formData.phone.replace(/[\s-]/g, ""))
+        !/^(011|012|015|010)\d{8}$|^(02|03)\d{8}$/.test(
+          this.formData.phone.replace(/[\s-]/g, "")
+        )
       ) {
         this.errors.phone = "Please enter a valid phone number";
         isValid = false;
@@ -238,14 +273,31 @@ export default {
       if (!this.validateForm()) return;
 
       this.isSubmitting = true;
+
       try {
-        // Here you would typically make an API call to send the message
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulated API call
-        this.showSuccess = true;
-        this.resetForm();
+        const response = await fetch("http://localhost:3000/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...this.formData,
+            to: "reservio362@gmail.com",
+            subject: "New Contact Form Submission",
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          this.showSuccess = true;
+          this.resetForm();
+        } else {
+          throw new Error(data.message || "Failed to send message");
+        }
       } catch (error) {
         console.error("Error sending message:", error);
-        // Handle error appropriately
+        alert("Failed to send message. Please try again later.");
       } finally {
         this.isSubmitting = false;
       }
