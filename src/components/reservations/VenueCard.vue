@@ -75,7 +75,7 @@
       </p>
 
       <!-- Bottom section with location and button -->
-      <div class="mt-auto flex items-center justify-between">
+      <div class="mt-3 flex items-center justify-between">
         <div class="flex items-center text-gray-500 dark:text-gray-400">
           <svg
             class="w-4 h-4 mr-1"
