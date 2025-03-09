@@ -567,6 +567,12 @@
                   <span class="font-medium">Price:</span>
                   {{ selectedRequest.price }} EGP
                 </p>
+                <p class="text-gray-600 dark:text-gray-300">
+                  <span class="font-medium">Location:</span>
+                  {{ selectedRequest.address.street }},
+                  {{ selectedRequest.address.city }},
+                  {{ selectedRequest.address.governorate }}
+                </p>
               </div>
             </div>
           </div>
