@@ -297,7 +297,7 @@ export default {
       // Regex patterns
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      const mobileRegex = /^(010|011|012|015)\d{8}$|^(02|03)\d{7}$/;
+      const mobileRegex = /^(010|011|012|015)\d{8}$/;
 
       // Validate passwords match
       if (this.password !== this.confirmPassword) {
@@ -320,7 +320,7 @@ export default {
       }
 
       if (!mobileRegex.test(this.phone)) {
-        this.errorMessage = "Invalid phone number. Please enter a valid mobile or landline number.";
+        this.errorMessage = "Invalid phone number. Please enter a valid mobile.";
         this.$nextTick(() => this.scrollToTop());
         return;
       }
