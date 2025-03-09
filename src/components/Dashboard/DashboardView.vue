@@ -21,8 +21,8 @@
     <!-- Main Content -->
     <div
       :class="[
-        'flex-1 p-4 md:p-8  dark:bg-gray-900',
-        sidebarOpen ? 'pt-16 md:pt-0' : '', // Add padding-top when sidebar is open on mobile
+        'flex-1 p-4 md:p-8 dark:bg-gray-900',
+        sidebarOpen ? 'pt-16 md:pt-0' : '',
       ]"
     >
       <!-- Header Section -->
@@ -36,18 +36,16 @@
 
       <!-- Bookings Section -->
       <div v-if="$route.path === '/profile/bookings'">
-        <div class="search-section mb-6">
-          <div class="search-box">
-            <input
-              type="search"
-              v-model="searchQuery"
-              placeholder="Search"
-              class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-            />
-          </div>
+        <div class="search-section mb-6 flex items-center gap-2 bg-gray-800 p-2 rounded-lg">
+          <input
+            type="search"
+            v-model="searchQuery"
+            placeholder="Search"
+            class="flex-grow p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none"
+          />
           <select
             v-model="sortOption"
-            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            class="p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none"
           >
             <option value="all">All</option>
             <option value="nearest">Nearest Date</option>
@@ -59,9 +57,7 @@
           <h1 class="text-2xl font-bold text-green-600 mb-6">Booking List</h1>
 
           <div v-if="sortedBookings.length === 0" class="no-bookings">
-            <p class="text-gray-600 dark:text-gray-400">
-              No Bookings To Display
-            </p>
+            <p class="text-gray-600 dark:text-gray-400">No Bookings To Display</p>
           </div>
 
           <div
@@ -75,9 +71,7 @@
             >
               <div class="relative w-full h-48 mb-4 overflow-hidden rounded-lg">
                 <img
-                  v-if="
-                    booking.venue.pictures && booking.venue.pictures.length > 0
-                  "
+                  v-if="booking.venue.pictures && booking.venue.pictures.length > 0"
                   :src="booking.venue.pictures[0]"
                   alt="Booking Image"
                   class="w-full h-full object-cover"
@@ -96,16 +90,12 @@
                 {{ booking.venue.venueName }}
               </h3>
 
-              <div
-                class="flex items-center text-gray-600 dark:text-gray-400 mb-2"
-              >
+              <div class="flex items-center text-gray-600 dark:text-gray-400 mb-2">
                 <i class="fas fa-calendar-alt mr-2"></i>
                 <span>{{ formatDate(booking.date) }}</span>
               </div>
 
-              <div
-                class="flex items-center text-gray-600 dark:text-gray-400 mb-4"
-              >
+              <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
                 <i class="fas fa-map-marker-alt mr-2"></i>
                 <span>
                   {{ booking.venue.address.city }},
@@ -114,9 +104,7 @@
               </div>
 
               <div class="mt-auto flex justify-between items-center">
-                <span
-                  class="text-lg font-semibold text-green-600 dark:text-green-400"
-                >
+                <span class="text-lg font-semibold text-green-600 dark:text-green-400">
                   {{ booking.venue.price }} EGP/hour
                 </span>
               </div>
@@ -125,11 +113,11 @@
         </div>
       </div>
 
-      <!-- Router View for Nested Routes -->
       <router-view></router-view>
     </div>
   </div>
 </template>
+
 
 <script>
 import { db } from "@/firebase";
