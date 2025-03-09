@@ -145,25 +145,27 @@
         <!-- Show user dropdown when authenticated -->
         <template v-else>
           <div class="relative">
-            <div
-              @click="toggleUserMenu"
-              class="flex items-center space-x-2 cursor-pointer py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              <span>{{ username }}</span>
-              <svg
-                class="w-4 h-4"
-                :class="{ 'transform rotate-180': isUserMenuOpen }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div class="flex items-center">
+              <avatar :placeholderText="username"></avatar>
+              <div
+                @click="toggleUserMenu"
+                class="flex items-center space-x-2 cursor-pointer py-2 px-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+                <svg
+                  class="w-4 h-4"
+                  :class="{ 'transform rotate-180': isUserMenuOpen }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
             </div>
 
             <!-- Dropdown Menu -->
@@ -386,7 +388,7 @@
             <template v-else>
               <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
                 <div class="flex items-center mb-4 px-2">
-                  <span class="font-medium">{{ username }}</span>
+                  <avatar :placeholderText="username"></avatar>
                 </div>
                 <RouterLink
                   v-if="$store.state.user?.isAdmin"
@@ -518,6 +520,7 @@ import store from "@/store/store";
 import Signup from "../registration/Signup.vue";
 import Signin from "../registration/Signin.vue";
 import { getAuth, signOut } from "firebase/auth";
+import avatar from "../UserAvatar/Avatar.vue";
 
 export default {
   data() {
@@ -544,6 +547,7 @@ export default {
   components: {
     Signup,
     Signin,
+    avatar,
   },
   mounted() {
     // Add scroll event listener
