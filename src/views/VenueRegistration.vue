@@ -120,18 +120,21 @@
             </div>
 
             <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Venue Phone Number</label
-              >
-              <input
-                type="tel"
-                v-model="phoneNumber"
-                placeholder="Phone number for bookings"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-              />
-            </div>
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    Venue Phone Number
+  </label>
+  <input
+    type="tel"
+    v-model="phoneNumber"
+    @input="validatePhoneNumber"
+    placeholder="Phone number for bookings"
+    required
+    :class="['w-full px-4 py-3 rounded-lg border bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm', phoneNumberError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600']"
+  />
+  <p v-if="phoneNumberError" class="text-sm text-red-500 mt-1">
+    {{ phoneNumberError }}
+  </p>
+</div>
 
             <div class="form-group">
               <label
@@ -449,6 +452,8 @@ export default {
       venueImages: [],
       shortDescription: "",
       description: "",
+      phoneNumber: "",
+    phoneNumberError: "",
       cities: {
         Cairo: [
           "Nasr City",
@@ -645,7 +650,22 @@ export default {
     },
     selectCategory(event) {
       this.$emit("categorySelected", event.target.value);
-    },
+    }, 
+    validatePhoneNumber() {
+    const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/; 
+    if (!regex.test(this.phoneNumber)) {
+      this.phoneNumberError = "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
+    } else {
+      this.phoneNumberError = ""; 
+    }
+  },
+  handleNext2() {
+    this.validatePhoneNumber(); 
+    if (this.phoneNumberError) {
+      return; 
+    }
+
+  },
     ...mapActions(["logout"]),
     handleLogout() {
       this.logout();
@@ -710,8 +730,10 @@ export default {
   animation: float 10s ease-in-out infinite;
 }
 
-/* If you want to keep any of the existing styles, add them here */
 textarea {
   resize: none !important;
+}
+.border-red-500 {
+  border-color: #ef4444; 
 }
 </style>
