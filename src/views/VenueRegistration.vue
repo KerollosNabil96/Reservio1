@@ -305,27 +305,24 @@
             </div>
 
             <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Price (in EGP)</label
-              >
-              <div class="relative">
-                <input
-                  type="number"
-                  v-model="price"
-                  placeholder="Price per session/hour"
-                  min="0"
-                  step="10"
-                  required
-                  class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                />
-                <div
-                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                >
-                  <span class="text-gray-500 dark:text-gray-400">EGP</span>
-                </div>
-              </div>
-            </div>
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    Price (in EGP) {{ priceLabel }}
+  </label>
+  <div class="relative">
+    <input
+      type="number"
+      v-model="price"
+      :placeholder="pricePlaceholder"
+      min="0"
+      step="10"
+      required
+      class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+    />
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <span class="text-gray-500 dark:text-gray-400">EGP</span>
+    </div>
+  </div>
+</div>
 
             <div class="form-group">
               <label
@@ -601,6 +598,26 @@ export default {
         this.firstImage && this.secondImage && this.thirdImage && this.govID
       );
     },
+    priceLabel() {
+    if (this.category === 'Stadium') {
+      return '/ hour';
+    } else if (this.category === 'Educational') {
+      return '/ day';
+    } else if (this.category === 'Medical') {
+      return '/ session';
+    }
+    return ''; 
+  },
+  pricePlaceholder() {
+    if (this.category === 'Stadium') {
+      return 'Price per session';
+    } else if (this.category === 'Educational') {
+      return 'Price per day';
+    } else if (this.category === 'Medical') {
+      return 'Price per hour';
+    }
+    return 'Price'; 
+  }
   },
   mounted() {
     const savedData = localStorage.getItem("venueRegistrationForm");
@@ -714,6 +731,7 @@ export default {
       }
     },
     selectCategory(event) {
+      this.category = event.target.value;
       this.$emit("categorySelected", event.target.value);
     },
     validatePhoneNumber() {
