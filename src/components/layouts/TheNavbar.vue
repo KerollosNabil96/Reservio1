@@ -16,6 +16,14 @@
         class="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400"
         >Reservio</RouterLink
       >
+      <div class="flex items-center space-x-4">
+        <button
+          class="text-base lg:text-md hover:text-blue-600"
+          @click="toggleLanguage"
+        >
+          {{ currentLanguage === 'en' ? 'العربية' : 'English' }}
+        </button>
+      </div>
 
       <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
 
@@ -531,6 +539,7 @@ export default {
       showSigninForm: false,
       isScrolled: false,
       scrollY: 0,
+      currentLanguage: 'en'
     };
   },
   computed: {
@@ -560,6 +569,16 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
+    toggleLanguage(){
+      if (this.currentLanguage === 'en') {
+        this.currentLanguage = 'ar';
+        this.$i18n.locale = 'ar'; 
+      } else {
+        this.currentLanguage = 'en';
+        this.$i18n.locale = 'en'; 
+      }
+    },
+
     handleScroll() {
       // Get current scroll position
       this.scrollY = window.scrollY;
