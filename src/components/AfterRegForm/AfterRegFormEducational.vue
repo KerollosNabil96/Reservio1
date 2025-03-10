@@ -2,13 +2,15 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Add the link to your Educational Center License</label
+      >Upload your Educational Center License</label
     >
-    <input
-      type="text"
+    <CloudinaryUploader
       v-model="educationalLicense"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-      placeholder="Enter your educational center license number or URL"
+      :cloud-name="cloudName"
+      :upload-preset="uploadPreset"
+      folder="educational_licenses"
+      upload-text="Upload your educational center license"
+      @upload-success="handleLicenseUpload"
     />
   </div>
 
@@ -16,13 +18,19 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Pick a Date</label
     >
+      Pick a Date
+    </label>
     <input
       type="date"
       v-model="selectedDate"
+      @change="validateDate"
       class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
     />
+    <!-- Error message for invalid date -->
+    <div v-if="dateError" class="text-red-500 text-sm mt-2">
+      {{ dateError }}
+    </div>
   </div>
 
   <!-- Time Slot Selection -->
@@ -256,8 +264,12 @@
 import store from "@/store/store";
 import { getDatabase, ref, set, push } from "firebase/database";
 import { db } from "@/firebase";
+import CloudinaryUploader from "@/components/common/CloudinaryUploader.vue";
 
 export default {
+  components: {
+    CloudinaryUploader,
+  },
   props: ["requiredLicenses"],
   data() {
     return {
@@ -273,14 +285,41 @@ export default {
       paymentMethod: null,
       userBalance: 0,
       hasEnoughBalance: true,
+      selectedDate: "",
+      dateError: "",
+      cloudName:
+        import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "your_cloud_name",
+      uploadPreset:
+        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "your_upload_preset",
     };
   },
   computed: {
     canProceed() {
-      return this.selectedDate && this.timeSlots.length > 0;
+      const selectedDate = new Date(this.selectedDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const isDateValid = selectedDate >= today;
+      return (
+        this.selectedDate &&
+        isDateValid &&
+        this.timeSlots.length > 0 &&
+        this.educationalLicense
+      );
     },
   },
   methods: {
+    validateDate() {
+      const selectedDate = new Date(this.selectedDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+
+      if (selectedDate < today) {
+        this.dateError = "You cannot select a date before today.";
+      } else {
+        this.dateError = ""; // Clear error if date is valid
+      }
+    },
     addTimeSlot() {
       // Reset error message
       this.errorMessage = "";
@@ -550,6 +589,9 @@ export default {
     this.fetchUserBalance();
   },
   watch: {
+    selectedDate(newDate) {
+      this.validateDate();
+    },
     // Watch for changes in the user object
     "store.state.user": {
       handler(newUser) {

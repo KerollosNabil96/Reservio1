@@ -148,12 +148,13 @@
                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >Government ID</label
               >
-              <input
-                type="text"
+              <CloudinaryUploader
                 v-model="govID"
-                required
-                placeholder="Link to your government ID"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                :cloud-name="cloudName"
+                :upload-preset="uploadPreset"
+                folder="government_ids"
+                upload-text="Upload your government ID"
+                @upload-success="handleGovIdUpload"
               />
             </div>
 
@@ -181,115 +182,30 @@
                 >Venue Images (3 required)</label
               >
               <div class="space-y-3">
-                <div class="relative">
-                  <input
-                    type="text"
-                    v-model="firstImage"
-                    placeholder="URL for first image"
-                    required
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                  />
-                  <div v-if="firstImage" class="absolute right-2 top-3">
-  <div
-    class="w-6 h-6 rounded-full flex items-center justify-center"
-    :class="{'bg-green-500': !firstImageError, 'bg-red-500': firstImageError}"
-  >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-4 w-4 text-white"
-    :viewBox="firstImageError ? '0 0 20 20' : '0 0 20 20'"
-    fill="currentColor"
->
-    <path
-        v-if="!firstImageError"
-        fill-rule="evenodd"
-        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-    <path
-        v-if="firstImageError"
-        fill-rule="evenodd"
-        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-</svg>
-  </div>
-</div>
-
-                </div>
-                <div class="relative">
-                  <input
-                    type="text"
-                    v-model="secondImage"
-                    placeholder="URL for second image"
-                    required
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                  />
-                  <div v-if="secondImage" class="absolute right-2 top-3">
-  <div
-    class="w-6 h-6 rounded-full flex items-center justify-center"
-    :class="{'bg-green-500': !secondImageError, 'bg-red-500': secondImageError}"
-  >
-    
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-4 w-4 text-white"
-    :viewBox="secondImageError ? '0 0 20 20' : '0 0 20 20'"
-    fill="currentColor"
->
-    <path
-        v-if="!secondImageError"
-        fill-rule="evenodd"
-        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-    <path
-        v-if="secondImageError"
-        fill-rule="evenodd"
-        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-</svg>
-  </div>
-</div>
-
-                </div>
-                <div class="relative">
-                  <input
-                    type="text"
-                    v-model="thirdImage"
-                    placeholder="URL for third image"
-                    required
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                  />
-                  <div v-if="thirdImage" class="absolute right-2 top-3">
-  <div
-    class="w-6 h-6 rounded-full flex items-center justify-center"
-    :class="{'bg-green-500': !thirdImageError, 'bg-red-500': thirdImageError}"
-  >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-4 w-4 text-white"
-    :viewBox="thirdImageError ? '0 0 20 20' : '0 0 20 20'"
-    fill="currentColor"
->
-    <path
-        v-if="!thirdImageError"
-        fill-rule="evenodd"
-        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-    <path
-        v-if="thirdImageError"
-        fill-rule="evenodd"
-        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
-        clip-rule="evenodd"
-    />
-</svg>
-  </div>
-</div>
-
-                </div>
+                <CloudinaryUploader
+                  v-model="firstImage"
+                  :cloud-name="cloudName"
+                  :upload-preset="uploadPreset"
+                  folder="venue_images"
+                  upload-text="Upload first venue image"
+                  @upload-success="handleFirstImageUpload"
+                />
+                <CloudinaryUploader
+                  v-model="secondImage"
+                  :cloud-name="cloudName"
+                  :upload-preset="uploadPreset"
+                  folder="venue_images"
+                  upload-text="Upload second venue image"
+                  @upload-success="handleSecondImageUpload"
+                />
+                <CloudinaryUploader
+                  v-model="thirdImage"
+                  :cloud-name="cloudName"
+                  :upload-preset="uploadPreset"
+                  folder="venue_images"
+                  upload-text="Upload third venue image"
+                  @upload-success="handleThirdImageUpload"
+                />
               </div>
             </div>
 
@@ -333,24 +249,28 @@
             </div>
 
             <div class="form-group">
-  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-    Price (in EGP) {{ priceLabel }}
-  </label>
-  <div class="relative">
-    <input
-      type="number"
-      v-model="price"
-      :placeholder="pricePlaceholder"
-      min="0"
-      step="10"
-      required
-      class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-    />
-    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <span class="text-gray-500 dark:text-gray-400">EGP</span>
-    </div>
-  </div>
-</div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Price (in EGP) {{ priceLabel }}
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  v-model="price"
+                  :placeholder="pricePlaceholder"
+                  min="0"
+                  step="10"
+                  required
+                  class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                />
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <span class="text-gray-500 dark:text-gray-400">EGP</span>
+                </div>
+              </div>
+            </div>
 
             <div class="form-group">
               <label
@@ -461,6 +381,7 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
+import CloudinaryUploader from "@/components/common/CloudinaryUploader.vue";
 import store from "@/store/store";
 export default {
   data() {
@@ -489,6 +410,8 @@ export default {
       firstImageError: false,
       secondImageError: false,
       thirdImageError: false,
+      cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'your_cloud_name',
+      uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'your_upload_preset',
       cities: {
         Cairo: [
           "Nasr City",
@@ -621,6 +544,7 @@ export default {
   components: {
     Signin,
     Signup,
+    CloudinaryUploader,
   },
   computed: {
     ...mapGetters(["isAuthenticated"]),
@@ -630,48 +554,43 @@ export default {
       );
     },
     priceLabel() {
-    if (this.category === 'Stadium') {
-      return '/ hour';
-    } else if (this.category === 'Educational') {
-      return '/ day';
-    } else if (this.category === 'Medical') {
-      return '/ session';
-    }
-    return ''; 
-  },
-  pricePlaceholder() {
-    if (this.category === 'Stadium') {
-      return 'Price per session';
-    } else if (this.category === 'Educational') {
-      return 'Price per day';
-    } else if (this.category === 'Medical') {
-      return 'Price per hour';
-    }
-    return 'Price'; 
-  },
-  validLinks() {
-    return (
-      this.validImages && 
-      !this.firstImageError && !this.secondImageError && !this.thirdImageError && 
-      this.validateImageLink(this.firstImage) &&
-      this.validateImageLink(this.secondImage) &&
-      this.validateImageLink(this.thirdImage) &&
-      this.validateImageLink(this.govID) &&
-      !this.phoneNumberError
-    );
-  }
+      if (this.category === "Stadium") {
+        return "/ hour";
+      } else if (this.category === "Educational") {
+        return "/ day";
+      } else if (this.category === "Medical") {
+        return "/ session";
+      }
+      return "";
+    },
+    pricePlaceholder() {
+      if (this.category === "Stadium") {
+        return "Price per session";
+      } else if (this.category === "Educational") {
+        return "Price per day";
+      } else if (this.category === "Medical") {
+        return "Price per hour";
+      }
+      return "Price";
+    },
+    validLinks() {
+      return (
+        this.validImages &&
+        !this.phoneNumberError
+      );
+    },
   },
   watch: {
-  firstImage(newValue) {
-    this.validateFirstImage();
+    firstImage(newValue) {
+      this.validateFirstImage();
+    },
+    secondImage(newValue) {
+      this.validateSecondImage();
+    },
+    thirdImage(newValue) {
+      this.validateThirdImage();
+    },
   },
-  secondImage(newValue) {
-    this.validateSecondImage();
-  },
-  thirdImage(newValue) {
-    this.validateThirdImage();
-  },
-},
   mounted() {
     const savedData = localStorage.getItem("venueRegistrationForm");
     if (savedData) {
@@ -701,20 +620,42 @@ export default {
     }
   },
   methods: {
+    handleGovIdUpload(data) {
+      this.govID = data.secure_url;
+      // Clear any previous errors
+      this.validateImageLink(this.govID);
+    },
+    
+    handleFirstImageUpload(data) {
+      this.firstImage = data.secure_url;
+      this.firstImageError = false;
+    },
+    
+    handleSecondImageUpload(data) {
+      this.secondImage = data.secure_url;
+      this.secondImageError = false;
+    },
+    
+    handleThirdImageUpload(data) {
+      this.thirdImage = data.secure_url;
+      this.thirdImageError = false;
+    },
+    
     validateImageLink(imageLink) {
-    const regex = /^(http|https|ftp):\/\/[^\s$.?#].[^\s]*$/i; // تحقق من الرابط
-    return regex.test(imageLink);
-  },
+      if (!imageLink) return false;
+      const regex = /^(http|https|ftp):\/\/[^\s$.?#].[^\s]*$/i;
+      return regex.test(imageLink);
+    },
 
-  validateFirstImage() {
-    this.firstImageError = !this.validateImageLink(this.firstImage);
-  },
-  validateSecondImage() {
-    this.secondImageError = !this.validateImageLink(this.secondImage);
-  },
-  validateThirdImage() {
-    this.thirdImageError = !this.validateImageLink(this.thirdImage);
-  },
+    validateFirstImage() {
+      this.firstImageError = !this.validateImageLink(this.firstImage);
+    },
+    validateSecondImage() {
+      this.secondImageError = !this.validateImageLink(this.secondImage);
+    },
+    validateThirdImage() {
+      this.thirdImageError = !this.validateImageLink(this.thirdImage);
+    },
     updateAreas() {
       // Only clear selectedArea if it's not part of form data restoration
       if (
@@ -744,9 +685,13 @@ export default {
       this.phoneNumber = "";
     },
     saveFormData() {
-      if (this.firstImageError || this.secondImageError || this.thirdImageError) {
+      if (
+        this.firstImageError ||
+        this.secondImageError ||
+        this.thirdImageError
+      ) {
         return;
-  }
+      }
       const formData = {
         venueName: this.venueName,
         venueAddress: this.venueAddress,
@@ -902,7 +847,7 @@ export default {
       this.$emit("categorySelected", event.target.value);
     },
     validatePhoneNumber() {
-      const regex = /^(011|012|015)\d{8}$|^(02|03)\d{8}$/;
+      const regex = /^(011|012|015|010)\d{8}$|^(02|03)\d{8}$/;
       if (!regex.test(this.phoneNumber)) {
         this.phoneNumberError =
           "Phone number must be either an Egyptian mobile number (starts with 010, 011, 012, or 015) or a landline number (starts with 02 or 03).";
