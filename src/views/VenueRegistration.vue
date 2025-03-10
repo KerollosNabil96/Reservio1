@@ -190,23 +190,32 @@
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                   />
                   <div v-if="firstImage" class="absolute right-2 top-3">
-                    <div
-                      class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+  <div
+    class="w-6 h-6 rounded-full flex items-center justify-center"
+    :class="{'bg-green-500': !firstImageError, 'bg-red-500': firstImageError}"
+  >
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-4 w-4 text-white"
+    :viewBox="firstImageError ? '0 0 20 20' : '0 0 20 20'"
+    fill="currentColor"
+>
+    <path
+        v-if="!firstImageError"
+        fill-rule="evenodd"
+        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+    <path
+        v-if="firstImageError"
+        fill-rule="evenodd"
+        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+</svg>
+  </div>
+</div>
+
                 </div>
                 <div class="relative">
                   <input
@@ -217,23 +226,33 @@
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                   />
                   <div v-if="secondImage" class="absolute right-2 top-3">
-                    <div
-                      class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+  <div
+    class="w-6 h-6 rounded-full flex items-center justify-center"
+    :class="{'bg-green-500': !secondImageError, 'bg-red-500': secondImageError}"
+  >
+    
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-4 w-4 text-white"
+    :viewBox="secondImageError ? '0 0 20 20' : '0 0 20 20'"
+    fill="currentColor"
+>
+    <path
+        v-if="!secondImageError"
+        fill-rule="evenodd"
+        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+    <path
+        v-if="secondImageError"
+        fill-rule="evenodd"
+        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+</svg>
+  </div>
+</div>
+
                 </div>
                 <div class="relative">
                   <input
@@ -244,23 +263,32 @@
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                   />
                   <div v-if="thirdImage" class="absolute right-2 top-3">
-                    <div
-                      class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+  <div
+    class="w-6 h-6 rounded-full flex items-center justify-center"
+    :class="{'bg-green-500': !thirdImageError, 'bg-red-500': thirdImageError}"
+  >
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-4 w-4 text-white"
+    :viewBox="thirdImageError ? '0 0 20 20' : '0 0 20 20'"
+    fill="currentColor"
+>
+    <path
+        v-if="!thirdImageError"
+        fill-rule="evenodd"
+        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+    <path
+        v-if="thirdImageError"
+        fill-rule="evenodd"
+        d="M14.707 5.293a1 1 0 010 1.414L11.414 10l3.293 3.293a1 1 0 01-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 10 5.293 6.707a1 1 0 011.414-1.414L10 8.586l3.293-3.293a1 1 0 011.414 0z"
+        clip-rule="evenodd"
+    />
+</svg>
+  </div>
+</div>
+
                 </div>
               </div>
             </div>
@@ -305,27 +333,24 @@
             </div>
 
             <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Price (in EGP)</label
-              >
-              <div class="relative">
-                <input
-                  type="number"
-                  v-model="price"
-                  placeholder="Price per session/hour"
-                  min="0"
-                  step="10"
-                  required
-                  class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                />
-                <div
-                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                >
-                  <span class="text-gray-500 dark:text-gray-400">EGP</span>
-                </div>
-              </div>
-            </div>
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    Price (in EGP) {{ priceLabel }}
+  </label>
+  <div class="relative">
+    <input
+      type="number"
+      v-model="price"
+      :placeholder="pricePlaceholder"
+      min="0"
+      step="10"
+      required
+      class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+    />
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <span class="text-gray-500 dark:text-gray-400">EGP</span>
+    </div>
+  </div>
+</div>
 
             <div class="form-group">
               <label
@@ -357,7 +382,7 @@
 
             <button
               type="submit"
-              :disabled="!validImages"
+              :disabled="!validLinks"
               class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
@@ -461,6 +486,9 @@ export default {
       description: "",
       phoneNumber: "",
       phoneNumberError: "",
+      firstImageError: false,
+      secondImageError: false,
+      thirdImageError: false,
       cities: {
         Cairo: [
           "Nasr City",
@@ -601,7 +629,49 @@ export default {
         this.firstImage && this.secondImage && this.thirdImage && this.govID
       );
     },
+    priceLabel() {
+    if (this.category === 'Stadium') {
+      return '/ hour';
+    } else if (this.category === 'Educational') {
+      return '/ day';
+    } else if (this.category === 'Medical') {
+      return '/ session';
+    }
+    return ''; 
   },
+  pricePlaceholder() {
+    if (this.category === 'Stadium') {
+      return 'Price per session';
+    } else if (this.category === 'Educational') {
+      return 'Price per day';
+    } else if (this.category === 'Medical') {
+      return 'Price per hour';
+    }
+    return 'Price'; 
+  },
+  validLinks() {
+    return (
+      this.validImages && 
+      !this.firstImageError && !this.secondImageError && !this.thirdImageError && 
+      this.validateImageLink(this.firstImage) &&
+      this.validateImageLink(this.secondImage) &&
+      this.validateImageLink(this.thirdImage) &&
+      this.validateImageLink(this.govID) &&
+      !this.phoneNumberError
+    );
+  }
+  },
+  watch: {
+  firstImage(newValue) {
+    this.validateFirstImage();
+  },
+  secondImage(newValue) {
+    this.validateSecondImage();
+  },
+  thirdImage(newValue) {
+    this.validateThirdImage();
+  },
+},
   mounted() {
     const savedData = localStorage.getItem("venueRegistrationForm");
     if (savedData) {
@@ -631,6 +701,20 @@ export default {
     }
   },
   methods: {
+    validateImageLink(imageLink) {
+    const regex = /^(http|https|ftp):\/\/[^\s$.?#].[^\s]*$/i; // تحقق من الرابط
+    return regex.test(imageLink);
+  },
+
+  validateFirstImage() {
+    this.firstImageError = !this.validateImageLink(this.firstImage);
+  },
+  validateSecondImage() {
+    this.secondImageError = !this.validateImageLink(this.secondImage);
+  },
+  validateThirdImage() {
+    this.thirdImageError = !this.validateImageLink(this.thirdImage);
+  },
     updateAreas() {
       // Only clear selectedArea if it's not part of form data restoration
       if (
@@ -660,6 +744,9 @@ export default {
       this.phoneNumber = "";
     },
     saveFormData() {
+      if (this.firstImageError || this.secondImageError || this.thirdImageError) {
+        return;
+  }
       const formData = {
         venueName: this.venueName,
         venueAddress: this.venueAddress,
@@ -714,6 +801,7 @@ export default {
       }
     },
     selectCategory(event) {
+      this.category = event.target.value;
       this.$emit("categorySelected", event.target.value);
     },
     validatePhoneNumber() {

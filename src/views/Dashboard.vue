@@ -938,6 +938,23 @@ export default {
         });
         // Remove from pending requests
         await remove(dbRef(db, `requests/${request.id}`));
+
+        // Create notification for the venue owner
+        const notification = {
+          id: Date.now().toString(),
+          message: `Your venue request for ${request.venueName} has been approved.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          type: "venue_approval",
+        };
+        await set(
+          dbRef(
+            db,
+            `users/${request.ownerId}/notifications/${notification.id}`
+          ),
+          notification
+        );
+
         requests.value = requests.value.filter((r) => r.id !== request.id);
         showRequestModal.value = false;
         showApproveModal.value = false;
@@ -950,6 +967,23 @@ export default {
       try {
         const db = getDatabase();
         await remove(dbRef(db, `requests/${request.id}`));
+
+        // Create notification for the venue owner
+        const notification = {
+          id: Date.now().toString(),
+          message: `Your venue request for ${this.selectedRequest.venueName} has been rejected. Please check your email for details.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          type: "venue_rejection",
+        };
+        await set(
+          dbRef(
+            db,
+            `users/${request.ownerId}/notifications/${notification.id}`
+          ),
+          notification
+        );
+
         requests.value = requests.value.filter((r) => r.id !== request.id);
         showRequestModal.value = false;
         showRejectModal.value = false;
@@ -1079,8 +1113,29 @@ export default {
       this.isSubmitting = true; // Start loading
 
       try {
-        // First delete the request from Firebase
         const db = getDatabase();
+
+        // Create notification for the venue owner before deleting the request
+        const notification = {
+          id: Date.now().toString(),
+          message: `Your venue request for ${this.selectedRequest.venueName} has been rejected. Please check your email for details.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          type: "venue_rejection",
+        };
+
+        // Save notification to the user's notifications collection
+        await set(
+          dbRef(
+            db,
+            `users/${this.selectedRequest.ownerId}/notifications/${notification.id}`
+          ),
+          notification
+        );
+
+        console.log("Notification created for venue owner");
+
+        // Delete the request from Firebase
         await remove(dbRef(db, `requests/${this.selectedRequest.id}`));
 
         try {

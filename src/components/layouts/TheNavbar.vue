@@ -17,26 +17,31 @@
         >Reservio</RouterLink
       >
 
-      <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
+      <!-- Mobile Right Section (notification and hamburger) -->
+      <div class="md:hidden flex items-center">
+        <!-- Mobile Notification Icon -->
+        <notification-dropdown
+          v-if="isAuthenticated && !$store.state.user?.isAdmin"
+          class="mr-2"
+        />
 
-      <div
-        class="md:hidden text-gray-800 dark:text-white p-2"
-        @click="toggleMenu"
-      >
-        <svg
-          class="w-5 h-5 sm:w-6 sm:h-6"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          viewBox="0 0 24 24"
-        >
-          <!-- Hamburger lines (shown when menu is closed) -->
-          <path v-if="!isMenuOpen" d="M4 6h16M4 12h16M4 18h16" />
-          <!-- "X" icon (shown when menu is open) -->
-          <path v-else d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <!-- Hamburger Icon (visible on mobile, hidden on md and up) -->
+        <div class="text-gray-800 dark:text-white p-2" @click="toggleMenu">
+          <svg
+            class="w-5 h-5 sm:w-6 sm:h-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <!-- Hamburger lines (shown when menu is closed) -->
+            <path v-if="!isMenuOpen" d="M4 6h16M4 12h16M4 18h16" />
+            <!-- "X" icon (shown when menu is open) -->
+            <path v-else d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
       </div>
 
       <!-- Navigation Links (desktop) -->
@@ -99,8 +104,16 @@
       </ul>
 
       <!-- Auth Buttons (desktop) -->
-      <div class="hidden md:flex items-center space-x-2">
-        <!-- Show these buttons when user is NOT authenticated -->
+      <div class="hidden md:flex items-center space-x-4">
+        <!-- Language Toggle (moved after navigation links) -->
+        <button
+          class="text-base lg:text-md hover:text-blue-600"
+          @click="toggleLanguage"
+        >
+          {{ currentLanguage === "en" ? "EN" : "AR" }}
+        </button>
+
+        <!-- Dark Mode Toggle -->
         <button class="hover:cursor-pointer" @click="toggleDarkMode">
           <svg
             v-if="!isDarkMode"
@@ -127,6 +140,7 @@
             />
           </svg>
         </button>
+
         <template v-if="!isAuthenticated">
           <BaseButton
             @click="showSigninForm = true"
@@ -166,6 +180,7 @@
                   />
                 </svg>
               </div>
+              <notification-dropdown v-if="!$store.state.user?.isAdmin" />
             </div>
 
             <!-- Dropdown Menu -->
@@ -336,8 +351,19 @@
 
           <!-- Mobile Auth Buttons -->
           <div class="flex flex-col space-y-4">
-            <!-- Show these buttons when user is NOT authenticated -->
-            <button class="hover:cursor-pointer" @click="toggleDarkMode">
+            <!-- Language Toggle -->
+            <button
+              class="text-base hover:text-blue-600 flex items-center justify-center"
+              @click="toggleLanguage"
+            >
+              {{ currentLanguage === "en" ? "EN" : "AR" }}
+            </button>
+
+            <!-- Dark Mode Toggle -->
+            <button
+              class="hover:cursor-pointer flex items-center justify-center"
+              @click="toggleDarkMode"
+            >
               <svg
                 v-if="!isDarkMode"
                 xmlns="http://www.w3.org/2000/svg"
@@ -521,6 +547,7 @@ import Signup from "../registration/Signup.vue";
 import Signin from "../registration/Signin.vue";
 import { getAuth, signOut } from "firebase/auth";
 import avatar from "../UserAvatar/Avatar.vue";
+import NotificationDropdown from "@/components/layouts/NotificationDropdown.vue";
 
 export default {
   data() {
@@ -531,6 +558,7 @@ export default {
       showSigninForm: false,
       isScrolled: false,
       scrollY: 0,
+      currentLanguage: "en",
     };
   },
   computed: {
@@ -548,6 +576,7 @@ export default {
     Signup,
     Signin,
     avatar,
+    NotificationDropdown,
   },
   mounted() {
     // Add scroll event listener
@@ -560,6 +589,16 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
+    toggleLanguage() {
+      if (this.currentLanguage === "en") {
+        this.currentLanguage = "ar";
+        this.$i18n.locale = "ar";
+      } else {
+        this.currentLanguage = "en";
+        this.$i18n.locale = "en";
+      }
+    },
+
     handleScroll() {
       // Get current scroll position
       this.scrollY = window.scrollY;
@@ -595,6 +634,19 @@ export default {
       } catch (err) {
         console.error("Unexpected logout error:", err);
       }
+    },
+    toggleNotifications() {
+      this.showNotifications = !this.showNotifications;
+    },
+    closeNotifications() {
+      this.showNotifications = false;
+    },
+    markAsRead(notificationId) {
+      this.$store.commit("markNotificationAsRead", notificationId);
+    },
+    formatNotificationTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     },
   },
 };

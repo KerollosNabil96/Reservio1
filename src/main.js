@@ -8,10 +8,23 @@ import clickOutside from "./directives/click-outside";
 import router from "./router";
 import store from "./store/store";
 import "./firebase";
-
 import BaseButton from "./components/base/BaseButton.vue";
+import { createI18n } from 'vue-i18n';
+import en from './locales/en.json';
+import ar from './locales/ar.json';
+
+const i18n = createI18n({
+    legacy: false,
+    locale: 'en',
+    messages: {
+      en,
+      ar,
+    },
+  });
 
 const app = createApp(App);
+
+app.use(i18n);
 
 app.use(router);
 app.use(store);
