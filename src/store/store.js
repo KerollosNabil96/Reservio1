@@ -7,6 +7,7 @@ const store = createStore({
       name: "",
       email: "",
       phone: "",
+      notifications: [], // Add notifications array to user object
     },
     isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || true,
     showSignup: false,
@@ -373,6 +374,24 @@ const store = createStore({
       }
 
       return filteredVenues;
+    },
+    addNotification(state, notification) {
+      if (state.user) {
+        if (!state.user.notifications) {
+          state.user.notifications = [];
+        }
+        state.user.notifications.unshift(notification);
+      }
+    },
+    markNotificationAsRead(state, notificationId) {
+      if (state.user && state.user.notifications) {
+        const notification = state.user.notifications.find(
+          (n) => n.id === notificationId
+        );
+        if (notification) {
+          notification.read = true;
+        }
+      }
     },
   },
 });

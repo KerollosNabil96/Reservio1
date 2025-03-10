@@ -8,10 +8,10 @@
         <h1
           class="text-4xl md:text-5xl font-bold text-center mb-6 animate-fadeIn"
         >
-          Welcome to Reservio
+        {{ $t('welcome') }}
         </h1>
         <p class="text-xl text-center max-w-3xl mx-auto animate-slideUp">
-          Transforming the way the world makes reservations
+          {{ $t('transforming_reservation') }}
         </p>
       </div>
       <div class="absolute bottom-0 left-0 w-full overflow-hidden"></div>
@@ -25,20 +25,15 @@
         <h2
           class="font-bold text-3xl md:text-4xl text-center text-blue-600 mb-12 animate-fadeIn"
         >
-          Who We Are
+        {{ $t('who_we_are') }}
         </h2>
         <div class="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div class="space-y-6 animate-slideLeft">
             <p class="text-lg text-gray-600 dark:text-white leading-relaxed">
-              Reservio is a leading platform dedicated to simplifying the
-              reservation process for businesses and customers alike. Our
-              mission is to provide a seamless, user-friendly experience that
-              saves time and enhances satisfaction.
+              {{ $t('about_reservio') }}
             </p>
             <p class="text-lg text-gray-600 dark:text-white leading-relaxed">
-              Founded in 2025, Reservio has grown to serve thousands of users
-              worldwide, offering innovative solutions for restaurants, hotels,
-              events, and more.
+              {{ $t('founding_year') }}
             </p>
           </div>
           <div class="relative animate-slideRight">
@@ -62,7 +57,7 @@
         <h2
           class="font-bold text-3xl md:text-4xl text-center text-blue-600 mb-12 animate-fadeIn"
         >
-          Meet Our Team
+        {{ $t('meet_our_team') }}
         </h2>
         <div
           class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-8"
@@ -82,14 +77,14 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Hazem Abdulmoneim</h3>
+                <h3 class="font-bold text-2xl mb-2">{{ $t('hazem-name') }}</h3>
                 <p class="text-gray-200 text-lg">
-                  Chief Technology Officer (CTO)
+                  {{ $t('hazem_title') }}
                 </p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Ensures the optimal quality of the application
+                {{ $t('hazem_description') }}
                 </p>
               </div>
             </div>
@@ -110,12 +105,12 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Kareem Mohamed</h3>
-                <p class="text-gray-200 text-lg">Head of Customer Support</p>
+                <h3 class="font-bold text-2xl mb-2">{{ $t('kareem-name') }}</h3>
+                <p class="text-gray-200 text-lg"> {{ $t('kareem_title') }}</p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Ensuring exceptional customer experiences every day.
+                {{ $t('kareem_description') }}
                 </p>
               </div>
             </div>
@@ -135,12 +130,12 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Kerollos Nabil</h3>
-                <p class="text-gray-200 text-lg">Head of Customer Support</p>
+                <h3 class="font-bold text-2xl mb-2">{{ $t('kerollos-name') }}</h3>
+                <p class="text-gray-200 text-lg">{{ $t('kerollos_title') }}</p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Ensuring exceptional customer experiences every day.
+                {{ $t('kerollos_description') }}
                 </p>
               </div>
             </div>
@@ -164,12 +159,12 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Nourhan Sami</h3>
-                <p class="text-gray-200 text-lg">Head of Customer Support</p>
+                <h3 class="font-bold text-2xl mb-2">{{ $t('nourhan_name') }}</h3>
+                <p class="text-gray-200 text-lg">{{ $t('nourhan_title') }}</p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Ensuring exceptional customer experiences every day.
+                {{ $t('nourhan_description') }}
                 </p>
               </div>
             </div>
@@ -189,12 +184,12 @@
               <div
                 class="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm bg-black/30"
               >
-                <h3 class="font-bold text-2xl mb-2">Nareman Abdallah</h3>
-                <p class="text-gray-200 text-lg">CEO & Founder</p>
+                <h3 class="font-bold text-2xl mb-2">{{ $t('nareman_name') }}</h3>
+                <p class="text-gray-200 text-lg">{{ $t('nareman_title') }}</p>
                 <p
                   class="mt-2 text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
                 >
-                  Leading our vision of transforming the reservation industry.
+                {{ $t('nareman_description') }}
                 </p>
               </div>
             </div>
@@ -211,7 +206,7 @@
         <h2
           class="font-bold text-3xl md:text-4xl text-center text-blue-600 mb-12 animate-fadeIn"
         >
-          Our Vision
+        {{ $t('our_vision') }}
         </h2>
         <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div
@@ -228,11 +223,10 @@
               </svg>
             </div>
             <h3 class="text-xl font-semibold text-center mb-3 dark:text-white">
-              Innovation
+              {{ $t('innovation') }}
             </h3>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-              Leading the future of reservations with cutting-edge technology
-              and creative solutions.
+              {{ $t('innovation_description') }}
             </p>
           </div>
           <div
@@ -248,11 +242,10 @@
               </svg>
             </div>
             <h3 class="text-xl font-semibold text-center mb-3 dark:text-white">
-              Excellence
+              {{ $t('excellence') }}
             </h3>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-              Delivering exceptional service quality and reliability in every
-              interaction.
+              {{ $t('excellence_description') }}
             </p>
           </div>
           <div
@@ -268,11 +261,10 @@
               </svg>
             </div>
             <h3 class="text-xl font-semibold text-center mb-3 dark:text-white">
-              Trust
+              {{ $t('trust') }}
             </h3>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-              Building lasting relationships through transparency and
-              reliability.
+              {{ $t('trust_description') }}
             </p>
           </div>
         </div>
@@ -287,7 +279,7 @@
         <h2
           class="font-bold text-3xl md:text-4xl text-center text-blue-600 mb-12 animate-fadeIn"
         >
-          Our Mission
+        {{ $t('our_mission') }}
         </h2>
         <div
           class="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-8 shadow-lg animate-slideUp"
@@ -295,10 +287,7 @@
           <p
             class="text-lg text-gray-600 dark:text-white leading-relaxed text-center"
           >
-            At Reservio, we are committed to revolutionizing the way
-            reservations are made. Our goal is to empower businesses with tools
-            that streamline operations and delight customers with effortless
-            booking experiences.
+          {{ $t('mission_description') }}
           </p>
         </div>
       </div>
