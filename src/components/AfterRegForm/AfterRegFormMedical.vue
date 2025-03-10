@@ -2,45 +2,51 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Add your Medical License</label
+      >Upload your Medical License</label
     >
-    <input
-      type="text"
+    <CloudinaryUploader
       v-model="medicalLicense"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-      placeholder="Enter your medical license number or URL"
+      :cloud-name="cloudName"
+      :upload-preset="uploadPreset"
+      folder="medical_licenses"
+      upload-text="Upload your medical license"
+      @upload-success="handleMedicalLicenseUpload"
     />
   </div>
 
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Add your Clinic License</label
+      >Upload your Clinic License</label
     >
-    <input
-      type="text"
+    <CloudinaryUploader
       v-model="clinicLicense"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-      placeholder="Enter your clinic license number or URL"
+      :cloud-name="cloudName"
+      :upload-preset="uploadPreset"
+      folder="clinic_licenses"
+      upload-text="Upload your clinic license"
+      @upload-success="handleClinicLicenseUpload"
     />
   </div>
 
   <!-- Date Picker -->
   <div class="mb-6">
-  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-    Pick a Date
-  </label>
-  <input
-    type="date"
-    v-model="selectedDate"
-    @change="validateDate"
-    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-  />
-  <!-- Error message for invalid date -->
-  <div v-if="dateError" class="text-red-500 text-sm mt-2">
-    {{ dateError }}
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+    >
+      Pick a Date
+    </label>
+    <input
+      type="date"
+      v-model="selectedDate"
+      @change="validateDate"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+    />
+    <!-- Error message for invalid date -->
+    <div v-if="dateError" class="text-red-500 text-sm mt-2">
+      {{ dateError }}
+    </div>
   </div>
-</div>
 
   <!-- Time Slot Selection -->
   <div class="mb-6">
@@ -139,12 +145,12 @@
   <!-- Submit Button -->
   <div class="mt-8">
     <button
-  @click="openPaymentPopup"
-  :disabled="!canProceed"
-  class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
->
-  Proceed to Payment
-</button>
+      @click="openPaymentPopup"
+      :disabled="!canProceed"
+      class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Proceed to Payment
+    </button>
   </div>
 
   <!-- Payment Popup with dark overlay -->
@@ -273,8 +279,12 @@
 import store from "@/store/store";
 import { getDatabase, ref, set, push } from "firebase/database";
 import { db } from "@/firebase";
+import CloudinaryUploader from "@/components/common/CloudinaryUploader.vue";
 
 export default {
+  components: {
+    CloudinaryUploader,
+  },
   props: ["requiredLicenses"],
   data() {
     return {
@@ -293,21 +303,25 @@ export default {
       hasEnoughBalance: false,
       selectedDate: "",
       dateError: "",
+      cloudName:
+        import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "your_cloud_name",
+      uploadPreset:
+        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "your_upload_preset",
     };
   },
   computed: {
     canProceed() {
       const selectedDate = new Date(this.selectedDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-    const isDateValid = selectedDate >= today;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const isDateValid = selectedDate >= today;
 
       return (
         this.selectedDate &&
         this.timeSlots.length > 0 &&
         this.medicalLicense &&
-        this.clinicLicense && 
-        isDateValid 
+        this.clinicLicense &&
+        isDateValid
       );
     },
   },
@@ -317,8 +331,8 @@ export default {
   },
   watch: {
     selectedDate(newDate) {
-    this.validateDate();
-  },
+      this.validateDate();
+    },
     // Watch for changes in the user object
     "store.state.user": {
       handler(newUser) {
@@ -332,16 +346,16 @@ export default {
   },
   methods: {
     validateDate() {
-    const selectedDate = new Date(this.selectedDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
+      const selectedDate = new Date(this.selectedDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    if (selectedDate < today) {
-      this.dateError = "You cannot select a date before today.";
-    } else {
-      this.dateError = ""; 
-    }
-  },
+      if (selectedDate < today) {
+        this.dateError = "You cannot select a date before today.";
+      } else {
+        this.dateError = "";
+      }
+    },
     // Fetch user balance from store
     fetchUserBalance() {
       if (store.state.user && store.state.user.balance !== undefined) {
