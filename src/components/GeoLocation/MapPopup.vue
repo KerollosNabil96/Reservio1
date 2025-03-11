@@ -115,38 +115,39 @@ export default {
     },
     // Reverse geocode to get the address
     async reverseGeocode(lat, lng) {
-      try {
-        // Call the Nominatim API
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          {
-            headers: {
-              "User-Agent": "YourAppName/1.0 (your-email@example.com)", // Required by Nominatim
-            },
-          }
-        );
-        const data = await response.json();
-
-        console.log("Nominatim API Response:", data); // Debugging
-
-        if (data.display_name) {
-          // Emit the location data to the parent component
-          this.$emit("location-selected", {
-            address: data.display_name,
-            city: data.address.city || data.address.town,
-            area: data.address.suburb || data.address.neighbourhood,
-          });
-
-          // Close the popup
-          this.$emit("close");
-        } else {
-          alert("Address not found.");
-        }
-      } catch (error) {
-        console.error("Error reverse geocoding:", error); // Debugging
-        alert("Error fetching address.");
+  try {
+    // Call the Nominatim API with English language preference
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+      {
+        headers: {
+          "User-Agent": "YourAppName/1.0 (your-email@example.com)", // Required by Nominatim
+          "Accept-Language": "en", // Request the response in English
+        },
       }
-    },
+    );
+    const data = await response.json();
+
+    console.log("Nominatim API Response:", data); // Debugging
+
+    if (data.display_name) {
+      // Emit the location data to the parent component
+      this.$emit("location-selected", {
+        address: data.display_name,
+        city: data.address.city || data.address.town,
+        area: data.address.suburb || data.address.neighbourhood,
+      });
+
+      // Close the popup
+      this.$emit("close");
+    } else {
+      alert("Address not found.");
+    }
+  } catch (error) {
+    console.error("Error reverse geocoding:", error); // Debugging
+    alert("Error fetching address.");
+  }
+},
     // Confirm the selected location
     confirmSelectedLocation() {
       if (this.selectedLocation) {
