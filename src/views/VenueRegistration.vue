@@ -46,20 +46,35 @@
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
               />
             </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Venue Address</label
-              >
-              <input
-                type="text"
-                v-model="venueAddress"
-                placeholder="Enter your venue street address"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-              />
-            </div>
+              <div>
+                <div class="form-group">
+  <label
+    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+  >
+    Venue Address
+  </label>
+  <div class="flex items-center gap-2">
+    <input
+      type="text"
+      v-model="venueAddress"
+      placeholder="Enter your venue street address"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+    />
+    <button
+      type="button" 
+      @click="openMapPopup"
+      class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
+    >
+      <i class="fas fa-map-marker-alt"></i> <!-- Font Awesome icon -->
+    </button>
+  </div>
+</div>
+<MapPopup
+  v-if="showMapPopup"
+  @close="showMapPopup = false"
+  @location-selected="handleLocationSelected"
+/>
+        </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="form-group">
@@ -383,9 +398,14 @@ import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import CloudinaryUploader from "@/components/common/CloudinaryUploader.vue";
 import store from "@/store/store";
+import MapPopup from "@/components/GeoLocation/MapPopup.vue"
 export default {
   data() {
     return {
+      showMapPopup: false, // Control the visibility of the map popup
+      venueAddress: "", // Venue address input
+      selectedCity: "", // Selected city
+      selectedArea: "", // Selected area
       showSigninForm: false,
       showSignupForm: false,
       isVisible: false,
@@ -545,6 +565,7 @@ export default {
     Signin,
     Signup,
     CloudinaryUploader,
+    MapPopup
   },
   computed: {
     ...mapGetters(["isAuthenticated"]),
@@ -620,6 +641,19 @@ export default {
     }
   },
   methods: {
+    openMapPopup() {
+    this.showMapPopup = true; // Open the map popup
+  },
+    // Handle location selection from the map popup
+  handleLocationSelected(location) {
+    if (location && location.address) {
+      this.venueAddress = location.address;
+      this.selectedCity = location.city;
+      this.selectedArea = location.area;
+    } else {
+      alert("Please select a valid location from the map.");
+    }
+  },
     handleGovIdUpload(data) {
       this.govID = data.secure_url;
       // Clear any previous errors

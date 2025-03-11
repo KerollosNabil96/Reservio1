@@ -221,9 +221,9 @@
           <p class="text-gray-600 dark:text-gray-300 mb-2">
             <strong>Phone:</strong> {{ user.phone }}
           </p>
-          <!-- <p class="text-gray-600 dark:text-gray-300 mb-2">
+          <p class="text-gray-600 dark:text-gray-300 mb-2">
             <strong>Address:</strong> {{ user.address }}
-          </p> -->
+          </p>
           <!-- Add more user details as needed -->
         </div>
       </div>
@@ -351,7 +351,7 @@ export default {
         });
         console.log("Filtered Bookings:", filtered); // Debugging
         filteredBookings.value = filtered;
-        console.log(filteredBookings);
+        log
       } else {
         filteredBookings.value = bookings.value;
       }
