@@ -34,7 +34,7 @@
             <p class="text-gray-600 dark:text-gray-400">No Bookings To Display</p>
           </div>
 
-          <div v-else class="bookings-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <transition-group name="sort-animation" tag="div" class="bookings-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div v-for="booking in sortedBookings" :key="booking.id" class="booking-card bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col">
               <div class="relative w-full h-48 mb-4 overflow-hidden rounded-lg">
                 <img v-if="booking.venue.pictures && booking.venue.pictures.length > 0" :src="booking.venue.pictures[0]" alt="Booking Image" class="w-full h-full object-cover" />
@@ -59,11 +59,120 @@
 
               <button @click="cancelBooking(booking)" class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Cancel Booking</button>
             </div>
-          </div>
+          </transition-group>
         </div>
       </div>
 
       <router-view></router-view>
+    </div>
+
+    <!-- Popup Modal -->
+    <div
+      v-if="showBooking"
+      ref="popupModal"
+      class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-[100] transition-all duration-300"
+      @click="showBooking = false"
+    >
+      <div
+        class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-auto my-auto sm:mx-8 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02] relative"
+        @click.stop
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+            Cancel Booking
+          </h3>
+          <button
+            @click="showBooking = false"
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">Are you sure you want to cancel this booking? You will receive a 80% refund.</p>
+        <div class="flex justify-end gap-2">
+          <button
+            ref="cancelPopupFocus"
+            @click="showBooking = false"
+            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+          >
+            No, Keep it
+          </button>
+          <button
+            @click="confirmCancelBooking"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+          >
+            Yes, Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Popup Modal -->
+    <div
+      v-if="showError"
+      class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-[100] transition-all duration-300"
+      @click="showError = false"
+    >
+      <div
+        class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-auto my-auto sm:mx-8 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02] relative"
+        @click.stop
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-red-600 dark:text-red-400">
+            Error
+          </h3>
+          <button
+            @click="showError = false"
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">{{ errorMessage }}</p>
+        <div class="flex justify-end">
+          <button
+            ref="errorPopupFocus"
+            @click="showError = false"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Popup Modal -->
+    <div
+      v-if="showSuccess"
+      class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-[100] transition-all duration-300"
+      @click="showSuccess = false"
+    >
+      <div
+        class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-auto my-auto sm:mx-8 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02] relative"
+        @click.stop
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-green-600 dark:text-green-400">
+            Success
+          </h3>
+          <button
+            @click="showSuccess = false"
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">{{ successMessage }}</p>
+        <div class="flex justify-end">
+          <button
+            ref="successPopupFocus"
+            @click="showSuccess = false"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+          >
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -73,7 +182,7 @@ import { db } from "@/firebase";
 import { ref as firebaseRef, onValue, set, get } from "firebase/database";
 import SideBar from "../SideBar/SideBar.vue";
 import { getAuth } from "firebase/auth";
-import Swal from "sweetalert2";
+import { nextTick } from "vue";
 
 export default {
   name: "DashboardView",
@@ -85,6 +194,12 @@ export default {
       sortOption: "all",
       sidebarOpen: true,
       userId: null,
+      showBooking: false,
+      selectedBooking: null,
+      showError: false,
+      errorMessage: '',
+      showSuccess: false,
+      successMessage: ''
     };
   },
   computed: {
@@ -106,68 +221,77 @@ export default {
       return new Date(date).toLocaleDateString();
     },
     toggleSidebar(value) {
-      // If a specific value is provided, use it, otherwise toggle the current state
       this.sidebarOpen = value !== undefined ? value : !this.sidebarOpen;
     },
-    async cancelBooking(booking) {
+    cancelBooking(booking) {
       const bookingDate = new Date(booking.date);
       const today = new Date();
       const timeDifference = bookingDate - today;
       const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-      
+
       if (daysDifference <= 1) {
-        Swal.fire({ title: "Cannot Cancel!", text: "You can't cancel a booking within 24 hours.", icon: "error" });
+        this.errorMessage = "You can't cancel a booking within 24 hours.";
+        this.showError = true;
         return;
       }
-      
-      const result = await Swal.fire({ title: "Are you sure?", text: "Do you want to cancel? You will receive 50% refund of the booking price.", icon: "warning", showCancelButton: true, confirmButtonText: "Yes, Cancel", cancelButtonText: "No, Keep it" });
-      if (!result.isConfirmed) return;
-      
+
+      this.selectedBooking = booking;
+      this.showBooking = true;
+
+      nextTick(() => {
+        this.$refs.cancelPopupFocus?.focus();
+      });
+    },
+    async confirmCancelBooking() {
+      const booking = this.selectedBooking;
       const dbRef = firebaseRef(db, `bookings/${booking.id}`);
       const userRef = firebaseRef(db, `users/${this.userId}/balance`);
       const venueRef = firebaseRef(db, `venues/${booking.venue.id}`);
-      
+
       try {
-        // Get current user balance and venue data
         const [balanceSnapshot, venueSnapshot] = await Promise.all([
           get(userRef),
           get(venueRef)
         ]);
-        
+
         const currentBalance = balanceSnapshot.exists() ? balanceSnapshot.val() : 0;
         const venueData = venueSnapshot.exists() ? venueSnapshot.val() : null;
-        
+
         if (!venueData) {
           throw new Error('Venue data not found');
         }
-        
-        // Calculate refund amount (50% of booking price)
-        const refundAmount = booking.venue.price * 0.5;
-        
-        // Update user balance with refund
+
+        const refundAmount = booking.venue.price * 0.8;
         await set(userRef, currentBalance + refundAmount);
-        
-        // Increment available slots in the correct timeSlot using the timeSlotId from booking
+
         if (venueData.timeSlots && booking.timeSlotId !== undefined) {
           const updatedTimeSlots = { ...venueData.timeSlots };
           if (updatedTimeSlots[booking.timeSlotId]) {
             updatedTimeSlots[booking.timeSlotId].available = (updatedTimeSlots[booking.timeSlotId].available || 0) + 1;
-            
             await set(venueRef, {
               ...venueData,
               timeSlots: updatedTimeSlots
             });
           }
         }
-        
-        // Delete the booking
+
         await set(dbRef, null);
-        
         this.bookings = this.bookings.filter(b => b.id !== booking.id);
-        Swal.fire("Cancelled!", `Your booking has been cancelled and ${refundAmount} EGP has been refunded to your balance.`, "success");
+        this.showBooking = false;
+        this.showSuccess = true;
+        this.successMessage = `Your booking has been cancelled and ${refundAmount} EGP has been refunded to your balance.`;
+
+        nextTick(() => {
+          this.$refs.successPopupFocus?.focus();
+        });
       } catch (error) {
         console.error('Error during booking cancellation:', error);
-        Swal.fire("Error!", "Failed to cancel booking. Please try again.", "error");
+        this.errorMessage = "Failed to cancel booking. Please try again.";
+        this.showError = true;
+
+        nextTick(() => {
+          this.$refs.errorPopupFocus?.focus();
+        });
       }
     },
     setupBookingsListener() {
@@ -184,5 +308,56 @@ export default {
   mounted() {
     this.setupBookingsListener();
   },
+  watch: {
+    showError(newVal) {
+      if (newVal) {
+        nextTick(() => {
+          this.$refs.errorPopupFocus?.focus();
+        });
+      }
+    },
+    showSuccess(newVal) {
+      if (newVal) {
+        nextTick(() => {
+          this.$refs.successPopupFocus?.focus();
+        });
+      }
+    },
+  },
 };
 </script>
+
+<style scoped>
+
+.sort-animation-move, 
+.sort-animation-enter-active,
+.sort-animation-leave-active {
+  transition: all 0.5s ease;
+}
+
+.sort-animation-enter-from,
+.sort-animation-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.sort-animation-leave-active {
+  position: absolute;
+}
+
+.dark .sort-animation-move,
+.dark .sort-animation-enter-active,
+.dark .sort-animation-leave-active {
+  transition: all 0.5s ease;
+}
+
+.dark .sort-animation-enter-from,
+.dark .sort-animation-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.dark .sort-animation-leave-active {
+  position: absolute;
+}
+</style>
