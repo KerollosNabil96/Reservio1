@@ -6,16 +6,16 @@
     >
       <h2 class="text-white text-2xl dark:text-gray-800">
         Your Wallet Balance:
-        <span class="font-bold text-green-500 dark:text-green-700"
-          >{{ balance }} EGP</span
-        >
+        <span class="font-bold text-green-500 dark:text-green-700">
+          {{ balance }} EGP
+        </span>
       </h2>
     </div>
   </div>
 </template>
 
 <script>
-import { getDatabase, ref, get } from "firebase/database";
+import { getDatabase, ref, get, onValue } from "firebase/database";
 import store from "@/store/store";
 
 export default {
@@ -26,7 +26,7 @@ export default {
       isSuccess: false,
       amount: null,
       wrongAmount: false,
-      balance: 0, // سيتم تحديثها من قاعدة البيانات
+      balance: 0, 
     };
   },
   methods: {
@@ -50,7 +50,7 @@ export default {
       this.isSuccess = false;
     },
     async fetchBalance() {
-      const user = store.state.user; // جلب بيانات المستخدم من Vuex store
+      const user = store.state.user; 
       if (!user) {
         console.error("No user found!");
         return;
@@ -62,7 +62,7 @@ export default {
         const snapshot = await get(userRef);
 
         if (snapshot.exists()) {
-          this.balance = snapshot.val(); // تحديث قيمة balance
+          this.balance = snapshot.val(); 
         } else {
           console.log("No balance found for this user.");
         }
@@ -70,9 +70,28 @@ export default {
         console.error("Error fetching balance:", error);
       }
     },
+
+    listenForBalanceUpdates() {
+      const user = store.state.user;
+      if (!user) return;
+
+      try {
+        const db = getDatabase();
+        const userRef = ref(db, `users/${user.id}/balance`);
+
+        onValue(userRef, (snapshot) => {
+          if (snapshot.exists()) {
+            this.balance = snapshot.val();
+          }
+        });
+      } catch (error) {
+        console.error("Error listening for balance updates:", error);
+      }
+    },
   },
   mounted() {
     this.fetchBalance();
+    this.listenForBalanceUpdates(); 
   },
 };
 </script>
