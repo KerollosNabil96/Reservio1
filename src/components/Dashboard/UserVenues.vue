@@ -351,7 +351,6 @@ export default {
         });
         console.log("Filtered Bookings:", filtered); // Debugging
         filteredBookings.value = filtered;
-        log
       } else {
         filteredBookings.value = bookings.value;
       }
