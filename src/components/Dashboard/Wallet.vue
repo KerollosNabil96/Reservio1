@@ -2,11 +2,11 @@
   <div class="min-h-screen">
     <!-- Wallet Content -->
     <div
-      class="dark:bg-gray-100 bg-gray-800 text-center p-6 rounded-lg shadow-lg flex justify-center items-center"
+      class="dark:bg-gray-100 bg-gray-800 text-center p-4 sm:p-6 rounded-lg shadow-lg flex flex-col sm:flex-row justify-center items-center"
     >
-      <h2 class="text-white text-2xl dark:text-gray-800">
+      <h2 class="text-white text-lg sm:text-2xl dark:text-gray-800">
         Your Wallet Balance:
-        <span class="font-bold text-green-500 dark:text-green-700">
+        <span class="font-bold text-green-500 dark:text-green-700 block sm:inline mt-2 sm:mt-0">
           {{ balance }} EGP
         </span>
       </h2>

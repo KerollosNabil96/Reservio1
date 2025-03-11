@@ -2,13 +2,14 @@
   <div
     v-if="sidebarOpen"
     class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-    @click="toggleSidebar"
+    @click="closeSidebarOnMobile"
   ></div>
   <nav
     :class="[
-      sidebarOpen ? 'block' : 'hidden',
+      sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg',
-      'fixed md:relative inset-0 z-50 md:z-auto', // Add fixed positioning for mobile
+      'fixed md:relative inset-y-0 left-0 z-50 md:z-auto', 
+      'transition-transform duration-300 ease-in-out h-full overflow-y-auto',
     ]"
   >
     <!-- Header Section for Mobile -->
@@ -18,7 +19,8 @@
       </h1>
       <button
         @click="closeSidebarOnMobile"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2"
+        aria-label="Close sidebar"
       >
         <i class="fas fa-times"></i> 
       </button>
@@ -94,7 +96,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 export default {
   name: "SideBar",
@@ -114,6 +116,10 @@ export default {
     onMounted(() => {
       window.addEventListener("resize", closeSidebarOnMobile);
     });
+    
+    onBeforeUnmount(() => {
+      window.removeEventListener("resize", closeSidebarOnMobile);
+    });
 
     return {
       closeSidebarOnMobile,
@@ -126,5 +132,13 @@ export default {
 button {
   font-size: 1.5rem;
   transition: color 0.2s ease-in-out;
+}
+
+/* Mobile sidebar animation */
+@media (max-width: 767px) {
+  nav {
+    width: 80%;
+    max-width: 300px;
+  }
 }
 </style>

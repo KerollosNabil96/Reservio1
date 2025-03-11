@@ -9,7 +9,7 @@
 
     <SideBar :sidebarOpen="sidebarOpen" @toggle-sidebar="toggleSidebar" />
 
-    <div :class="['flex-1 p-4 md:p-8 dark:bg-gray-900', sidebarOpen ? 'pt-16 md:pt-0' : '']">
+    <div :class="['flex-1 p-4 md:p-8 overflow-auto dark:bg-gray-900', sidebarOpen ? 'pt-16 md:pt-0' : '']">
       <div class="header-section mb-6">
         <h2 class="text-2xl md:text-3xl font-bold dark:text-white">
           Hello, <span :style="{ color: 'rgb(18, 102, 212)' }">{{ username }}</span>
@@ -18,9 +18,9 @@
       </div>
 
       <div v-if="$route.path === '/profile/bookings'">
-        <div class="search-section mb-6 flex items-center gap-2 bg-gray-800 p-2 rounded-lg">
-          <input type="search" v-model="searchQuery" placeholder="Search" class="flex-grow p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none" />
-          <select v-model="sortOption" class="p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none">
+        <div class="search-section mb-6 flex flex-col sm:flex-row items-center gap-2 bg-gray-800 p-2 rounded-lg">
+          <input type="search" v-model="searchQuery" placeholder="Search" class="w-full sm:flex-grow p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none mb-2 sm:mb-0" />
+          <select v-model="sortOption" class="w-full sm:w-auto p-2 bg-gray-900 text-white border-none rounded-lg focus:outline-none">
             <option value="all">All</option>
             <option value="nearest">Nearest Date</option>
             <option value="farthest">Farthest Date</option>
@@ -104,6 +104,10 @@ export default {
   methods: {
     formatDate(date) {
       return new Date(date).toLocaleDateString();
+    },
+    toggleSidebar(value) {
+      // If a specific value is provided, use it, otherwise toggle the current state
+      this.sidebarOpen = value !== undefined ? value : !this.sidebarOpen;
     },
     async cancelBooking(booking) {
       const bookingDate = new Date(booking.date);

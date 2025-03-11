@@ -76,7 +76,9 @@
           class="w-full appearance-none bg-white pl-10 text-gray-600 pr-4 py-2 rounded-lg shadow cursor-pointer"
         >
           <option value="" disabled selected hidden>Select Location</option>
-          <option v-for="city in cities" :value="city">{{ city }}</option>
+          <option v-for="city in cities" :value="city" :key="city">
+            {{ city }}
+          </option>
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"

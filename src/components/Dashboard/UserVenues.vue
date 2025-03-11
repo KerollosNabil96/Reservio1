@@ -1,8 +1,8 @@
 <template>
   <div class="main-content">
     <div class="booking-section">
-      <div class="search-section mb-6 flex">
-        <div class="search-box w-11/12">
+      <div class="search-section mb-6 flex flex-col sm:flex-row gap-2">
+        <div class="search-box w-full sm:w-11/12">
           <input
             type="search"
             v-model="searchQuery"
@@ -12,7 +12,7 @@
         </div>
         <select
           v-model="sortOption"
-          class="p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+          class="w-full sm:w-auto p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
         >
           <option value="all" disabled>All</option>
           <option value="nearest">Nearest Date</option>
