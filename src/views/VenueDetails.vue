@@ -225,20 +225,7 @@
                 @click="closeImageModal"
                 class="absolute top-4 right-4 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 backdrop-blur-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                test
               </button>
 
               <!-- Navigation buttons -->

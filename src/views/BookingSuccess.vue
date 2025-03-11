@@ -217,6 +217,49 @@ export default {
             },
             { onlyOnce: true }
           );
+
+          // 3. Add 90% of the payment to the venue owner's wallet
+          if (this.bookingInfo.venue && this.bookingInfo.venue.ownerId) {
+            const ownerId = this.bookingInfo.venue.ownerId;
+            const ownerAmount = this.bookingInfo.price * 0.9; // 90% of the booking price
+
+            const ownerBalanceRef = ref(db, `users/${ownerId}/balance`);
+            onValue(
+              ownerBalanceRef,
+              (snapshot) => {
+                const ownerBalance = snapshot.val() || 0;
+                const newBalance = ownerBalance + ownerAmount;
+
+                set(ownerBalanceRef, newBalance);
+
+                console.log(
+                  `Added ${ownerAmount} EGP (80% of payment) to venue owner's wallet`
+                );
+
+                // 4. Send a notification to the venue owner
+                const notificationId = Date.now().toString();
+                const notification = {
+                  id: notificationId,
+                  message: `New booking for ${this.bookingInfo.venue.venueName}! You've received ${ownerAmount} EGP in your wallet.`,
+                  timestamp: new Date().toISOString(),
+                  read: false,
+                  type: "new_booking",
+                  bookingId: this.bookingInfo.id,
+                };
+
+                const ownerNotificationsRef = ref(
+                  db,
+                  `users/${ownerId}/notifications/${notificationId}`
+                );
+                set(ownerNotificationsRef, notification);
+
+                console.log(
+                  `Notification sent to venue owner (ID: ${ownerId})`
+                );
+              },
+              { onlyOnce: true }
+            );
+          }
         } else if (store.state.user && store.state.user.id) {
           // If userId wasn't in the booking but we have a logged-in user
           const userBookingsRef = ref(

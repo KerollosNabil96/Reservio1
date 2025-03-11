@@ -46,35 +46,36 @@
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
               />
             </div>
-              <div>
-                <div class="form-group">
-  <label
-    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-  >
-    Venue Address
-  </label>
-  <div class="flex items-center gap-2">
-    <input
-      type="text"
-      v-model="venueAddress"
-      placeholder="Enter your venue street address"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-    />
-    <button
-      type="button" 
-      @click="openMapPopup"
-      class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
-    >
-      <i class="fas fa-map-marker-alt"></i> <!-- Font Awesome icon -->
-    </button>
-  </div>
-</div>
-<MapPopup
-  v-if="showMapPopup"
-  @close="showMapPopup = false"
-  @location-selected="handleLocationSelected"
-/>
-        </div>
+            <div>
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Venue Address
+                </label>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="text"
+                    v-model="venueAddress"
+                    placeholder="Enter your venue street address"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  />
+                  <button
+                    type="button"
+                    @click="openMapPopup"
+                    class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
+                  >
+                    <i class="fas fa-map-marker-alt"></i>
+                    <!-- Font Awesome icon -->
+                  </button>
+                </div>
+              </div>
+              <MapPopup
+                v-if="showMapPopup"
+                @close="showMapPopup = false"
+                @location-selected="handleLocationSelected"
+              />
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="form-group">
@@ -398,7 +399,7 @@ import Signin from "@/components/registration/Signin.vue";
 import Signup from "@/components/registration/Signup.vue";
 import CloudinaryUploader from "@/components/common/CloudinaryUploader.vue";
 import store from "@/store/store";
-import MapPopup from "@/components/GeoLocation/MapPopup.vue"
+import MapPopup from "@/components/GeoLocation/MapPopup.vue";
 export default {
   data() {
     return {
@@ -430,8 +431,10 @@ export default {
       firstImageError: false,
       secondImageError: false,
       thirdImageError: false,
-      cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'your_cloud_name',
-      uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'your_upload_preset',
+      cloudName:
+        import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "your_cloud_name",
+      uploadPreset:
+        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "your_upload_preset",
       cities: {
         Cairo: [
           "Nasr City",
@@ -565,7 +568,7 @@ export default {
     Signin,
     Signup,
     CloudinaryUploader,
-    MapPopup
+    MapPopup,
   },
   computed: {
     ...mapGetters(["isAuthenticated"]),
@@ -595,10 +598,7 @@ export default {
       return "Price";
     },
     validLinks() {
-      return (
-        this.validImages &&
-        !this.phoneNumberError
-      );
+      return this.validImages && !this.phoneNumberError;
     },
   },
   watch: {
@@ -642,39 +642,39 @@ export default {
   },
   methods: {
     openMapPopup() {
-    this.showMapPopup = true; // Open the map popup
-  },
+      this.showMapPopup = true; // Open the map popup
+    },
     // Handle location selection from the map popup
-  handleLocationSelected(location) {
-    if (location && location.address) {
-      this.venueAddress = location.address;
-      this.selectedCity = location.city;
-      this.selectedArea = location.area;
-    } else {
-      alert("Please select a valid location from the map.");
-    }
-  },
+    handleLocationSelected(location) {
+      if (location && location.address) {
+        this.venueAddress = location.address;
+        this.selectedCity = location.city;
+        this.selectedArea = location.area;
+      } else {
+        alert("Please select a valid location from the map.");
+      }
+    },
     handleGovIdUpload(data) {
       this.govID = data.secure_url;
       // Clear any previous errors
       this.validateImageLink(this.govID);
     },
-    
+
     handleFirstImageUpload(data) {
       this.firstImage = data.secure_url;
       this.firstImageError = false;
     },
-    
+
     handleSecondImageUpload(data) {
       this.secondImage = data.secure_url;
       this.secondImageError = false;
     },
-    
+
     handleThirdImageUpload(data) {
       this.thirdImage = data.secure_url;
       this.thirdImageError = false;
     },
-    
+
     validateImageLink(imageLink) {
       if (!imageLink) return false;
       const regex = /^(http|https|ftp):\/\/[^\s$.?#].[^\s]*$/i;
@@ -733,6 +733,7 @@ export default {
         selectedArea: this.selectedArea,
         zipCode: this.zipCode,
         category: this.category,
+        venuePhoneNumber: this.phoneNumber,
         govID: this.govID,
         price: this.price,
         shortDescription: this.shortDescription,
@@ -755,6 +756,7 @@ export default {
           category: this.category,
           govID: this.govID,
           price: this.price,
+          venuePhoneNumber: this.phoneNumber,
           address: {
             street: this.venueAddress,
             governorate: this.selectedCity,
@@ -810,7 +812,6 @@ export default {
         selectedCity: this.selectedCity,
         selectedArea: this.selectedArea,
         zipCode: this.zipCode,
-        phoneNumber: this.phoneNumber,
         govID: this.govID,
         category: this.category,
         price: this.price,
@@ -853,6 +854,7 @@ export default {
           category: this.category,
           govID: this.govID,
           price: this.price,
+          venuePhoneNumber: this.phoneNumber,
           address: {
             street: this.venueAddress,
             governorate: this.selectedCity,

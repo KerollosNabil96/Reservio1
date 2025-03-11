@@ -40,17 +40,18 @@
         <div
           class="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-2 sm:mt-4 justify-center md:justify-start"
         >
-          <RouterLink to="/register-venue" class="w-full sm:w-auto">
-            <BaseButton
-              class="text-white px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg rounded-lg font-medium"
-              >Share Your Venue</BaseButton
-            >
-          </RouterLink>
           <RouterLink to="/book-now" class="w-full sm:w-auto">
             <BaseButton
-              class="px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300 rounded-lg font-medium"
+              class="text-white px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg rounded-lg font-medium"
               >Browse Venues</BaseButton
             >
+          </RouterLink>
+          <RouterLink to="/register-venue" class="w-full sm:w-auto">
+            <BaseButton
+              class="px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300 rounded-lg font-medium"
+            >
+              Share Your Venue
+            </BaseButton>
           </RouterLink>
         </div>
       </div>
