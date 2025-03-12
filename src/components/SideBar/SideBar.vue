@@ -8,8 +8,8 @@
     :class="[
       sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg',
-      'fixed md:relative inset-y-0 left-0 z-50 md:z-auto', 
-      'transition-transform duration-300 ease-in-out h-full overflow-y-auto',
+      'fixed md:relative inset-y-0 left-0 z-50 md:z-auto',
+      'transition-transform duration-300 ease-in-out  overflow-y-auto',
     ]"
   >
     <!-- Header Section for Mobile -->
@@ -22,7 +22,7 @@
         class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2"
         aria-label="Close sidebar"
       >
-        <i class="fas fa-times"></i> 
+        <i class="fas fa-times"></i>
       </button>
     </div>
 
@@ -116,7 +116,7 @@ export default {
     onMounted(() => {
       window.addEventListener("resize", closeSidebarOnMobile);
     });
-    
+
     onBeforeUnmount(() => {
       window.removeEventListener("resize", closeSidebarOnMobile);
     });
