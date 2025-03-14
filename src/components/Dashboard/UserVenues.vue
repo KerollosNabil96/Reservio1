@@ -107,7 +107,24 @@
               <span class="text-xs">{{ venue.selectedDate }}</span>
             </div>
           </div>
-
+          <div class="time-slots-grid mt-4">
+            <div
+              v-for="(timeslot, timeslotId) in venue.timeSlots"
+              :key="`${venue.id}-${timeslotId}`"
+              class="time-slot-item"
+            >
+              <div v-if="timeslot" class="time-slot-content">
+                <!-- Check if timeslot exists -->
+                <span>{{ timeslot.from }} - {{ timeslot.to }}</span>
+                <button
+                  class="delete-icon"
+                  @click="openDeleteModal(timeslotId)"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           <!-- Show Bookings Button -->
           <button
             @click="showBookings(venue.id)"
@@ -116,6 +133,46 @@
             Show User Bookings
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- Confirmation Modal -->
+  <div
+    v-if="showDeleteModal"
+    class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click="closeDeleteModal"
+  >
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
+      @click.stop
+    >
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+          Delete Time Slot
+        </h3>
+        <button
+          @click="closeDeleteModal"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">
+        Are you sure you want to delete this time slot?
+      </p>
+      <div class="flex justify-end gap-4">
+        <button
+          @click="closeDeleteModal"
+          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+        >
+          Cancel
+        </button>
+        <button
+          @click="confirmDelete"
+          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        >
+          Delete
+        </button>
       </div>
     </div>
   </div>
@@ -243,7 +300,7 @@
 import VenueCard from "../reservations/VenueCard.vue";
 import store from "@/store/store";
 import { onMounted, ref, watch } from "vue";
-import { getDatabase, ref as dbRef, get } from "firebase/database";
+import { getDatabase, ref as dbRef, get, set } from "firebase/database";
 
 export default {
   data() {
@@ -254,8 +311,9 @@ export default {
       showUserModal: false,
       selectedVenue: null, // Stores the selected venue for the popup
       bookID: "",
-      userID: "",
-      // selectedUser: null,
+      userID: "", // selectedUser: null,
+      showDeleteModal: false,
+      selectedTimeSlotId: null,
     };
   },
   methods: {
@@ -266,6 +324,85 @@ export default {
     showUserDetails(userId) {
       this.userID = userId;
       this.showUserModal = true; // Show the user details modal
+    },
+    openDeleteModal(timeSlotId) {
+      console.log(timeSlotId);
+
+      this.selectedTimeSlotId = timeSlotId;
+      this.showDeleteModal = true;
+    },
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.selectedTimeSlotId = null;
+    },
+    ////////////////
+    async confirmDelete() {
+      if (this.selectedTimeSlotId !== null) {
+        try {
+          const db = getDatabase();
+          const venueId = this.findVenueIdByTimeSlotId(this.selectedTimeSlotId);
+
+          if (venueId) {
+            // Convert timeSlotId to string to ensure consistency
+            const timeSlotIdStr = String(this.selectedTimeSlotId);
+
+            // Reference to the time slot in the database
+            const timeSlotRef = dbRef(
+              db,
+              `venues/${venueId}/timeSlots/${timeSlotIdStr}`
+            );
+
+            // Delete the time slot from the database
+            await set(timeSlotRef, null);
+
+            // Update the local state (UI)
+            this.deleteTimeSlot(timeSlotIdStr);
+
+            // Show success message
+            this.showSuccess = true;
+            this.successMessage = "Time slot deleted successfully.";
+          } else {
+            throw new Error("Venue not found for the selected time slot.");
+          }
+        } catch (error) {
+          console.error("Error deleting time slot:", error);
+          this.showError = true;
+          this.errorMessage = "Failed to delete time slot. Please try again.";
+        }
+      }
+      this.closeDeleteModal();
+    },
+    ////////////////
+    deleteTimeSlot(timeSlotId) {
+      // Convert timeSlotId to string to ensure consistency
+      const timeSlotIdStr = String(timeSlotId);
+
+      // Find the venue that contains the time slot
+      const venueIndex = this.sortedBookings.findIndex(
+        (venue) => venue.timeSlots && venue.timeSlots[timeSlotIdStr]
+      );
+
+      if (venueIndex !== -1) {
+        // Create a copy of the venue to ensure reactivity
+        const venue = { ...this.sortedBookings[venueIndex] };
+
+        // Remove the time slot from the venue's timeSlots object
+        const { [timeSlotIdStr]: _, ...remainingSlots } = venue.timeSlots;
+
+        // Replace the entire timeSlots object to trigger reactivity
+        venue.timeSlots = remainingSlots;
+
+        // Update the sortedBookings array reactively
+        this.sortedBookings.splice(venueIndex, 1, venue);
+      }
+    },
+    ////////////////
+    findVenueIdByTimeSlotId(timeSlotId) {
+      const timeSlotIdStr = String(timeSlotId);
+      const venue = this.sortedBookings.find(
+        (venue) => venue.timeSlots && venue.timeSlots[timeSlotIdStr]
+      );
+      return venue ? venue.id : null;
     },
   },
   computed: {
@@ -298,6 +435,7 @@ export default {
           (a, b) => new Date(b.selectedDate) - new Date(a.selectedDate)
         );
       }
+      console.log("sorted arr ", sorted);
       return sorted;
     },
   },
@@ -398,5 +536,74 @@ export default {
   text-align: center;
   color: #666;
   font-size: 1.2rem;
+}
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.time-slot-item {
+  background-color: #ffffff; /* White background */
+  border: 1px solid #e5e7eb; /* Light gray border */
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.time-slot-item:hover {
+  background-color: #f9fafb; /* Light gray background on hover */
+  border-color: #d1d5db; /* Slightly darker border on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+.time-slot-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #374151; /* Dark gray text */
+}
+
+.delete-icon {
+  background: none;
+  border: none;
+  color: #ef4444;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+.delete-icon:hover {
+  /* No background color on hover */
+  color: #dc2626; /* Optional: Darken the icon color on hover */
+}
+.time-slot-item:hover .delete-icon {
+  opacity: 1;
+}
+.dark .time-slot-item {
+  background-color: #1f2937; /* Dark gray background */
+  border-color: #374151; /* Darker gray border */
+  color: #f3f4f6; /* Light gray text */
+}
+
+.dark .time-slot-item:hover {
+  background-color: #374151; /* Slightly lighter gray on hover */
+  border-color: #4b5563; /* Lighter border on hover */
+}
+
+.dark .time-slot-content {
+  color: #f3f4f6; /* Light gray text */
+}
+
+.dark .delete-icon {
+  color: #ef4444; /* Red color for delete icon */
+}
+
+.dark .delete-icon:hover {
+  color: #dc2626; /* Optional: Darken the icon color on hover */
 }
 </style>
