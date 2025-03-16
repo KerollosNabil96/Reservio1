@@ -111,14 +111,14 @@
             <div
               v-for="(timeslot, timeslotId) in venue.timeSlots"
               :key="`${venue.id}-${timeslotId}`"
-              class="time-slot-item"
+              class=""
             >
-              <div v-if="timeslot" class="time-slot-content">
+              <div v-if="timeslot" class="time-slot-content time-slot-item">
                 <!-- Check if timeslot exists -->
                 <span>{{ timeslot.from }} - {{ timeslot.to }}</span>
                 <button
                   class="delete-icon"
-                  @click="openDeleteModal(timeslotId)"
+                  @click="openDeleteModal(venue.id, timeslotId)"
                 >
                   <i class="fas fa-times"></i>
                 </button>
@@ -325,45 +325,35 @@ export default {
       this.userID = userId;
       this.showUserModal = true; // Show the user details modal
     },
-    openDeleteModal(timeSlotId) {
-      console.log(timeSlotId);
-
+    openDeleteModal(venueId, timeSlotId) {
+      this.selectedVenueId = venueId;
       this.selectedTimeSlotId = timeSlotId;
       this.showDeleteModal = true;
     },
     closeDeleteModal() {
       this.showDeleteModal = false;
+      this.selectedVenueId = null;
       this.selectedTimeSlotId = null;
     },
     ////////////////
     async confirmDelete() {
-      if (this.selectedTimeSlotId !== null) {
+      if (this.selectedVenueId && this.selectedTimeSlotId !== null) {
         try {
           const db = getDatabase();
-          const venueId = this.findVenueIdByTimeSlotId(this.selectedTimeSlotId);
+          const timeSlotRef = dbRef(
+            db,
+            `venues/${this.selectedVenueId}/timeSlots/${this.selectedTimeSlotId}`
+          );
 
-          if (venueId) {
-            // Convert timeSlotId to string to ensure consistency
-            const timeSlotIdStr = String(this.selectedTimeSlotId);
+          // Delete the time slot from the database
+          await set(timeSlotRef, null);
 
-            // Reference to the time slot in the database
-            const timeSlotRef = dbRef(
-              db,
-              `venues/${venueId}/timeSlots/${timeSlotIdStr}`
-            );
+          // Update the local state (UI)
+          this.deleteTimeSlot(this.selectedVenueId, this.selectedTimeSlotId);
 
-            // Delete the time slot from the database
-            await set(timeSlotRef, null);
-
-            // Update the local state (UI)
-            this.deleteTimeSlot(timeSlotIdStr);
-
-            // Show success message
-            this.showSuccess = true;
-            this.successMessage = "Time slot deleted successfully.";
-          } else {
-            throw new Error("Venue not found for the selected time slot.");
-          }
+          // Show success message
+          this.showSuccess = true;
+          this.successMessage = "Time slot deleted successfully.";
         } catch (error) {
           console.error("Error deleting time slot:", error);
           this.showError = true;
@@ -372,14 +362,9 @@ export default {
       }
       this.closeDeleteModal();
     },
-    ////////////////
-    deleteTimeSlot(timeSlotId) {
-      // Convert timeSlotId to string to ensure consistency
-      const timeSlotIdStr = String(timeSlotId);
-
-      // Find the venue that contains the time slot
+    deleteTimeSlot(venueId, timeSlotId) {
       const venueIndex = this.sortedBookings.findIndex(
-        (venue) => venue.timeSlots && venue.timeSlots[timeSlotIdStr]
+        (venue) => venue.id === venueId
       );
 
       if (venueIndex !== -1) {
@@ -387,15 +372,16 @@ export default {
         const venue = { ...this.sortedBookings[venueIndex] };
 
         // Remove the time slot from the venue's timeSlots object
-        const { [timeSlotIdStr]: _, ...remainingSlots } = venue.timeSlots;
+        const { [timeSlotId]: _, ...remainingSlots } = venue.timeSlots;
 
         // Replace the entire timeSlots object to trigger reactivity
         venue.timeSlots = remainingSlots;
 
         // Update the sortedBookings array reactively
-        this.sortedBookings.splice(venueIndex, 1, venue);
+        this.$set(this.sortedBookings, venueIndex, venue);
       }
     },
+
     ////////////////
     findVenueIdByTimeSlotId(timeSlotId) {
       const timeSlotIdStr = String(timeSlotId);
