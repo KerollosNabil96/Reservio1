@@ -109,12 +109,11 @@
           </div>
           <div class="time-slots-grid mt-4">
             <div
-              v-for="(timeslot, timeslotId) in venue.timeSlots"
+              v-for="[timeslotId, timeslot] in filteredTimeSlots(venue.id)"
               :key="`${venue.id}-${timeslotId}`"
-              class=""
+              class="time-slot-item"
             >
-              <div v-if="timeslot" class="time-slot-content time-slot-item">
-                <!-- Check if timeslot exists -->
+              <div class="time-slot-content">
                 <span>{{ timeslot.from }} - {{ timeslot.to }}</span>
                 <button
                   class="delete-icon"
@@ -423,6 +422,17 @@ export default {
       }
       console.log("sorted arr ", sorted);
       return sorted;
+    },
+    filteredTimeSlots() {
+      return (venueId) => {
+        const venue = this.sortedBookings.find((venue) => venue.id === venueId);
+        if (venue && venue.timeSlots) {
+          return Object.entries(venue.timeSlots).filter(
+            ([_, timeslot]) => timeslot
+          );
+        }
+        return [];
+      };
     },
   },
   setup() {
