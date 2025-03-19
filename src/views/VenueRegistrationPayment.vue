@@ -107,6 +107,16 @@ export default {
     },
   },
   methods: {
+    addExistFieldToTimeSlots(timeSlots) {
+      const updatedTimeSlots = {};
+      for (const timeSlotId in timeSlots) {
+        updatedTimeSlots[timeSlotId] = {
+          ...timeSlots[timeSlotId],
+          exist: true, // Add the `exist` field
+        };
+      }
+      return updatedTimeSlots;
+    },
     cancelRegistration() {
       this.$router.back();
     },
@@ -184,6 +194,7 @@ export default {
           paymentStatus: "paid",
           paymentMethod: "wallet",
           paymentDate: new Date().toISOString(),
+          timeSlots: this.addExistFieldToTimeSlots(this.venue.timeSlots), // Add `exist` field to time slots
         };
 
         // Save venue to requests collection

@@ -306,23 +306,23 @@ export default {
     return {
       searchQuery: "",
       sortOption: "all",
-      showBooking: false, // Controls the visibility of the popup
+      showBooking: false,
       showUserModal: false,
-      selectedVenue: null, // Stores the selected venue for the popup
+      selectedVenue: null,
       bookID: "",
-      userID: "", // selectedUser: null,
+      userID: "",
       showDeleteModal: false,
       selectedTimeSlotId: null,
     };
   },
   methods: {
     showBookings(venueId) {
-      this.bookID = venueId; // Set the selected venue
-      this.showBooking = true; // Show the popup
+      this.bookID = venueId;
+      this.showBooking = true;
     },
     showUserDetails(userId) {
       this.userID = userId;
-      this.showUserModal = true; // Show the user details modal
+      this.showUserModal = true;
     },
     openDeleteModal(venueId, timeSlotId) {
       this.selectedVenueId = venueId;
@@ -334,34 +334,101 @@ export default {
       this.selectedVenueId = null;
       this.selectedTimeSlotId = null;
     },
-    ////////////////
     async confirmDelete() {
       if (this.selectedVenueId && this.selectedTimeSlotId !== null) {
         try {
           const db = getDatabase();
+
+          // Fetch the specific time slot to update
           const timeSlotRef = dbRef(
             db,
             `venues/${this.selectedVenueId}/timeSlots/${this.selectedTimeSlotId}`
           );
 
-          // Delete the time slot from the database
-          await set(timeSlotRef, null);
+          // Fetch the current time slot data
+          const timeSlotSnapshot = await get(timeSlotRef);
+          if (timeSlotSnapshot.exists()) {
+            const timeSlotData = timeSlotSnapshot.val();
 
-          // Update the local state (UI)
-          this.deleteTimeSlot(this.selectedVenueId, this.selectedTimeSlotId);
+            // Update the `exist` field to `false`
+            await set(timeSlotRef, { ...timeSlotData, exist: false });
 
-          // Show success message
-          this.showSuccess = true;
-          this.successMessage = "Time slot deleted successfully.";
+            // Fetch all bookings
+            const bookingsSnapshot = await get(dbRef(db, "bookings"));
+            if (bookingsSnapshot.exists()) {
+              const bookingsData = bookingsSnapshot.val();
+
+              // Filter bookings for the specific venue and time slot
+              const filteredBookings = Object.values(bookingsData).filter(
+                (booking) =>
+                  booking.venue.id === this.selectedVenueId &&
+                  booking.timeSlotId === this.selectedTimeSlotId
+              );
+
+              // If there are bookings, notify the users and remove the bookings
+              if (filteredBookings.length > 0) {
+                // Fetch all users
+                const usersSnapshot = await get(dbRef(db, "users"));
+                if (usersSnapshot.exists()) {
+                  const usersData = usersSnapshot.val();
+
+                  // Send notifications to users who booked the time slot
+                  for (const booking of filteredBookings) {
+                    const user = usersData[booking.userId];
+                    if (user) {
+                      const notification = {
+                        id: Date.now().toString(),
+                        message: `Your booking for ${booking.venue.venueName} on ${booking.date} has been canceled.`,
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        type: "booking_canceled",
+                      };
+
+                      // Save notification to the user's notifications collection
+                      await set(
+                        dbRef(
+                          db,
+                          `users/${booking.userId}/notifications/${notification.id}`
+                        ),
+                        notification
+                      );
+
+                      console.log(`Notification sent to user: ${user.email}`);
+                    }
+
+                    // Remove the booking from the database
+                    const bookingRef = dbRef(db, `bookings/${booking.id}`);
+                    await set(bookingRef, null);
+                  }
+                }
+              }
+            }
+
+            // Update the local state (UI)
+            this.updateTimeSlotStatus(
+              this.selectedVenueId,
+              this.selectedTimeSlotId,
+              false
+            );
+
+            // Show success message
+            this.showSuccess = true;
+            this.successMessage = "Time slot deactivated successfully.";
+          } else {
+            console.error("Time slot not found.");
+            this.showError = true;
+            this.errorMessage = "Time slot not found.";
+          }
         } catch (error) {
-          console.error("Error deleting time slot:", error);
+          console.error("Error deactivating time slot:", error);
           this.showError = true;
-          this.errorMessage = "Failed to delete time slot. Please try again.";
+          this.errorMessage =
+            "Failed to deactivate time slot. Please try again.";
         }
       }
       this.closeDeleteModal();
     },
-    deleteTimeSlot(venueId, timeSlotId) {
+    updateTimeSlotStatus(venueId, timeSlotId, existStatus) {
       const venueIndex = this.sortedBookings.findIndex(
         (venue) => venue.id === venueId
       );
@@ -370,24 +437,64 @@ export default {
         // Create a copy of the venue to ensure reactivity
         const venue = { ...this.sortedBookings[venueIndex] };
 
-        // Remove the time slot from the venue's timeSlots object
-        const { [timeSlotId]: _, ...remainingSlots } = venue.timeSlots;
-
-        // Replace the entire timeSlots object to trigger reactivity
-        venue.timeSlots = remainingSlots;
+        // Update the time slot's `exist` status
+        if (venue.timeSlots && venue.timeSlots[timeSlotId]) {
+          venue.timeSlots[timeSlotId].exist = existStatus;
+        }
 
         // Update the sortedBookings array reactively
         this.$set(this.sortedBookings, venueIndex, venue);
       }
     },
+    async showUsersForSlot(venueId, timeSlotId) {
+      try {
+        const db = getDatabase();
 
-    ////////////////
-    findVenueIdByTimeSlotId(timeSlotId) {
-      const timeSlotIdStr = String(timeSlotId);
-      const venue = this.sortedBookings.find(
-        (venue) => venue.timeSlots && venue.timeSlots[timeSlotIdStr]
-      );
-      return venue ? venue.id : null;
+        // Fetch all bookings
+        const bookingsSnapshot = await get(dbRef(db, "bookings"));
+        if (!bookingsSnapshot.exists()) {
+          console.log("No bookings found.");
+          return;
+        }
+
+        const bookingsData = bookingsSnapshot.val();
+
+        // Filter bookings for the specific venue and time slot
+        const filteredBookings = Object.values(bookingsData).filter(
+          (booking) =>
+            booking.venue.id === venueId && booking.timeSlotId === timeSlotId
+        );
+
+        if (filteredBookings.length === 0) {
+          console.log("No bookings found for this time slot.");
+          return;
+        }
+
+        // Fetch all users
+        const usersSnapshot = await get(dbRef(db, "users"));
+        if (!usersSnapshot.exists()) {
+          console.log("No users found.");
+          return;
+        }
+
+        const usersData = usersSnapshot.val();
+
+        // Match bookings with users
+        const usersForSlot = filteredBookings.map((booking) => {
+          const user = usersData[booking.userId];
+          return {
+            userId: booking.userId,
+            username: user?.username || "Unknown User",
+            email: user?.email || "No Email",
+            phone: user?.phone || "No Phone",
+          };
+        });
+
+        // Log the user details to the console
+        console.log("Users who booked this time slot:", usersForSlot);
+      } catch (error) {
+        console.error("Error fetching user details for time slot:", error);
+      }
     },
   },
   computed: {
@@ -428,7 +535,7 @@ export default {
         const venue = this.sortedBookings.find((venue) => venue.id === venueId);
         if (venue && venue.timeSlots) {
           return Object.entries(venue.timeSlots).filter(
-            ([_, timeslot]) => timeslot
+            ([_, timeslot]) => timeslot.exist === true // Only show time slots where `exist` is true
           );
         }
         return [];
@@ -439,7 +546,7 @@ export default {
     const bookings = ref([]);
     const filteredBookings = ref([]);
     const bookID = ref("");
-    const users = ref([]); // Add a ref for users
+    const users = ref([]);
     const filteredUsers = ref([]);
     const userID = ref("");
 
@@ -456,7 +563,7 @@ export default {
             id: key,
             ...bookingsData[key],
           }));
-          console.log("Bookings fetched:", bookings.value); // Debugging
+          console.log("Bookings fetched:", bookings.value);
         }
 
         // Fetch users
@@ -467,7 +574,7 @@ export default {
             id: key,
             ...usersData[key],
           }));
-          console.log("Users fetched:", users.value); // Debugging
+          console.log("Users fetched:", users.value);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -477,13 +584,13 @@ export default {
     // Watch for changes in bookID and filter bookings
     watch(bookID, (newBookID) => {
       if (newBookID) {
-        console.log("Filtering bookings for venue ID:", newBookID); // Debugging
+        console.log("Filtering bookings for venue ID:", newBookID);
         const filtered = bookings.value.filter((booking) => {
           return (
             booking.venueId === newBookID || booking.venue?.id === newBookID
-          ); // Filter by venueId or venue.id
+          );
         });
-        console.log("Filtered Bookings:", filtered); // Debugging
+        console.log("Filtered Bookings:", filtered);
         filteredBookings.value = filtered;
       } else {
         filteredBookings.value = bookings.value;
@@ -493,11 +600,11 @@ export default {
     // Watch for changes in userID and filter users
     watch(userID, (newUserID) => {
       if (newUserID) {
-        console.log("Filtering users for user ID:", newUserID); // Debugging
+        console.log("Filtering users for user ID:", newUserID);
         const filtered = users.value.filter((user) => {
-          return user.id === newUserID; // Filter by user ID
+          return user.id === newUserID;
         });
-        console.log("Filtered Users:", filtered); // Debugging
+        console.log("Filtered Users:", filtered);
         filteredUsers.value = filtered;
         console.log(filteredUsers);
       } else {

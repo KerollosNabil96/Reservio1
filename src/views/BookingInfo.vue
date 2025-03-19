@@ -188,7 +188,10 @@ export default {
       return this.$store.getters.getSelectedVenue;
     },
     availableTimeSlots() {
-      return this.venue.timeSlots.filter((slot) => slot.available > 0);
+      // Filter time slots where `exist` is true and `available` is greater than 0
+      return Object.values(this.venue.timeSlots).filter(
+        (slot) => slot.exist === true && slot.available > 0
+      );
     },
   },
   methods: {

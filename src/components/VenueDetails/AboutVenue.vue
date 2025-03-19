@@ -145,7 +145,7 @@
         </h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <div
-            v-for="(slot, index) in currentVenue.timeSlots"
+            v-for="(slot, index) in filteredTimeSlots"
             :key="index"
             :class="[
               'relative p-3 rounded-md text-sm border transition-all duration-200',
@@ -189,6 +189,14 @@ export default {
         month: "long",
         day: "numeric",
       });
+    },
+  },
+  computed: {
+    filteredTimeSlots() {
+      // Filter time slots where `exist` is true
+      return Object.values(this.currentVenue.timeSlots).filter(
+        (slot) => slot.exist === true
+      );
     },
   },
 };
