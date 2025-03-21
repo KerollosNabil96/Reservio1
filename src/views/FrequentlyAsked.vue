@@ -18,10 +18,10 @@
         <h1
           class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4"
         >
-          Frequently Asked Questions
+          {{ $t("faq_title") }}
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Find answers to common questions about Reservio
+          {{ $t("faq_subtitle") }}
         </p>
       </div>
 
@@ -36,7 +36,7 @@
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
               />
             </svg>
-            General Questions
+            {{ $t("general_questions") }}
           </h2>
           <div class="space-y-4">
             <div
@@ -46,10 +46,10 @@
             >
               <button
                 @click="toggleAccordion(index, 'general')"
-                class="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
+                class="w-full cursor-pointer px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
               >
                 <span class="text-gray-800 dark:text-white font-medium">{{
-                  item.question
+                  $t(item.questionKey)
                 }}</span>
                 <svg
                   class="w-5 h-5 text-blue-500 transform transition-transform duration-300"
@@ -73,7 +73,7 @@
                 v-show="activeSection === 'general' && activeIndex === index"
                 class="px-6 pb-4 text-gray-600 dark:text-gray-300 animate-fade-in"
               >
-                <p class="leading-relaxed">{{ item.answer }}</p>
+                <p class="leading-relaxed">{{ $t(item.answerKey) }}</p>
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@
                 d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"
               />
             </svg>
-            Booking Questions
+            {{ $t("booking_questions") }}
           </h2>
           <div class="space-y-4">
             <div
@@ -99,10 +99,10 @@
             >
               <button
                 @click="toggleAccordion(index, 'booking')"
-                class="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
+                class="w-full cursor-pointer px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
               >
                 <span class="text-gray-800 dark:text-white font-medium">{{
-                  item.question
+                  $t(item.questionKey)
                 }}</span>
                 <svg
                   class="w-5 h-5 text-blue-500 transform transition-transform duration-300"
@@ -126,7 +126,7 @@
                 v-show="activeSection === 'booking' && activeIndex === index"
                 class="px-6 pb-4 text-gray-600 dark:text-gray-300 animate-fade-in"
               >
-                <p class="leading-relaxed">{{ item.answer }}</p>
+                <p class="leading-relaxed">{{ $t(item.answerKey) }}</p>
               </div>
             </div>
           </div>
@@ -142,7 +142,7 @@
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z"
               />
             </svg>
-            Support Questions
+            {{ $t("support_questions") }}
           </h2>
           <div class="space-y-4">
             <div
@@ -152,10 +152,10 @@
             >
               <button
                 @click="toggleAccordion(index, 'support')"
-                class="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
+                class="w-full cursor-pointer px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
               >
                 <span class="text-gray-800 dark:text-white font-medium">{{
-                  item.question
+                  $t(item.questionKey)
                 }}</span>
                 <svg
                   class="w-5 h-5 text-blue-500 transform transition-transform duration-300"
@@ -179,7 +179,7 @@
                 v-show="activeSection === 'support' && activeIndex === index"
                 class="px-6 pb-4 text-gray-600 dark:text-gray-300 animate-fade-in"
               >
-                <p class="leading-relaxed">{{ item.answer }}</p>
+                <p class="leading-relaxed">{{ $t(item.answerKey) }}</p>
               </div>
             </div>
           </div>
@@ -197,44 +197,36 @@ export default {
       activeSection: null,
       generalQuestions: [
         {
-          question: "What is Reservio?",
-          answer: `Reservio is a platform that simplifies the reservation process for businesses 
-and customers, offering seamless booking experiences for restaurants, hotels,
-events, and more.`,
+          questionKey: "what_is_reservio",
+          answerKey: "what_is_reservio_answer",
         },
         {
-          question: "Is Reservio free to use?",
-          answer:
-            "Reservio offers both free and premium plans. The free plan includes basic features, while the premium plan provides additional functionality.",
+          questionKey: "is_reservio_free",
+          answerKey: "is_reservio_free_answer",
         },
       ],
       bookingQuestions: [
         {
-          question: "How can I make a reservation?",
-          answer:
-            "To make a reservation, search for the desired service, select a date and time, and provide your details. You will receive a confirmation once the booking is complete.",
+          questionKey: "how_to_make_reservation",
+          answerKey: "how_to_make_reservation_answer",
         },
         {
-          question: "What payment methods are accepted?",
-          answer:
-            "Reservio accepts major credit cards, debit cards, and PayPal. Some service providers may offer additional payment options.",
+          questionKey: "payment_methods",
+          answerKey: "payment_methods_answer",
         },
       ],
       supportQuestions: [
         {
-          question: "How can I contact customer support?",
-          answer:
-            'You can contact our customer support team via email at support@reservio.com or through the "Contact Us" page on our website.',
+          questionKey: "contact_support",
+          answerKey: "contact_support_answer",
         },
         {
-          question: "Where can I find my booking history?",
-          answer:
-            'Your booking history is available in the "My Reservations" section of your account dashboard.',
+          questionKey: "booking_history",
+          answerKey: "booking_history_answer",
         },
         {
-          question: "What if I encounter an issue during booking?",
-          answer:
-            "If you encounter any issues during the booking process, please contact our support team immediately for assistance.",
+          questionKey: "booking_issues",
+          answerKey: "booking_issues_answer",
         },
       ],
     };

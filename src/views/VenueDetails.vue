@@ -142,7 +142,7 @@
               <button
                 @click="switchTab('information')"
                 :class="[
-                  'py-3 px-6 font-medium text-md border-b-2 transition-colors duration-200',
+                  'py-3 cursor-pointer px-6 font-medium text-md border-b-2 transition-colors duration-200',
                   activeTab === 'information'
                     ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
@@ -169,7 +169,7 @@
               <button
                 @click="switchTab('reviews')"
                 :class="[
-                  'py-3 px-6 font-medium text-md border-b-2 transition-colors duration-200',
+                  'py-3 cursor-pointer px-6 font-medium text-md border-b-2 transition-colors duration-200',
                   activeTab === 'reviews'
                     ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',

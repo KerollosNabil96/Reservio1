@@ -107,11 +107,15 @@
           :disabled="!selectedTime"
           variant="primary"
           size="lg"
-          class="w-full"
+          class="w-full cursor-pointer"
         >
           Book Now
         </BaseButton>
-        <BaseButton @click="cancelBooking" variant="light" size="lg"
+        <BaseButton
+          @click="cancelBooking"
+          variant="light"
+          size="lg"
+          class="cursor-pointer"
           >Cancel</BaseButton
         >
       </div>
