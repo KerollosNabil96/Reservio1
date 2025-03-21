@@ -172,7 +172,7 @@ export default {
       store.commit("setSearchFilters", {
         query: "",
         date: this.selectedDate,
-        category: this.selectedCategory === "All" ? "" : this.selectedCategory,
+        category: this.selectedCategory === "All" ? null : this.selectedCategory,
         location: this.selectedLocation,
       });
 
@@ -181,7 +181,7 @@ export default {
         path: "/book-now",
         query: {
           date: this.selectedDate || undefined,
-          category: this.selectedCategory || undefined,
+          category: this.selectedCategory === "All" ? undefined : this.selectedCategory,
           location: this.selectedLocation || undefined,
         },
       });
