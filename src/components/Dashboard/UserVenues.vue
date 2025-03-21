@@ -378,7 +378,10 @@ export default {
                     if (user) {
                       const notification = {
                         id: Date.now().toString(),
-                        message: `Your booking for ${booking.venue.venueName} on ${booking.date} has been canceled.`,
+                        message: this.$t("booking_canceled", {
+                          venueName: booking.venue.venueName,
+                          date: booking.date,
+                        }),
                         timestamp: new Date().toISOString(),
                         read: false,
                         type: "booking_canceled",

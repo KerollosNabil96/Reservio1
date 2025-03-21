@@ -14,7 +14,7 @@
       <RouterLink
         to="/"
         class="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400"
-        >Reservio</RouterLink
+        >{{ $t("reservio") }}</RouterLink
       >
 
       <!-- Mobile Right Section (notification and hamburger) -->
@@ -53,7 +53,7 @@
             to="/"
             class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/' }"
-            >Home</RouterLink
+            >{{ $t("home") }}</RouterLink
           >
         </li>
         <li>
@@ -63,7 +63,7 @@
             :class="{
               'text-blue-600 active': $route.path.includes('/book-now'),
             }"
-            >Book Now</RouterLink
+            >{{ $t("book_now") }}</RouterLink
           >
         </li>
         <li>
@@ -73,7 +73,7 @@
             :class="{
               'text-blue-600 active': $route.path === '/register-venue',
             }"
-            >Share Venue</RouterLink
+            >{{ $t("share_venue") }}</RouterLink
           >
         </li>
 
@@ -82,7 +82,7 @@
             to="/about"
             class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/about' }"
-            >About</RouterLink
+            >{{ $t("about") }}</RouterLink
           >
         </li>
         <li>
@@ -90,7 +90,7 @@
             to="/contact"
             class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/contact' }"
-            >Contact</RouterLink
+            >{{ $t("contact") }}</RouterLink
           >
         </li>
         <li>
@@ -98,7 +98,7 @@
             to="/FAQs"
             class="nav-link hover:text-blue-600 text-base lg:text-md"
             :class="{ 'text-blue-600 active': $route.path === '/FAQs' }"
-            >FAQs</RouterLink
+            >{{ $t("faqs") }}</RouterLink
           >
         </li>
       </ul>
@@ -107,10 +107,28 @@
       <div class="hidden md:flex items-center space-x-4">
         <!-- Language Toggle (moved after navigation links) -->
         <button
-          class="text-base lg:text-md hover:text-blue-600"
+          class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden"
           @click="toggleLanguage"
         >
-          {{ currentLanguage === "en" ? "EN" : "AR" }}
+          <span
+            class="px-3 py-1.5 transition-colors duration-300"
+            :class="{
+              'bg-blue-600 text-white': currentLanguage === 'en',
+              'text-gray-600 dark:text-gray-300 hover:text-blue-600 cursor-pointer':
+                currentLanguage === 'ar',
+            }"
+            >EN</span
+          >
+          <div class="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+          <span
+            class="px-3 py-1.5 transition-colors duration-300"
+            :class="{
+              'bg-blue-600 text-white': currentLanguage === 'ar',
+              'text-gray-600 dark:text-gray-300 hover:text-blue-600 cursor-pointer':
+                currentLanguage === 'en',
+            }"
+            >{{ currentLanguage === "en" ? "AR" : "عربي" }}</span
+          >
         </button>
 
         <!-- Dark Mode Toggle -->
@@ -146,13 +164,13 @@
             @click="showSigninForm = true"
             class="bg-blue-600 text-white px-2 lg:px-4 py-2 hover:bg-blue-700"
           >
-            Sign In
+            {{ $t("sign_in") }}
           </BaseButton>
           <BaseButton
             @click="showSignupForm = true"
             class="text-blue-600 hover:text-blue-800 border-1 border-blue-600 px-2 lg:px-4 py-2"
           >
-            Sign Up
+            {{ $t("sign_up") }}
           </BaseButton>
         </template>
 
@@ -183,109 +201,81 @@
               <notification-dropdown v-if="!$store.state.user?.isAdmin" />
             </div>
 
-            <!-- Dropdown Menu -->
-            <transition name="fade">
-              <div
-                v-if="isUserMenuOpen"
-                v-click-outside="closeUserMenu"
-                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 dark:bg-gray-800"
+            <!-- User Dropdown Menu -->
+            <div
+              v-if="isUserMenuOpen"
+              v-click-outside="closeUserMenu"
+              :class="[
+                'absolute mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50',
+                $i18n.locale === 'ar' ? 'left-0' : 'right-0',
+              ]"
+              @click.stop
+            >
+              <RouterLink
+                v-if="$store.state.user?.isAdmin"
+                @click="closeUserMenu"
+                to="/dashboard"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
               >
-                <RouterLink
-                  v-if="$store.state.user?.isAdmin"
-                  to="/dashboard"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <div class="flex items-center">
-                    <svg
-                      class="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
-                    </svg>
-                    Dashboard
-                  </div>
-                </RouterLink>
-                <RouterLink
-                  v-else
-                  to="/profile"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <div class="flex items-center">
-                    <svg
-                      class="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    Profile
-                  </div>
-                </RouterLink>
-                <RouterLink
-                  to="/settings"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <div class="flex items-center">
-                    <svg
-                      class="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Settings
-                  </div>
-                </RouterLink>
-                <button
-                  @click="handleLogout"
-                  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <div
-                    class="flex items-center text-red-600 hover:cursor-pointer"
+                <div class="flex items-center">
+                  <svg
+                    class="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      class="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    Log out
-                  </div>
-                </button>
-              </div>
-            </transition>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                  {{ $t("dashboard") }}
+                </div>
+              </RouterLink>
+              <RouterLink
+                v-else
+                to="/profile"
+                @click="closeUserMenu"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >
+                <div class="flex items-center">
+                  <svg
+                    class="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  {{ $t("profile") }}
+                </div>
+              </RouterLink>
+              <RouterLink
+                to="/settings"
+                class="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                @click="closeUserMenu"
+              >
+                <i class="fas fa-cog mr-2"></i>
+                {{ $t("settings") }}
+              </RouterLink>
+              <button
+                @click="
+                  handleLogout();
+                  closeUserMenu();
+                "
+                class="w-full flex items-end gap-1 cursor-pointer px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                {{ $t("logout") }}
+              </button>
+            </div>
           </div>
         </template>
       </div>
@@ -294,7 +284,7 @@
       <transition name="fade">
         <div
           v-if="isMenuOpen"
-          class="absolute top-12 sm:top-16 left-0 w-full bg-white shadow-md p-4 md:hidden dark:bg-gray-800 dark:text-white rounded-b-lg border-t dark:border-gray-700"
+          class="absolute top-12 sm:top-16 text-center w-full bg-white shadow-md p-4 md:hidden dark:bg-gray-800 dark:text-white rounded-b-lg border-t dark:border-gray-700"
         >
           <!-- Mobile Nav Links -->
           <ul class="flex flex-col space-y-3 mb-4">
@@ -303,7 +293,7 @@
                 to="/"
                 class="nav-link hover:text-blue-600"
                 @click="closeMenu"
-                >Home</RouterLink
+                >{{ $t("home") }}</RouterLink
               >
             </li>
             <li>
@@ -311,7 +301,7 @@
                 to="/register-venue"
                 class="nav-link hover:text-blue-600"
                 @click="closeMenu"
-                >Share Venue</RouterLink
+                >{{ $t("share_venue") }}</RouterLink
               >
             </li>
             <li>
@@ -319,7 +309,7 @@
                 to="/book-now"
                 class="nav-link hover:text-blue-600"
                 @click="closeMenu"
-                >Book Now</RouterLink
+                >{{ $t("book_now") }}</RouterLink
               >
             </li>
             <li>
@@ -327,7 +317,7 @@
                 to="/about"
                 class="nav-link hover:text-blue-600"
                 @click="closeMenu"
-                >About</RouterLink
+                >{{ $t("about") }}</RouterLink
               >
             </li>
             <li>
@@ -336,7 +326,7 @@
                 class="nav-link hover:text-blue-600"
                 :class="{ 'text-blue-600 active': $route.path === '/contact' }"
                 @click="closeMenu"
-                >Contact</RouterLink
+                >{{ $t("contact") }}</RouterLink
               >
             </li>
             <li>
@@ -344,7 +334,7 @@
                 to="/FAQs"
                 class="nav-link hover:text-blue-600"
                 @click="closeMenu"
-                >FAQs</RouterLink
+                >{{ $t("faqs") }}</RouterLink
               >
             </li>
           </ul>
@@ -353,10 +343,28 @@
           <div class="flex flex-col space-y-4">
             <!-- Language Toggle -->
             <button
-              class="text-base hover:text-blue-600 flex items-center justify-center"
+              class="flex items-center justify-center space-x-1"
               @click="toggleLanguage"
             >
-              {{ currentLanguage === "en" ? "EN" : "AR" }}
+              <span
+                class="px-3 py-1.5 transition-colors duration-300"
+                :class="{
+                  'bg-blue-600 text-white': currentLanguage === 'en',
+                  'text-gray-600 dark:text-gray-300 hover:text-blue-600 cursor-pointer':
+                    currentLanguage === 'ar',
+                }"
+                >EN</span
+              >
+              <div class="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+              <span
+                class="px-3 py-1.5 transition-colors duration-300"
+                :class="{
+                  'bg-blue-600 text-white': currentLanguage === 'ar',
+                  'text-gray-600 dark:text-gray-300 hover:text-blue-600 cursor-pointer':
+                    currentLanguage === 'en',
+                }"
+                >{{ currentLanguage === "en" ? "AR" : "عربي" }}</span
+              >
             </button>
 
             <!-- Dark Mode Toggle -->
@@ -397,7 +405,7 @@
                 "
                 class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 w-full rounded-lg text-sm font-medium"
               >
-                Sign In
+                {{ $t("sign_in") }}
               </BaseButton>
               <BaseButton
                 @click="
@@ -406,7 +414,7 @@
                 "
                 class="text-blue-600 hover:text-blue-800 border border-blue-600 px-4 py-2 w-full rounded-lg text-sm font-medium"
               >
-                Sign Up
+                {{ $t("sign_up") }}
               </BaseButton>
             </template>
 
@@ -436,7 +444,7 @@
                         d="M4 6h16M4 12h16M4 18h16"
                       />
                     </svg>
-                    Dashboard
+                    {{ $t("dashboard") }}
                   </div>
                 </RouterLink>
 
@@ -459,7 +467,7 @@
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  Profile
+                  {{ $t("profile") }}
                 </RouterLink>
 
                 <RouterLink
@@ -486,7 +494,7 @@
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  Settings
+                  {{ $t("settings") }}
                 </RouterLink>
 
                 <button
@@ -494,7 +502,7 @@
                     handleLogout();
                     closeMenu();
                   "
-                  class="flex items-center w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md hover:cursor-pointer"
+                  class="flex items-center cursor-pointer w-full text-left px-2 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
                 >
                   <svg
                     class="w-5 h-5 mr-2"
@@ -509,7 +517,7 @@
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                     />
                   </svg>
-                  Log out
+                  {{ $t("logout") }}
                 </button>
               </div>
             </template>
@@ -662,6 +670,17 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Language toggle button styles */
+.language-toggle-btn {
+  overflow: hidden;
+}
+
+.toggle-slider {
+  top: 4px;
+  left: 4px;
+  transition: transform 0.3s cubic-bezier(0.4, 0.01, 0.165, 0.99);
 }
 
 /* Enhanced navigation transitions */

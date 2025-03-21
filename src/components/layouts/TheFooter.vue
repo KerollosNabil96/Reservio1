@@ -1,15 +1,17 @@
 <template>
   <footer
-    class="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-gray-800 dark:to-gray-700 text-white pt-12 pb-2 mt-auto"
+    :class="[
+      'bg-gradient-to-r from-blue-600 to-blue-400 dark:from-gray-800 dark:to-gray-700 text-white pt-12 pb-2 mt-auto',
+      $i18n.locale === 'ar' ? 'rtl' : 'ltr'
+    ]"
   >
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- About Section -->
         <div class="space-y-4 animate-fadeIn">
-          <h3 class="text-xl font-bold mb-4">About Reservio</h3>
+          <h3 class="text-xl font-bold mb-4">{{ $t('about_reservio_title') }}</h3>
           <p class="text-gray-200 text-sm leading-relaxed">
-            Transforming the way the world makes reservations. We provide
-            seamless booking experiences for businesses and customers alike.
+            {{ $t('about_reservio_footer') }}
           </p>
           <div class="flex space-x-4 mt-4">
             <a
@@ -47,34 +49,34 @@
 
         <!-- Quick Links -->
         <div class="space-y-4 animate-fadeIn" style="animation-delay: 0.2s">
-          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <h3 class="text-xl font-bold mb-4">{{ $t('quick_links') }}</h3>
           <ul class="space-y-2">
             <li>
               <router-link
                 to="/"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Home</router-link
+                >{{ $t('home') }}</router-link
               >
             </li>
             <li>
               <router-link
                 to="/about"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >About Us</router-link
+                >{{ $t('about') }}</router-link
               >
             </li>
             <li>
               <router-link
                 to="/FAQs"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >FAQ</router-link
+                >{{ $t('faqs') }}</router-link
               >
             </li>
             <li>
               <router-link
                 to="/contact"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Contact</router-link
+                >{{ $t('contact') }}</router-link
               >
             </li>
           </ul>
@@ -82,34 +84,34 @@
 
         <!-- Services -->
         <div class="space-y-4 animate-fadeIn" style="animation-delay: 0.4s">
-          <h3 class="text-xl font-bold mb-4">Our Services</h3>
+          <h3 class="text-xl font-bold mb-4">{{ $t('our_services') }}</h3>
           <ul class="space-y-2">
             <li>
               <a
                 href="#"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Restaurant Bookings</a
+                >{{ $t('restaurant_bookings') }}</a
               >
             </li>
             <li>
               <a
                 href="#"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Hotel Reservations</a
+                >{{ $t('hotel_reservations') }}</a
               >
             </li>
             <li>
               <a
                 href="#"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Event Venues</a
+                >{{ $t('event_venues') }}</a
               >
             </li>
             <li>
               <a
                 href="#"
                 class="text-gray-200 hover:text-white transition-colors duration-300"
-                >Business Solutions</a
+                >{{ $t('business_solutions') }}</a
               >
             </li>
           </ul>
@@ -117,7 +119,7 @@
 
         <!-- Contact Info -->
         <div class="space-y-4 animate-fadeIn" style="animation-delay: 0.6s">
-          <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+          <h3 class="text-xl font-bold mb-4">{{ $t('contact_us') }}</h3>
           <div class="space-y-2">
             <p class="flex items-center text-gray-200">
               <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -155,7 +157,7 @@
       <!-- Bottom Bar -->
       <div class="border-t border-white/10 mt-12 pt-2 text-center">
         <p class="text-sm text-gray-200">
-          © {{ new Date().getFullYear() }} Reservio. All rights reserved.
+          © {{ new Date().getFullYear() }} {{ $t('reservio') }}. {{ $t('all_rights_reserved') }}
         </p>
       </div>
     </div>

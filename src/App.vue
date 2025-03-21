@@ -93,20 +93,37 @@ export default {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div
+    :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+    :class="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+  >
     <TheNavbar />
-    <main class="flex-grow flex flex-col">
-      <transition name="page" mode="out-in">
-        <RouterView v-slot="{ Component }">
-          <component :is="Component" class="page-transition" />
-        </RouterView>
+    <router-view v-slot="{ Component, route }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" v-bind="route.params" />
       </transition>
-    </main>
+    </router-view>
     <TheFooter />
   </div>
 </template>
 
 <style>
+/* RTL/LTR transition styles */
+.rtl,
+.ltr {
+  transition: all 0.3s ease-in-out;
+}
+
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
 /* Prevent flash of light mode during page transitions */
 html.dark {
   background-color: #0f172a !important; /* Darker background */

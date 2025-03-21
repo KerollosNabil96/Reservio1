@@ -1,395 +1,399 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-10 px-4 sm:px-6 relative"
-  >
-    <!-- Background pattern for dark mode -->
+  <div>
     <div
-      class="absolute inset-0 overflow-hidden pointer-events-none dark:opacity-10 opacity-0"
+      class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-10 px-4 sm:px-6 relative"
     >
+      <!-- Background pattern for dark mode -->
       <div
-        class="absolute -top-24 -left-24 w-64 h-64 bg-blue-200 dark:bg-blue-800 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-pulse-slow"
-      ></div>
-      <div
-        class="absolute top-1/2 -right-24 w-80 h-80 bg-indigo-200 dark:bg-indigo-800 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-pulse-slower"
-      ></div>
-      <div
-        class="absolute bottom-1/4 left-1/3 w-48 h-48 bg-gray-300 dark:bg-gray-700 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-float"
-      ></div>
-    </div>
-
-    <div class="max-w-2xl mx-auto relative z-10">
-      <div
-        class="bg-white dark:bg-gray-800/50 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
+        class="absolute inset-0 overflow-hidden pointer-events-none dark:opacity-10 opacity-0"
       >
-        <div class="p-8">
-          <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
-            Register Your
-            <span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-            >
-              Venue
-            </span>
-          </h2>
+        <div
+          class="absolute -top-24 -left-24 w-64 h-64 bg-blue-200 dark:bg-blue-800 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-pulse-slow"
+        ></div>
+        <div
+          class="absolute top-1/2 -right-24 w-80 h-80 bg-indigo-200 dark:bg-indigo-800 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-pulse-slower"
+        ></div>
+        <div
+          class="absolute bottom-1/4 left-1/3 w-48 h-48 bg-gray-300 dark:bg-gray-700 rounded-full blur-3xl opacity-5 dark:opacity-10 animate-float"
+        ></div>
+      </div>
 
-          <form @submit.prevent="handleNext" class="space-y-6">
-            <!-- Venue Name -->
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Venue Name</label
+      <div class="max-w-2xl mx-auto relative z-10">
+        <div
+          class="bg-white dark:bg-gray-800/50 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
+        >
+          <div class="p-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+              Register Your
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
               >
-              <input
-                type="text"
-                v-model="venueName"
-                placeholder="Enter your venue name"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-              />
-            </div>
-            <div>
-              <div class="form-group">
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Venue Address
-                </label>
-                <div class="flex items-center gap-2">
-                  <input
-                    type="text"
-                    v-model="venueAddress"
-                    placeholder="Enter your venue street address"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                  />
-                  <button
-                    type="button"
-                    @click="openMapPopup"
-                    class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
-                  >
-                    <i class="fas fa-map-marker-alt"></i>
-                    <!-- Font Awesome icon -->
-                  </button>
-                </div>
-              </div>
-              <MapPopup
-                v-if="showMapPopup"
-                @close="showMapPopup = false"
-                @location-selected="handleLocationSelected"
-              />
-            </div>
+                Venue
+              </span>
+            </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form @submit.prevent="handleNext" class="space-y-6">
+              <!-- Venue Name -->
               <div class="form-group">
                 <label
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >City</label
-                >
-                <select
-                  v-model="selectedCity"
-                  @change="updateAreas"
-                  required
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                >
-                  <option disabled value="">Select a City</option>
-                  <option
-                    v-for="(areas, city) in cities"
-                    :key="city"
-                    :value="city"
-                  >
-                    {{ city }}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Area</label
-                >
-                <select
-                  v-model="selectedArea"
-                  :disabled="!selectedCity"
-                  required
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                >
-                  <option disabled value="">Select an Area</option>
-                  <option
-                    v-for="area in cities[selectedCity] || []"
-                    :key="area"
-                    :value="area"
-                  >
-                    {{ area }}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Zip Code</label
+                  >Venue Name</label
                 >
                 <input
                   type="text"
-                  v-model="zipCode"
-                  placeholder="Zip Code"
+                  v-model="venueName"
+                  placeholder="Enter your venue name"
                   required
                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                 />
               </div>
-            </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Venue Phone Number
-              </label>
-              <input
-                type="tel"
-                v-model="phoneNumber"
-                @input="validatePhoneNumber"
-                placeholder="Phone number for bookings"
-                required
-                :class="[
-                  'w-full px-4 py-3 rounded-lg border bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm',
-                  phoneNumberError
-                    ? 'border-red-500'
-                    : 'border-gray-300 dark:border-gray-600',
-                ]"
-              />
-              <p v-if="phoneNumberError" class="text-sm text-red-500 mt-1">
-                {{ phoneNumberError }}
-              </p>
-            </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Government ID</label
-              >
-              <CloudinaryUploader
-                v-model="govID"
-                :cloud-name="cloudName"
-                :upload-preset="uploadPreset"
-                folder="government_ids"
-                upload-text="Upload your government ID"
-                @upload-success="handleGovIdUpload"
-              />
-            </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Category</label
-              >
-              <select
-                v-model="category"
-                @change="selectCategory"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-              >
-                <option disabled value="">Select venue category</option>
-                <option v-for="cat in categories" :key="cat" :value="cat">
-                  {{ cat }}
-                </option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Venue Images (3 required)</label
-              >
-              <div class="space-y-3">
-                <CloudinaryUploader
-                  v-model="firstImage"
-                  :cloud-name="cloudName"
-                  :upload-preset="uploadPreset"
-                  folder="venue_images"
-                  upload-text="Upload first venue image"
-                  @upload-success="handleFirstImageUpload"
-                />
-                <CloudinaryUploader
-                  v-model="secondImage"
-                  :cloud-name="cloudName"
-                  :upload-preset="uploadPreset"
-                  folder="venue_images"
-                  upload-text="Upload second venue image"
-                  @upload-success="handleSecondImageUpload"
-                />
-                <CloudinaryUploader
-                  v-model="thirdImage"
-                  :cloud-name="cloudName"
-                  :upload-preset="uploadPreset"
-                  folder="venue_images"
-                  upload-text="Upload third venue image"
-                  @upload-success="handleThirdImageUpload"
+              <div>
+                <div class="form-group">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
+                    Venue Address
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="text"
+                      v-model="venueAddress"
+                      placeholder="Enter your venue street address"
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                    />
+                    <button
+                      type="button"
+                      @click="openMapPopup"
+                      class="px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
+                    >
+                      <i class="fas fa-map-marker-alt"></i>
+                      <!-- Font Awesome icon -->
+                    </button>
+                  </div>
+                </div>
+                <MapPopup
+                  v-if="showMapPopup"
+                  @close="showMapPopup = false"
+                  @location-selected="handleLocationSelected"
                 />
               </div>
-            </div>
 
-            <div
-              v-if="firstImage || secondImage || thirdImage"
-              class="image-preview grid grid-cols-3 gap-3 mt-4"
-            >
-              <div
-                v-if="firstImage"
-                class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-              >
-                <img
-                  :src="firstImage"
-                  alt="Venue Image 1"
-                  class="w-full h-full object-cover"
-                  @error="imageError(1)"
-                />
-              </div>
-              <div
-                v-if="secondImage"
-                class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-              >
-                <img
-                  :src="secondImage"
-                  alt="Venue Image 2"
-                  class="w-full h-full object-cover"
-                  @error="imageError(2)"
-                />
-              </div>
-              <div
-                v-if="thirdImage"
-                class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-              >
-                <img
-                  :src="thirdImage"
-                  alt="Venue Image 3"
-                  class="w-full h-full object-cover"
-                  @error="imageError(3)"
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Price (in EGP) {{ priceLabel }}
-              </label>
-              <div class="relative">
-                <input
-                  type="number"
-                  v-model="price"
-                  :placeholder="pricePlaceholder"
-                  min="0"
-                  step="10"
-                  required
-                  class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                />
-                <div
-                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                >
-                  <span class="text-gray-500 dark:text-gray-400">EGP</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="form-group">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >City</label
+                  >
+                  <select
+                    v-model="selectedCity"
+                    @change="updateAreas"
+                    required
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  >
+                    <option disabled value="">Select a City</option>
+                    <option
+                      v-for="(areas, city) in cities"
+                      :key="city"
+                      :value="city"
+                    >
+                      {{ city }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >Area</label
+                  >
+                  <select
+                    v-model="selectedArea"
+                    :disabled="!selectedCity"
+                    required
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  >
+                    <option disabled value="">Select an Area</option>
+                    <option
+                      v-for="area in cities[selectedCity] || []"
+                      :key="area"
+                      :value="area"
+                    >
+                      {{ area }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >Zip Code</label
+                  >
+                  <input
+                    type="text"
+                    v-model="zipCode"
+                    placeholder="Zip Code"
+                    required
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  />
                 </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Short Description</label
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Venue Phone Number
+                </label>
+                <input
+                  type="tel"
+                  v-model="phoneNumber"
+                  @input="validatePhoneNumber"
+                  placeholder="Phone number for bookings"
+                  required
+                  :class="[
+                    'w-full px-4 py-3 rounded-lg border bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm',
+                    phoneNumberError
+                      ? 'border-red-500'
+                      : 'border-gray-300 dark:border-gray-600',
+                  ]"
+                />
+                <p v-if="phoneNumberError" class="text-sm text-red-500 mt-1">
+                  {{ phoneNumberError }}
+                </p>
+              </div>
+
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Government ID</label
+                >
+                <CloudinaryUploader
+                  v-model="govID"
+                  :cloud-name="cloudName"
+                  :upload-preset="uploadPreset"
+                  folder="government_ids"
+                  upload-text="Upload your government ID"
+                  @upload-success="handleGovIdUpload"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Category</label
+                >
+                <select
+                  v-model="category"
+                  @change="selectCategory"
+                  required
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                >
+                  <option disabled value="">Select venue category</option>
+                  <option v-for="cat in categories" :key="cat" :value="cat">
+                    {{ cat }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Venue Images (3 required)</label
+                >
+                <div class="space-y-3">
+                  <CloudinaryUploader
+                    v-model="firstImage"
+                    :cloud-name="cloudName"
+                    :upload-preset="uploadPreset"
+                    folder="venue_images"
+                    upload-text="Upload first venue image"
+                    @upload-success="handleFirstImageUpload"
+                  />
+                  <CloudinaryUploader
+                    v-model="secondImage"
+                    :cloud-name="cloudName"
+                    :upload-preset="uploadPreset"
+                    folder="venue_images"
+                    upload-text="Upload second venue image"
+                    @upload-success="handleSecondImageUpload"
+                  />
+                  <CloudinaryUploader
+                    v-model="thirdImage"
+                    :cloud-name="cloudName"
+                    :upload-preset="uploadPreset"
+                    folder="venue_images"
+                    upload-text="Upload third venue image"
+                    @upload-success="handleThirdImageUpload"
+                  />
+                </div>
+              </div>
+
+              <div
+                v-if="firstImage || secondImage || thirdImage"
+                class="image-preview grid grid-cols-3 gap-3 mt-4"
               >
-              <input
-                type="text"
-                v-model="shortDescription"
-                placeholder="Brief description (shown in cards)"
-                required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-              />
-            </div>
+                <div
+                  v-if="firstImage"
+                  class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                >
+                  <img
+                    :src="firstImage"
+                    alt="Venue Image 1"
+                    class="w-full h-full object-cover"
+                    @error="imageError(1)"
+                  />
+                </div>
+                <div
+                  v-if="secondImage"
+                  class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                >
+                  <img
+                    :src="secondImage"
+                    alt="Venue Image 2"
+                    class="w-full h-full object-cover"
+                    @error="imageError(2)"
+                  />
+                </div>
+                <div
+                  v-if="thirdImage"
+                  class="aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                >
+                  <img
+                    :src="thirdImage"
+                    alt="Venue Image 3"
+                    class="w-full h-full object-cover"
+                    @error="imageError(3)"
+                  />
+                </div>
+              </div>
 
-            <div class="form-group">
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >Full Description</label
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Price (in EGP) {{ priceLabel }}
+                </label>
+                <div class="relative">
+                  <input
+                    type="number"
+                    v-model="price"
+                    :placeholder="pricePlaceholder"
+                    min="0"
+                    step="10"
+                    required
+                    class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                  />
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <span class="text-gray-500 dark:text-gray-400">EGP</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Short Description</label
+                >
+                <input
+                  type="text"
+                  v-model="shortDescription"
+                  placeholder="Brief description (shown in cards)"
+                  required
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+                />
+              </div>
+
+              <div class="form-group">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Full Description</label
+                >
+                <textarea
+                  v-model="description"
+                  placeholder="Detailed description of your venue..."
+                  required
+                  rows="4"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm resize-none"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                :disabled="!validLinks"
+                class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-              <textarea
-                v-model="description"
-                placeholder="Detailed description of your venue..."
-                required
-                rows="4"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm resize-none"
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              :disabled="!validLinks"
-              class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </form>
+                Next
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- Error Dialog -->
-    <transition name="fade">
-      <div
-        v-if="isVisible"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-      >
+
+      <!-- Error Dialog -->
+      <transition name="fade">
         <div
-          class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700"
+          v-if="isVisible"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
         >
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-              Attention Required
-            </h3>
+          <div
+            class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                Attention Required
+              </h3>
+              <button
+                @click="isVisible = false"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+              Please upload exactly 3 images for your venue. This helps
+              customers see your venue from different angles.
+            </p>
             <button
               @click="isVisible = false"
-              class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              Close
             </button>
           </div>
-          <p class="text-gray-700 dark:text-gray-300 mb-4">
-            Please upload exactly 3 images for your venue. This helps customers
-            see your venue from different angles.
-          </p>
-          <button
-            @click="isVisible = false"
-            class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
-          >
-            Close
-          </button>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
+
+    <Signup
+      :show="showSignupForm"
+      @close="showSignupForm = false"
+      @switch-to-signin="
+        showSignupForm = false;
+        showSigninForm = true;
+      "
+    />
+    <Signin
+      :show="showSigninForm"
+      @close="showSigninForm = false"
+      @switch-to-signup="
+        showSigninForm = false;
+        showSignupForm = true;
+      "
+    />
   </div>
-  <Signup
-    :show="showSignupForm"
-    @close="showSignupForm = false"
-    @switch-to-signin="
-      showSignupForm = false;
-      showSigninForm = true;
-    "
-  />
-  <Signin
-    :show="showSigninForm"
-    @close="showSigninForm = false"
-    @switch-to-signup="
-      showSigninForm = false;
-      showSignupForm = true;
-    "
-  />
 </template>
 
 <script>
@@ -733,7 +737,6 @@ export default {
         selectedArea: this.selectedArea,
         zipCode: this.zipCode,
         category: this.category,
-        venuePhoneNumber: this.phoneNumber,
         govID: this.govID,
         price: this.price,
         shortDescription: this.shortDescription,
@@ -756,7 +759,7 @@ export default {
           category: this.category,
           govID: this.govID,
           price: this.price,
-          venuePhoneNumber: this.phoneNumber,
+          phoneNumber: this.phoneNumber,
           address: {
             street: this.venueAddress,
             governorate: this.selectedCity,
@@ -815,6 +818,7 @@ export default {
         govID: this.govID,
         category: this.category,
         price: this.price,
+        phoneNumber: this.phoneNumber,
         shortDescription: this.shortDescription,
         description: this.description,
         firstImage: this.firstImage,
@@ -854,7 +858,7 @@ export default {
           category: this.category,
           govID: this.govID,
           price: this.price,
-          venuePhoneNumber: this.phoneNumber,
+          phoneNumber: this.phoneNumber,
           address: {
             street: this.venueAddress,
             governorate: this.selectedCity,

@@ -5,12 +5,15 @@
       @click="toggleDropdown"
       class="relative p-2 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
     >
-      <span class="sr-only">Notifications</span>
-      <i class="fas fa-bell text-xl"></i>
+      <span class="sr-only">{{ $t("notifications") }}</span>
+      <i class="fas fa-bell text-xl cursor-pointer"></i>
       <!-- Notification Badge -->
       <span
         v-if="unreadCount > 0"
-        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+        :class="[
+          'absolute -top-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center',
+          $i18n.locale === 'ar' ? '-left-1' : '-right-1',
+        ]"
       >
         {{ unreadCount }}
       </span>
@@ -19,12 +22,15 @@
     <!-- Notification Dropdown -->
     <div
       v-if="isOpen"
-      class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50"
+      :class="[
+        'absolute mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50',
+        $i18n.locale === 'ar' ? 'left-0' : 'right-0',
+      ]"
       @click.stop
     >
       <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-          Notifications
+          {{ $t("notifications") }}
         </h3>
       </div>
 
@@ -34,7 +40,7 @@
           v-if="notifications.length === 0"
           class="p-4 text-center text-gray-500"
         >
-          No notifications
+          {{ $t("no_notifications") }}
         </div>
         <div
           v-for="notification in sortedNotifications"
@@ -48,7 +54,7 @@
           <div class="flex items-start">
             <div class="flex-1">
               <p class="text-sm text-gray-800 dark:text-gray-200">
-                {{ notification.message }}
+                {{ $t(notification.message, notification.params) }}
               </p>
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ formatTimestamp(notification.timestamp) }}

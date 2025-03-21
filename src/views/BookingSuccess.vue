@@ -240,7 +240,11 @@ export default {
                 const notificationId = Date.now().toString();
                 const notification = {
                   id: notificationId,
-                  message: `New booking for ${this.bookingInfo.venue.venueName}! You've received ${ownerAmount} EGP in your wallet.`,
+                  message: "new_booking",
+                  params: {
+                    venueName: this.bookingInfo.venue.venueName,
+                    amount: ownerAmount,
+                  },
                   timestamp: new Date().toISOString(),
                   read: false,
                   type: "new_booking",
