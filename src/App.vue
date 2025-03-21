@@ -99,7 +99,7 @@ export default {
   >
     <TheNavbar />
     <router-view v-slot="{ Component, route }">
-      <transition name="fade" mode="out-in">
+      <transition name="page" mode="out-in" class="page-transition">
         <component :is="Component" v-bind="route.params" />
       </transition>
     </router-view>
@@ -145,14 +145,11 @@ html {
 }
 
 /* Make sure transitions are preserved for page transitions in dark mode */
+/* Dark mode transitions are now handled in page-transitions.css */
 html.dark .page-transition,
 html.dark .page-enter-active,
 html.dark .page-leave-active,
 html.dark .page-container {
-  transition: opacity 0.65s cubic-bezier(0.33, 0.01, 0.25, 1),
-    transform 0.65s cubic-bezier(0.33, 0.01, 0.25, 1) !important;
-  will-change: opacity, transform;
-  transform-style: preserve-3d;
   background-color: #0f172a !important; /* Match dark mode background */
 }
 
