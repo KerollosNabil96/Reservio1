@@ -2,11 +2,13 @@
 import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
 import TheFooter from "./components/layouts/TheFooter.vue";
+import OfflinePopup from "./components/OfflinePopup.vue";
 import { auth, onAuthStateChanged, db, ref, onValue } from "./firebase";
 export default {
   components: {
     TheNavbar,
     TheFooter,
+    OfflinePopup
   },
   computed: {
     dark() {
@@ -99,6 +101,7 @@ export default {
   >
     <TheNavbar />
     <router-view v-slot="{ Component, route }">
+    <OfflinePopup />
       <transition name="page" mode="out-in" class="page-transition">
         <component :is="Component" v-bind="route.params" />
       </transition>
