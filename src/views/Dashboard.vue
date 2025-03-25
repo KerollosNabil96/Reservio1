@@ -882,7 +882,7 @@ export default {
         return;
       }
 
-      this.isSubmitting = true; // Start loading
+      this.isSubmitting = true; /// Start loading
 
       try {
         const db = getDatabase();
