@@ -913,7 +913,7 @@ export default {
 
         try {
           // Then send the rejection email
-          const response = await fetch("https://reservio-two.vercel.app/api/send-rejection-email",
+          const response = await fetch("/api/send-rejection-email",
             {
               method: "POST",
               headers: {
