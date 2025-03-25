@@ -17,6 +17,9 @@ export default async function handler(req, res) {
       throw new Error("Missing environment variables for email configuration");
     }
 
+    console.log("EMAIL_USER:", process.env.EMAIL_USER); // Log to verify
+    console.log("EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD); // Log to verify
+
     // Create a transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
       service: "gmail", // e.g., 'gmail'

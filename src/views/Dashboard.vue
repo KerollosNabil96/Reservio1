@@ -930,11 +930,12 @@ export default {
           if (!response.ok) {
             const errorData = await response.json();
             console.error("Email sending failed:", errorData.message);
-            alert(`Email sending failed: ${errorData.message}`);
+          } else {
+            console.log("Email sent successfully");
           }
         } catch (emailError) {
           console.error("Error sending email:", emailError);
-          alert(`Error sending email: ${emailError.message}`);
+
         }
 
         // Update local state to remove the request
