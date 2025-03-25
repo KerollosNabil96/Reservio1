@@ -14,7 +14,7 @@
       <button
         type="button"
         @click="$emit('close')"
-        class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10"
+        class="absolute cursor-pointer top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +68,7 @@
           <!-- Email -->
           <div class="mb-4">
             <label class="block mb-1 text-gray-700 dark:text-gray-300"
-              >E mail</label
+              >Email</label
             >
             <input
               type="email"
@@ -86,12 +86,21 @@
             >
             <div class="relative">
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 v-model="password"
                 placeholder="Enter your password"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required
               />
+              <button
+                type="button"
+                @click="togglePasswordVisibility"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400"
+              >
+                <i
+                  :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                ></i>
+              </button>
             </div>
           </div>
 
@@ -202,6 +211,7 @@ export default {
       password: "",
       errorMessage: "",
       isLoading: false,
+      showPassword: false,
     };
   },
   watch: {
@@ -367,6 +377,10 @@ export default {
       } finally {
         this.isLoading = false;
       }
+    },
+
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
   },
   emits: ["close", "switch-to-signup"],
