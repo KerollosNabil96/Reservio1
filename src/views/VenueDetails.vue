@@ -73,6 +73,7 @@
               >
                 <div
                   class="relative overflow-hidden rounded-xl shadow-2xl group"
+                  @click="openImageModal(currentVenue.pictures[0])"
                 >
                   <div
                     class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -81,7 +82,6 @@
                     :src="currentVenue.pictures[0]"
                     alt="Venue main view"
                     class="w-full h-[300px] md:h-[400px] object-cover transition-all duration-700 group-hover:scale-105"
-                    @click="openImageModal(currentVenue.pictures[0])"
                   />
                   <div
                     class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
@@ -97,6 +97,7 @@
               >
                 <div
                   class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
+                  @click="openImageModal(currentVenue.pictures[1])"
                 >
                   <div
                     class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -105,7 +106,6 @@
                     :src="currentVenue.pictures[1]"
                     alt="Venue view 2"
                     class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
-                    @click="openImageModal(currentVenue.pictures[1])"
                   />
                   <div
                     class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
@@ -116,6 +116,7 @@
 
                 <div
                   class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
+                  @click="openImageModal(currentVenue.pictures[2])"
                 >
                   <div
                     class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -124,7 +125,6 @@
                     :src="currentVenue.pictures[2]"
                     alt="Venue view 3"
                     class="w-full h-[150px] md:h-[195px] object-cover transition-all duration-700 group-hover:scale-105"
-                    @click="openImageModal(currentVenue.pictures[2])"
                   />
                   <div
                     class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white"
@@ -230,9 +230,22 @@
                 <!-- Close button -->
                 <button
                   @click="closeImageModal"
-                  class="absolute top-4 right-4 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 backdrop-blur-sm"
+                  class="absolute top-4 right-4 text-white bg-gray-800/80 dark:bg-gray-700/80 rounded-full p-2 hover:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-300 z-20 hover:scale-110 backdrop-blur-sm flex items-center justify-center"
                 >
-                  test
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
                 </button>
 
                 <!-- Navigation buttons -->
@@ -265,6 +278,8 @@
                       :key="selectedImage"
                       :src="selectedImage"
                       class="max-w-full max-h-[85vh] md:max-h-[85vh] object-contain rounded-lg select-none"
+                      width="800"
+                      height="400"
                       @click.stop
                       draggable="false"
                     />
@@ -457,8 +472,8 @@ export default {
 /* Image Slide Transition Effects */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: opacity 0.55s cubic-bezier(0.4, 0.01, 0.165, 0.99),
-    transform 0.55s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   backface-visibility: hidden;
   will-change: opacity, transform;
   position: relative;
@@ -467,12 +482,12 @@ export default {
 
 .slide-fade-enter-from {
   opacity: 0;
-  transform: translateX(30px) scale(0.98);
+  transform: translateX(20px);
 }
 
 .slide-fade-leave-to {
   opacity: 0;
-  transform: translateX(-30px) scale(0.98);
+  transform: translateX(-20px);
 }
 
 /* Tab transitions for smooth tab switching */
