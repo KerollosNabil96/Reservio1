@@ -1,92 +1,59 @@
 <template>
-  <div
-    v-if="sidebarOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-    @click="closeSidebarOnMobile"
-  ></div>
-  <nav
-    :class="[
-      sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-      'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg',
-      'fixed md:relative inset-y-0 left-0 z-50 md:z-auto',
-      'transition-transform duration-300 ease-in-out  overflow-y-auto',
-    ]"
-  >
-    <!-- Header Section for Mobile -->
-    <div class="p-4 md:hidden flex justify-between items-center">
-      <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">
-        User Dashboard
-      </h1>
-      <button
-        @click="closeSidebarOnMobile"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2"
-        aria-label="Close sidebar"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
+  <!-- Mobile Menu Toggle Button -->
+  <div class="md:hidden bg-white dark:bg-gray-800 p-4 flex justify-between items-center shadow-md">
+    <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">User Dashboard</h1>
+    <button @click="toggleSidebar" class="cursor-pointer text-gray-700 dark:text-gray-300 focus:outline-none">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+  </div>
 
+  <!-- Sidebar Navigation -->
+  <nav :class="[sidebarOpen ? 'block' : 'hidden', 'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg']">
     <!-- Header Section for Desktop -->
     <div class="p-6 hidden md:block">
-      <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-        Reservio
-      </h1>
+      <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">Reservio</h1>
     </div>
 
     <!-- Menu Items -->
-    <ul class="space-y-2 p-4">
+    <ul class="space-y-2 p-4 ">
       <li>
-        <RouterLink
-          to="/profile/bookings"
+        <RouterLink to="/profile/bookings"
           class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
           :class="{
-            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
-              $route.path === '/profile/bookings',
-          }"
-          @click="closeSidebarOnMobile"
-        >
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300': $route.path === '/profile/bookings',
+          }" @click="closeSidebarOnMobile">
           <i class="fas fa-building mr-3"></i>
           Bookings
         </RouterLink>
       </li>
+
+
       <li>
-        <RouterLink
-          to="/profile/user-venues"
+        <RouterLink to="/profile/user-venues"
           class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
           :class="{
-            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
-              $route.path === '/profile/user-venues',
-          }"
-          @click="closeSidebarOnMobile"
-        >
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300': $route.path === '/profile/user-venues',
+          }" @click="closeSidebarOnMobile">
           <i class="fas fa-calendar mr-3"></i>
           Your Venues
         </RouterLink>
       </li>
       <li>
-        <RouterLink
-          to="/profile/wallet"
+        <RouterLink to="/profile/wallet"
           class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
           :class="{
-            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
-              $route.path === '/profile/wallet',
-          }"
-          @click="closeSidebarOnMobile"
-        >
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300': $route.path === '/profile/wallet',
+          }" @click="closeSidebarOnMobile">
           <i class="fas fa-wallet mr-3"></i>
           Your Wallet
         </RouterLink>
       </li>
       <li>
-        <RouterLink
-          to="/settings"
+        <RouterLink to="/settings"
           class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
           :class="{
-            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
-              $route.path === '/settings',
-          }"
-          @click="closeSidebarOnMobile"
-        >
+            'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300': $route.path === '/settings',
+          }" @click="closeSidebarOnMobile">
           <i class="fas fa-cog mr-3"></i>
           Settings
         </RouterLink>
@@ -107,6 +74,10 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const toggleSidebar = () => {
+      emit("toggle-sidebar", !props.sidebarOpen);
+    };
+
     const closeSidebarOnMobile = () => {
       if (window.innerWidth < 768) {
         emit("toggle-sidebar", false);
@@ -122,6 +93,7 @@ export default {
     });
 
     return {
+      toggleSidebar,
       closeSidebarOnMobile,
     };
   },
@@ -129,16 +101,41 @@ export default {
 </script>
 
 <style scoped>
-button {
-  font-size: 1.5rem;
-  transition: color 0.2s ease-in-out;
+/* Sidebar styles */
+nav {
+  width: 100%;
+  max-width: 300px;
 }
 
-/* Mobile sidebar animation */
 @media (max-width: 767px) {
   nav {
-    width: 80%;
-    max-width: 300px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  ul {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 1rem;
+    background-color: var(--tw-bg-opacity, 1) var(--tw-bg-color, #ffffff);
+    border-top: 1px solid var(--tw-border-opacity, 1) var(--tw-border-color, #e5e7eb);
+  }
+
+  li {
+    flex: 1;
+    text-align: center;
+  }
+
+  li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  li i {
+    margin-bottom: 0.25rem;
   }
 }
 </style>

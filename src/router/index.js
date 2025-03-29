@@ -29,7 +29,6 @@ import UserVenues from "@/components/Dashboard/UserVenues.vue";
 import RegistrationSuccess from "@/views/RegistrationSuccess.vue";
 import RegistrationCancelled from "@/views/RegistrationCancelled.vue";
 import VenueRegistrationPayment from "@/views/VenueRegistrationPayment.vue";
-import ResetPassword from "@/views/ResetPassword.vue";
 
 const routes = [
   { path: "/", component: HomePage },
@@ -41,7 +40,6 @@ const routes = [
   { path: "/book-now/:id", component: VenueDetails, props: true },
   { path: "/FAQs", component: FrequentlyAsked },
   { path: "/contact", component: Contact },
-  { path: "/reset-password", component: ResetPassword },
 
   {
     path: "/afterRegForm",
