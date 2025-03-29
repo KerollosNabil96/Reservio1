@@ -143,7 +143,7 @@ app.post("/send-contact-form", async (req, res) => {
   }
 });
 
-app.post("/send-rejection-email", async (req, res) => {
+app.post("/api/send-rejection-email", async (req, res) => {
   try {
     const { to, subject, message } = req.body;
 
@@ -158,6 +158,7 @@ app.post("/send-rejection-email", async (req, res) => {
     res.json({ success: true, message: "Email sent successfully" });
   } catch (error) {
     console.error("Error sending email:", error);
+
     res.status(500).json({ success: false, message: "Failed to send email" });
   }
 });

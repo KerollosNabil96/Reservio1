@@ -8,7 +8,7 @@ export default {
   components: {
     TheNavbar,
     TheFooter,
-    OfflinePopup
+    OfflinePopup,
   },
   computed: {
     dark() {
@@ -101,7 +101,7 @@ export default {
   >
     <TheNavbar />
     <router-view v-slot="{ Component, route }">
-    <OfflinePopup />
+      <OfflinePopup />
       <transition name="page" mode="out-in" class="page-transition">
         <component :is="Component" v-bind="route.params" />
       </transition>
