@@ -278,6 +278,14 @@ export default {
 
         store.dispatch("updateAuthState", userProfile);
 
+        // Clear input fields after successful sign-up
+        this.email = "";
+        this.password = "";
+        this.name = "";
+        this.phone = "";
+        this.username = "";
+        this.confirmPassword = "";
+
         this.$emit("close");
         this.$router.push("/");
       } catch (error) {

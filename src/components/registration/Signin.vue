@@ -64,7 +64,29 @@
 
           <!-- Forgot Password Link -->
           <div class="mb-6 text-right">
-            <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Forgot Password?</a>
+            <a href="#" @click.prevent="showForgotPasswordDialog = true"
+              class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Forgot Password?</a>
+          </div>
+
+          <!-- Forgot Password Dialog -->
+          <div v-if="showForgotPasswordDialog" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Reset Password</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Enter your email address to receive a password
+                reset link.</p>
+              <input type="email" v-model="resetEmail" placeholder="Enter your email"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 mb-4" />
+              <div class="flex justify-end space-x-2">
+                <button @click="showForgotPasswordDialog = false"
+                  class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-700">Cancel</button>
+                <button @click="sendResetPasswordEmail"
+                  class="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  :disabled="isSendingResetEmail">
+                  <span v-if="!isSendingResetEmail">Send</span>
+                  <span v-else>Sending...</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Sign In Button with Spinner -->
@@ -111,10 +133,9 @@
 </template>
 
 <script>
-// import { loginUser } from "@/firebase";
 import store from "@/store/store";
 import BaseSpinner from "../base/BaseSpinner.vue";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {
   db,
   onValue,
@@ -124,6 +145,7 @@ import {
   signInWithPopup,
 } from "@/firebase";
 import axios from "axios";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "SigninForm",
@@ -136,6 +158,10 @@ export default {
       default: false,
     },
   },
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data() {
     return {
       email: "",
@@ -143,6 +169,9 @@ export default {
       errorMessage: "",
       isLoading: false,
       showPassword: false,
+      showForgotPasswordDialog: false,
+      resetEmail: "",
+      isSendingResetEmail: false,
     };
   },
   watch: {
@@ -156,22 +185,18 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      // Reset error message
       this.errorMessage = "";
 
       try {
         this.isLoading = true;
 
-        // Login user with Firebase
         const auth = getAuth();
         const { user } = await signInWithEmailAndPassword(
           auth,
           this.email,
           this.password
         );
-        // const allUsers = await axios.get(
-        //   "https://reservio-77386-default-rtdb.europe-west1.firebasedatabase.app/users.json"
-        // );
+
         let allUsers = null;
         const usersRef = ref(db, "users/");
         onValue(usersRef, (snapshot) => {
@@ -186,37 +211,32 @@ export default {
           }
         });
 
-        // Close the form after successful sign in
+        this.toast.success("Signed in successfully!");
+        this.email = "";
+        this.password = "";
         this.$emit("close");
       } catch (error) {
         switch (error.code) {
           case "auth/user-not-found":
-            this.errorMessage =
-              "No account found with this email. Please check your email or sign up for a new account.";
+            this.toast.error("No account found with this email.");
             break;
           case "auth/wrong-password":
-            this.errorMessage =
-              "Incorrect password. Please try again or use the 'Forgot Password' option.";
+            this.toast.error("Incorrect password. Please try again.");
             break;
           case "auth/invalid-email":
-            this.errorMessage =
-              "Invalid email format. Please enter a valid email address.";
+            this.toast.error("Invalid email format.");
             break;
           case "auth/too-many-requests":
-            this.errorMessage =
-              "Too many failed login attempts. Please try again later or reset your password.";
+            this.toast.error("Too many failed login attempts. Please try again later.");
             break;
           case "auth/user-disabled":
-            this.errorMessage =
-              "This account has been disabled. Please contact support for assistance.";
+            this.toast.error("This account has been disabled.");
             break;
           case "auth/network-request-failed":
-            this.errorMessage =
-              "Network error. Please check your internet connection and try again.";
+            this.toast.error("Network error. Please check your connection.");
             break;
           default:
-            this.errorMessage =
-              "Sign in failed. Please check your credentials and try again.";
+            this.toast.error("Sign in failed. Please try again.");
         }
 
         return;
@@ -234,7 +254,6 @@ export default {
         const provider = new GoogleAuthProvider();
         const { user } = await signInWithPopup(auth, provider);
 
-        // Check if user already exists in database
         const usersRef = ref(db, "users/");
         let userExists = false;
         let userProfile = null;
@@ -252,7 +271,6 @@ export default {
           }
         });
 
-        // If user doesn't exist, create a new profile
         if (!userExists) {
           const username = user.email.split("@")[0];
           userProfile = {
@@ -267,46 +285,58 @@ export default {
             reservations: {},
           };
 
-          // Save to database
           const reference = ref(db, "users/" + userProfile.id);
           set(reference, userProfile);
 
-          // Update store
           store.dispatch("updateAuthState", userProfile);
         }
 
-        // Close the form after successful sign in
         this.$emit("close");
       } catch (error) {
         console.error("Google sign in error:", error);
 
         switch (error.code) {
           case "auth/popup-closed-by-user":
-            this.errorMessage =
-              "Google sign in was cancelled. Please try again.";
+            this.toast.error("Google sign in was cancelled. Please try again.");
             break;
           case "auth/popup-blocked":
-            this.errorMessage =
-              "Pop-up was blocked by your browser. Please allow pop-ups for this website and try again.";
+            this.toast.error("Pop-up was blocked by your browser. Please allow pop-ups for this website and try again.");
             break;
           case "auth/cancelled-popup-request":
-            this.errorMessage =
-              "Google sign in process was interrupted. Please try again.";
+            this.toast.error("Google sign in process was interrupted. Please try again.");
             break;
           case "auth/account-exists-with-different-credential":
-            this.errorMessage =
-              "An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.";
+            this.toast.error("An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.");
             break;
           case "auth/network-request-failed":
-            this.errorMessage =
-              "Network error. Please check your internet connection and try again.";
+            this.toast.error("Network error. Please check your internet connection and try again.");
             break;
           default:
-            this.errorMessage =
-              "Google sign in failed. Please try again or use email login.";
+            this.toast.error("Google sign in failed. Please try again or use email login.");
         }
       } finally {
         this.isLoading = false;
+      }
+    },
+
+    async sendResetPasswordEmail() {
+      if (!this.resetEmail) {
+        this.toast.error("Please enter your email address.");
+        return;
+      }
+
+      this.isSendingResetEmail = true;
+      try {
+        const auth = getAuth();
+        await sendPasswordResetEmail(auth, this.resetEmail);
+        this.toast.success("Password reset email sent. Please check your inbox.");
+        this.showForgotPasswordDialog = false;
+        this.resetEmail = "";
+      } catch (error) {
+        console.error("Error sending reset email:", error);
+        this.toast.error("Failed to send reset email. Please try again.");
+      } finally {
+        this.isSendingResetEmail = false;
       }
     },
 
