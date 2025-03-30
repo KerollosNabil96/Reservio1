@@ -1,35 +1,16 @@
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900"
-  >
-    <div
-      class="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center"
-    >
-      <div
-        class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4"
-      >
-        <svg
-          class="w-8 h-8 text-green-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          ></path>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div class="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center">
+      <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
       </div>
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
         Payment Successful!
       </h2>
 
-      <div
-        v-if="bookingInfo"
-        class="mb-6 text-left bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"
-      >
+      <div v-if="bookingInfo" class="mb-6 text-left bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
         <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">
           Booking Details
         </h3>
@@ -56,15 +37,12 @@
 
       <p class="text-gray-600 dark:text-gray-300 mb-6">
         You have received
-        <span class="text-green-500 font-bold"
-          >{{ bookingInfo.price * 0.05 }} EGP
+        <span class="text-green-500 font-bold">{{ bookingInfo.price * 0.05 }} EGP
         </span>
         cash back in your wallet. Thank you for booking with Reservio!
       </p>
-      <button
-        @click="goHome"
-        class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-      >
+      <button @click="goHome"
+        class="cursor-pointer inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
         Return to Home
       </button>
     </div>

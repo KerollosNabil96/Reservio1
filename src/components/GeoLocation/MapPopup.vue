@@ -1,18 +1,13 @@
 <template>
-  <div
-    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center z-50"
-  >
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center z-50">
     <div
-      class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700"
-    >
+      class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white">
           Select Your Location
         </h3>
-        <button
-          @click="$emit('close')"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="$emit('close')"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -22,19 +17,13 @@
 
       <!-- Location Buttons -->
       <div class="mt-4 space-y-2">
-        <button
-          type="button"
-          @click="getUserLocation"
-          class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-        >
+        <button type="button" @click="getUserLocation"
+          class="cursor-pointer w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
           <i class="fas fa-location-arrow"></i> Use My Location
         </button>
-        <button
-          type="button" 
-          @click="confirmSelectedLocation"
-          class="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200"
-          :disabled="!selectedLocation"
-        >
+        <button type="button" @click="confirmSelectedLocation"
+          class="cursor-pointer w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200"
+          :disabled="!selectedLocation">
           <i class="fas fa-check"></i> Confirm Selected Location
         </button>
       </div>
@@ -115,39 +104,39 @@ export default {
     },
     // Reverse geocode to get the address
     async reverseGeocode(lat, lng) {
-  try {
-    // Call the Nominatim API with English language preference
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-      {
-        headers: {
-          "User-Agent": "YourAppName/1.0 (your-email@example.com)", // Required by Nominatim
-          "Accept-Language": "en", // Request the response in English
-        },
+      try {
+        // Call the Nominatim API with English language preference
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+          {
+            headers: {
+              "User-Agent": "YourAppName/1.0 (your-email@example.com)", // Required by Nominatim
+              "Accept-Language": "en", // Request the response in English
+            },
+          }
+        );
+        const data = await response.json();
+
+        console.log("Nominatim API Response:", data); // Debugging
+
+        if (data.display_name) {
+          // Emit the location data to the parent component
+          this.$emit("location-selected", {
+            address: data.display_name,
+            city: data.address.city || data.address.town,
+            area: data.address.suburb || data.address.neighbourhood,
+          });
+
+          // Close the popup
+          this.$emit("close");
+        } else {
+          alert("Address not found.");
+        }
+      } catch (error) {
+        console.error("Error reverse geocoding:", error); // Debugging
+        alert("Error fetching address.");
       }
-    );
-    const data = await response.json();
-
-    console.log("Nominatim API Response:", data); // Debugging
-
-    if (data.display_name) {
-      // Emit the location data to the parent component
-      this.$emit("location-selected", {
-        address: data.display_name,
-        city: data.address.city || data.address.town,
-        area: data.address.suburb || data.address.neighbourhood,
-      });
-
-      // Close the popup
-      this.$emit("close");
-    } else {
-      alert("Address not found.");
-    }
-  } catch (error) {
-    console.error("Error reverse geocoding:", error); // Debugging
-    alert("Error fetching address.");
-  }
-},
+    },
     // Confirm the selected location
     confirmSelectedLocation() {
       if (this.selectedLocation) {

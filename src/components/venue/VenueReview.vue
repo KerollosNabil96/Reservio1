@@ -2,8 +2,7 @@
   <div class="mt-8 p-4 bg-white rounded-lg shadow dark:bg-gray-800">
     <!-- Average Rating Display -->
     <div
-      class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b pb-4 dark:border-gray-700"
-    >
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b pb-4 dark:border-gray-700">
       <div class="mb-4 sm:mb-0">
         <h3 class="text-xl font-semibold mb-2 dark:text-white">Reviews</h3>
         <div class="flex items-center">
@@ -24,22 +23,14 @@
           Rating Breakdown
         </div>
         <div class="space-y-1 mt-1">
-          <div
-            v-for="rating in 5"
-            :key="rating"
-            class="flex items-center text-sm"
-          >
+          <div v-for="rating in 5" :key="rating" class="flex items-center text-sm">
             <span class="w-4 text-gray-600 dark:text-gray-300">{{
               rating
             }}</span>
             <span class="text-yellow-400 ml-1">★</span>
-            <div
-              class="w-full sm:w-24 h-2 bg-gray-200 rounded-full mx-2 flex-grow"
-            >
-              <div
-                class="h-full bg-yellow-400 rounded-full"
-                :style="{ width: calculateRatingPercentage(rating) + '%' }"
-              ></div>
+            <div class="w-full sm:w-24 h-2 bg-gray-200 rounded-full mx-2 flex-grow">
+              <div class="h-full bg-yellow-400 rounded-full"
+                :style="{ width: calculateRatingPercentage(rating) + '%' }"></div>
             </div>
             <span class="text-gray-500 dark:text-gray-400 w-8 text-right">{{
               getRatingCount(rating)
@@ -52,48 +43,30 @@
     <!-- Review Form for logged in users -->
     <div v-if="isAuthenticated" class="mb-6">
       <div class="mb-4">
-        <label
-          class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-          >Your Rating</label
-        >
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Your Rating</label>
         <div class="flex gap-2">
-          <button
-            v-for="star in 5"
-            :key="star"
-            @click="rating = star"
-            class="text-3xl focus:outline-none touch-manipulation"
-            :class="star <= rating ? 'text-yellow-400' : 'text-gray-300'"
-          >
+          <button v-for="star in 5" :key="star" @click="rating = star"
+            class="cursor-pointer text-3xl focus:outline-none touch-manipulation"
+            :class="star <= rating ? 'text-yellow-400' : 'text-gray-300'">
             ★
           </button>
         </div>
       </div>
       <div class="mb-4">
-        <label
-          class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
-          >Your Review</label
-        >
-        <textarea
-          v-model="reviewText"
-          rows="4"
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Your Review</label>
+        <textarea v-model="reviewText" rows="4"
           class="w-full resize-none px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          placeholder="Write your review here..."
-        ></textarea>
+          placeholder="Write your review here..."></textarea>
       </div>
-      <button
-        @click="submitReview"
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
-        :disabled="!rating || !reviewText"
-        :class="{ 'opacity-50 cursor-not-allowed': !rating || !reviewText }"
-      >
+      <button @click="submitReview"
+        class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
+        :disabled="!rating || !reviewText" :class="{ 'opacity-50 cursor-not-allowed': !rating || !reviewText }">
         Submit Review
       </button>
 
       <!-- Error Message -->
-      <div
-        v-if="reviewError"
-        class="mt-3 text-sm text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900/20 p-2 rounded"
-      >
+      <div v-if="reviewError"
+        class="mt-3 text-sm text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900/20 p-2 rounded">
         {{ reviewError }}
       </div>
     </div>
@@ -103,30 +76,18 @@
       <p class="text-gray-600 dark:text-gray-300">
         Please sign in to write a review
       </p>
-      <button
-        @click="$emit('show-signin')"
-        class="mt-2 text-blue-600 hover:text-blue-800 font-medium"
-      >
+      <button @click="$emit('show-signin')" class="mt-2 text-blue-600 hover:text-blue-800 font-medium">
         Sign in here
       </button>
     </div>
 
     <!-- Reviews List -->
     <div class="space-y-4">
-      <div
-        v-if="venueReviews.length === 0"
-        class="text-gray-500 dark:text-gray-400 text-center py-6"
-      >
+      <div v-if="venueReviews.length === 0" class="text-gray-500 dark:text-gray-400 text-center py-6">
         No reviews yet. Be the first to review!
       </div>
-      <div
-        v-for="review in venueReviews"
-        :key="review.id"
-        class="border-b last:border-b-0 pb-4 dark:border-gray-700"
-      >
-        <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
-        >
+      <div v-for="review in venueReviews" :key="review.id" class="border-b last:border-b-0 pb-4 dark:border-gray-700">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div class="flex items-center mb-1 sm:mb-0">
             <span class="font-medium dark:text-white">{{
               review.userName

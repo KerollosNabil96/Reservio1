@@ -3,17 +3,11 @@
     <div class="booking-section">
       <div class="search-section mb-6 flex flex-col sm:flex-row gap-2">
         <div class="search-box w-full sm:w-11/12">
-          <input
-            type="search"
-            v-model="searchQuery"
-            placeholder="Search"
-            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-          />
+          <input type="search" v-model="searchQuery" placeholder="Search"
+            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" />
         </div>
-        <select
-          v-model="sortOption"
-          class="w-full sm:w-auto p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-        >
+        <select v-model="sortOption"
+          class="w-full sm:w-auto p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
           <option value="all" disabled>All</option>
           <option value="nearest">Nearest Date</option>
           <option value="farthest">Farthest Date</option>
@@ -27,31 +21,17 @@
     <div v-if="sortedBookings.length === 0" class="no-bookings">
       <p>No Venues To Display</p>
     </div>
-    <transition-group
-      name="sort-animation"
-      tag="div"
-      v-else
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-    >
-      <div
-        v-for="venue in sortedBookings"
-        :key="venue.id"
-        class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-      >
+    <transition-group name="sort-animation" tag="div" v-else
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div v-for="venue in sortedBookings" :key="venue.id"
+        class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <!-- Venue Image -->
         <div class="relative">
-          <img
-            :src="venue.pictures[0]"
-            :alt="venue.venueName"
-            class="w-full h-52 object-cover"
-          />
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"
-          ></div>
+          <img :src="venue.pictures[0]" :alt="venue.venueName" class="w-full h-52 object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
           <div class="absolute bottom-3 left-3">
             <span
-              class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm"
-            >
+              class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm">
               {{ venue.price }} EGP/ {{ perWhat }}
             </span>
           </div>
@@ -65,8 +45,7 @@
           <div class="flex items-center mb-2">
             <div class="text-yellow-400 flex">
               <span v-for="i in 5" :key="i" class="text-lg">
-                {{ i <= Math.round(venue.averageRating) ? "★" : "☆" }}
-              </span>
+                {{ i <= Math.round(venue.averageRating) ? "★" : "☆" }} </span>
             </div>
             <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
               {{
@@ -74,10 +53,8 @@
                   ? venue.averageRating.toFixed(1)
                   : "No ratings"
               }}
-              <span v-if="venue.totalReviews > 0" class="ml-1"
-                >({{ venue.totalReviews }}
-                {{ venue.totalReviews === 1 ? "review" : "reviews" }})</span
-              >
+              <span v-if="venue.totalReviews > 0" class="ml-1">({{ venue.totalReviews }}
+                {{ venue.totalReviews === 1 ? "review" : "reviews" }})</span>
             </span>
           </div>
           <p class="text-sm text-gray-600 mb-4 dark:text-gray-300 line-clamp-2">
@@ -87,24 +64,11 @@
           <!-- Location and Date -->
           <div class="mt-auto flex items-center justify-between">
             <div class="flex items-center text-gray-500 dark:text-gray-400">
-              <svg
-                class="w-4 h-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <span class="text-xs">{{ venue.address.governorate }}</span>
             </div>
@@ -113,27 +77,19 @@
             </div>
           </div>
           <div class="time-slots-grid mt-4">
-            <div
-              v-for="[timeslotId, timeslot] in filteredTimeSlots(venue.id)"
-              :key="`${venue.id}-${timeslotId}`"
-              class="time-slot-item"
-            >
+            <div v-for="[timeslotId, timeslot] in filteredTimeSlots(venue.id)" :key="`${venue.id}-${timeslotId}`"
+              class="time-slot-item">
               <div class="time-slot-content">
                 <span>{{ timeslot.from }} - {{ timeslot.to }}</span>
-                <button
-                  class="delete-icon"
-                  @click="openDeleteModal(venue.id, timeslotId)"
-                >
+                <button class="cursor-pointer delete-icon" @click="openDeleteModal(venue.id, timeslotId)">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
             </div>
           </div>
           <!-- Show Bookings Button -->
-          <button
-            @click="showBookings(venue.id)"
-            class="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
+          <button @click="showBookings(venue.id)"
+            class="cursor-pointer mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
             Show User Bookings
           </button>
         </div>
@@ -142,45 +98,32 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-between items-center mt-6">
-      <button
-        @click="prevPageAndScroll"
-        :disabled="currentPage === 1"
+      <button @click="prevPageAndScroll" :disabled="currentPage === 1"
         class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600"
-        :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
-      >
+        :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }">
         Previous
       </button>
-      <span class="text-gray-700 dark:text-gray-300"
-        >Page {{ currentPage }} of {{ totalPages }}</span
-      >
-      <button
-        @click="nextPageAndScroll"
-        :disabled="currentPage === totalPages"
+      <span class="text-gray-700 dark:text-gray-300">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPageAndScroll" :disabled="currentPage === totalPages"
         class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600"
-        :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
-      >
+        :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }">
         Next
       </button>
     </div>
   </div>
   <!-- Confirmation Modal -->
-  <div
-    v-if="showDeleteModal"
+  <div v-if="showDeleteModal"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="closeDeleteModal"
-  >
+    @click="closeDeleteModal">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           Delete Time Slot
         </h3>
-        <button
-          @click="closeDeleteModal"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="closeDeleteModal"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
@@ -188,60 +131,48 @@
         Are you sure you want to delete this time slot?
       </p>
       <div class="flex justify-end gap-4">
-        <button
-          @click="closeDeleteModal"
-          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-        >
+        <button @click="closeDeleteModal"
+          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+          :disabled="loading">
           Cancel
         </button>
-        <button
-          @click="confirmDelete"
-          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          Delete
+        <button @click="confirmDelete"
+          class="cursor-pointer px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center"
+          :disabled="loading">
+          <span v-if="loading" class="loader mr-2"></span>
+          <span>Delete</span>
         </button>
       </div>
     </div>
   </div>
   <!-- Popup Modal -->
-  <div
-    v-if="showBooking"
+  <div v-if="showBooking"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="showBooking = false"
-  >
+    @click="showBooking = false">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           User Bookings
         </h3>
-        <button
-          @click="showBooking = false"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="showBooking = false"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
       <!-- Booking Details -->
       <div v-if="filteredBookings.length > 0">
         <ul class="space-y-2">
-          <li
-            v-for="booking in filteredBookings"
-            :key="booking.id"
-            class="text-gray-600 dark:text-gray-300"
-          >
+          <li v-for="booking in filteredBookings" :key="booking.id" class="text-gray-600 dark:text-gray-300">
             <div class="flex justify-between items-center">
               <div>
                 <p><strong>User:</strong> {{ booking.username }}</p>
                 <p><strong>Date:</strong> {{ booking.date }}</p>
                 <p><strong>Payment Method:</strong> {{ booking.method }}</p>
               </div>
-              <button
-                @click="showUserDetails(booking.userId)"
-                class="ml-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
-              >
+              <button @click="showUserDetails(booking.userId)"
+                class="cursor-pointer ml-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm">
                 Details
               </button>
             </div>
@@ -257,10 +188,8 @@
 
       <!-- Close Button -->
       <div class="flex justify-end mt-6">
-        <button
-          @click="showBooking = false"
-          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-        >
+        <button @click="showBooking = false"
+          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
           Close
         </button>
       </div>
@@ -268,34 +197,25 @@
   </div>
 
   <!-- User Details Modal -->
-  <div
-    v-if="showUserModal"
+  <div v-if="showUserModal"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="showUserModal = false"
-  >
+    @click="showUserModal = false">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           User Details
         </h3>
-        <button
-          @click="showUserModal = false"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="showUserModal = false"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
 
       <!-- User Details -->
       <div v-if="filteredUsers.length > 0">
-        <div
-          v-for="user in filteredUsers"
-          :key="user.id"
-          class="text-gray-600 dark:text-gray-300"
-        >
+        <div v-for="user in filteredUsers" :key="user.id" class="text-gray-600 dark:text-gray-300">
           <p class="text-gray-600 dark:text-gray-300 mb-2">
             <strong>Name:</strong> {{ user.name }}
           </p>
@@ -310,10 +230,8 @@
       </div>
       <!-- Close Button -->
       <div class="flex justify-end mt-6">
-        <button
-          @click="showUserModal = false"
-          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-        >
+        <button @click="showUserModal = false"
+          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
           Close
         </button>
       </div>
@@ -349,6 +267,7 @@ export default {
       showError: false,
       errorMessage: "",
       perWhat: "hour",
+      loading: false, // Add loading state
     };
   },
   async created() {
@@ -435,6 +354,7 @@ export default {
     async confirmDelete() {
       if (!this.selectedVenueId || this.selectedTimeSlotId === null) return;
 
+      this.loading = true; // Start spinner
       try {
         const db = getDatabase();
 
@@ -461,27 +381,83 @@ export default {
             booking.timeSlotId === this.selectedTimeSlotId
         );
 
+        let totalAmountToDeduct = 0;
+
         for (const booking of bookingsForSlot) {
+          totalAmountToDeduct += booking.price || 0;
           await this.processBookingRefund(db, booking);
         }
 
-        // 3. Update UI
+        // 3. Deduct the total amount from the owner's balance
+        await this.deductOwnerBalance(db, this.selectedVenueId, totalAmountToDeduct);
+
+        // 4. Update UI
         this.updateTimeSlotStatus(
           this.selectedVenueId,
           this.selectedTimeSlotId,
           false
         );
 
-        // 4. Show success
+        // 5. Show success
         this.showSuccess = true;
         this.successMessage =
-          "Time slot removed and users refunded successfully.";
+          "Time slot removed, users refunded, and owner's balance updated successfully.";
       } catch (error) {
         console.error("Error in confirmDelete:", error);
         this.showError = true;
         this.errorMessage = "Failed to process. Please try again.";
       } finally {
+        this.loading = false; // Stop spinner
         this.closeDeleteModal();
+      }
+    },
+
+    async deductOwnerBalance(db, venueId, amount) {
+      try {
+        // Fetch the venue to get the owner's ID
+        const venueRef = dbRef(db, `venues/${venueId}`);
+        const venueSnapshot = await get(venueRef);
+
+        if (!venueSnapshot.exists()) {
+          throw new Error("Venue not found");
+        }
+
+        const ownerId = venueSnapshot.val().ownerId;
+
+        // Fetch the owner's data
+        const ownerRef = dbRef(db, `users/${ownerId}`);
+        const ownerSnapshot = await get(ownerRef);
+
+        if (ownerSnapshot.exists()) {
+          const ownerData = ownerSnapshot.val();
+          const currentBalance = ownerData.balance || 0;
+
+          // Deduct the amount from the owner's balance
+          await set(ownerRef, {
+            ...ownerData,
+            balance: currentBalance - amount,
+          });
+
+          // Add a new transaction for the deduction
+          const transactionRef = dbRef(
+            db,
+            `users/${ownerId}/transactions/${Date.now()}`
+          );
+
+          await set(transactionRef, {
+            id: transactionRef.key,
+            amount: -amount,
+            type: "deduction",
+            description: `Deduction for canceled bookings on venue ${venueSnapshot.val().venueName}`,
+            timestamp: new Date().toISOString(),
+            status: "completed",
+          });
+
+          // Note: Existing earnings transactions are not deleted or modified.
+        }
+      } catch (error) {
+        console.error("Error deducting owner's balance:", error);
+        throw error;
       }
     },
 
@@ -579,18 +555,20 @@ export default {
       }
     },
 
-    // Rest of your existing methods remain unchanged
-    showUsersForSlot() {
-      /* ... */
-    },
     nextPageAndScroll() {
-      /* ... */
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.scrollToTop();
+      }
     },
     prevPageAndScroll() {
-      /* ... */
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.scrollToTop();
+      }
     },
     scrollToTop() {
-      /* ... */
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
   computed: {
@@ -623,10 +601,9 @@ export default {
         );
       }
 
-      return sorted.slice(
-        (this.currentPage - 1) * this.itemsPerPage,
-        this.currentPage * this.itemsPerPage
-      );
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = this.currentPage * this.itemsPerPage;
+      return sorted.slice(startIndex, endIndex);
     },
 
     filteredTimeSlots() {
@@ -634,8 +611,8 @@ export default {
         const venue = this.sortedBookings.find((v) => v.id === venueId);
         return venue?.timeSlots
           ? Object.entries(venue.timeSlots).filter(
-              ([_, ts]) => ts.exist === true
-            )
+            ([_, ts]) => ts.exist === true
+          )
           : [];
       };
     },
@@ -762,5 +739,24 @@ export default {
 
 .dark .delete-icon:hover {
   color: #dc2626;
+}
+
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

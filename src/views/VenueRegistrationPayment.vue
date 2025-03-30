@@ -1,13 +1,7 @@
 <template>
-  <div
-    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800"
-  >
-    <div
-      class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900"
-    >
-      <h2
-        class="text-xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6"
-      >
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800">
+    <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900">
+      <h2 class="text-xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
         Venue Registration Payment
       </h2>
       <p class="text-gray-500 text-center mb-6 dark:text-gray-200">
@@ -40,11 +34,8 @@
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
             Balance After Registration:
-            <span
-              :class="
-                balanceAfterRegistration < 0 ? 'text-red-500' : 'text-green-500'
-              "
-            >
+            <span :class="balanceAfterRegistration < 0 ? 'text-red-500' : 'text-green-500'
+              ">
               {{ balanceAfterRegistration }} EGP
             </span>
           </p>
@@ -59,22 +50,15 @@
       </p>
 
       <div class="mt-6 flex flex-col space-y-2">
-        <button
-          @click="processPayment"
-          :disabled="balanceAfterRegistration < 0 || loading"
-          class="w-full py-2 rounded-lg font-bold"
-          :class="
-            balanceAfterRegistration < 0
-              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              : 'bg-blue-600 text-white'
-          "
-        >
+        <button @click="processPayment" :disabled="balanceAfterRegistration < 0 || loading"
+          class="cursor-pointer w-full py-2 rounded-lg font-bold" :class="balanceAfterRegistration < 0
+            ? 'bg-gray-300 hover:bg-gray-200 text-gray-600 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-500 text-white'
+            ">
           {{ loading ? "Processing..." : "Pay Now" }}
         </button>
-        <button
-          class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg"
-          @click="cancelRegistration"
-        >
+        <button class="cursor-pointer w-full hover:bg-gray-200 bg-gray-300 text-gray-600 py-2 rounded-lg"
+          @click="cancelRegistration">
           Back
         </button>
       </div>
