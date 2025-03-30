@@ -243,57 +243,86 @@ export default {
       });
     },
     async confirmCancelBooking() {
-      const booking = this.selectedBooking;
-      const dbRef = firebaseRef(db, `users/${this.userId}/bookings/${booking.id}`);
-      const userRef = firebaseRef(db, `users/${this.userId}/balance`);
-      const venueRef = firebaseRef(db, `venues/${booking.venue.id}`);
+  const booking = this.selectedBooking;
+  if (!booking || !booking.id) {
+    this.errorMessage = "Invalid booking data";
+    this.showError = true;
+    return;
+  }
 
-      try {
-        const [balanceSnapshot, venueSnapshot] = await Promise.all([
-          get(userRef),
-          get(venueRef)
-        ]);
+  try {
+    // References to all database locations we need to update
+    const userBookingRef = firebaseRef(db, `users/${this.userId}/bookings/${booking.id}`);
+    const globalBookingRef = firebaseRef(db, `bookings/${booking.id}`);
+    const userRef = firebaseRef(db, `users/${this.userId}/balance`);
+    const venueRef = firebaseRef(db, `venues/${booking.venue.id}`);
 
-        const currentBalance = balanceSnapshot.exists() ? balanceSnapshot.val() : 0;
-        const venueData = venueSnapshot.exists() ? venueSnapshot.val() : null;
+    // First get all necessary data
+    const [balanceSnapshot, venueSnapshot, globalBookingSnapshot] = await Promise.all([
+      get(userRef),
+      get(venueRef),
+      get(globalBookingRef) // Check if booking exists in global collection
+    ]);
 
-        if (!venueData) {
-          throw new Error('Venue data not found');
-        }
+    // Validate the booking exists in global collection
+    if (!globalBookingSnapshot.exists()) {
+      throw new Error("Booking not found in database");
+    }
 
-        const refundAmount = booking.venue.price * 0.8;
-        await set(userRef, currentBalance + refundAmount);
+    const currentBalance = balanceSnapshot.exists() ? balanceSnapshot.val() : 0;
+    const venueData = venueSnapshot.exists() ? venueSnapshot.val() : null;
+    const refundAmount = booking.venue.price * 0.8;
 
-        if (venueData.timeSlots && booking.timeSlotId !== undefined) {
-          const updatedTimeSlots = { ...venueData.timeSlots };
-          if (updatedTimeSlots[booking.timeSlotId]) {
-            updatedTimeSlots[booking.timeSlotId].available = (updatedTimeSlots[booking.timeSlotId].available || 0) + 1;
-            await set(venueRef, {
-              ...venueData,
-              timeSlots: updatedTimeSlots
-            });
-          }
-        }
+    // Perform all updates in parallel
+    await Promise.all([
+      // Remove from user's bookings
+      set(userBookingRef, null),
+      
+      // Remove from global bookings collection
+      set(globalBookingRef, null),
+      
+      // Update user balance with refund
+      set(userRef, currentBalance + refundAmount),
+      
+      // Update venue availability if needed
+      venueData?.timeSlots && booking.timeSlotId !== undefined 
+        ? set(venueRef, {
+            ...venueData,
+            timeSlots: {
+              ...venueData.timeSlots,
+              [booking.timeSlotId]: {
+                ...venueData.timeSlots[booking.timeSlotId],
+                available: (venueData.timeSlots[booking.timeSlotId].available || 0) + 1
+              }
+            }
+          })
+        : Promise.resolve()
+    ]);
 
-        await set(dbRef, null);
-        this.bookings = this.bookings.filter(b => b.id !== booking.id);
-        this.showBooking = false;
-        this.showSuccess = true;
-        this.successMessage = `Your booking has been cancelled and ${refundAmount} EGP has been refunded to your balance.`;
+    // Update local state and UI
+    this.bookings = this.bookings.filter(b => b.id !== booking.id);
+    this.showBooking = false;
+    this.showSuccess = true;
+    this.successMessage = `Your booking has been cancelled and ${refundAmount} EGP has been refunded to your balance.`;
 
-        nextTick(() => {
-          this.$refs.successPopupFocus?.focus();
-        });
-      } catch (error) {
-        console.error('Error during booking cancellation:', error);
-        this.errorMessage = "Failed to cancel booking. Please try again.";
-        this.showError = true;
+  } catch (error) {
+    console.error('Booking cancellation failed:', error);
+    this.errorMessage = this.getEnhancedErrorMessage(error);
+    this.showError = true;
+  }
+},
 
-        nextTick(() => {
-          this.$refs.errorPopupFocus?.focus();
-        });
-      }
-    },
+getEnhancedErrorMessage(error) {
+  console.log('Full error:', error);
+  
+  if (error.message.includes('permission')) {
+    return "You don't have permission to cancel this booking";
+  }
+  if (error.message.includes('not found')) {
+    return "Booking not found in our system";
+  }
+  return "Failed to cancel booking. Please try again or contact support";
+},
     setupBookingsListener() {
       getAuth().onAuthStateChanged(user => {
         if (user) {

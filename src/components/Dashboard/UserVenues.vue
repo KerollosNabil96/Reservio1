@@ -238,7 +238,6 @@
 <script>
 import VenueCard from "../reservations/VenueCard.vue";
 import store from "@/store/store";
-import { onMounted, ref, watch } from "vue";
 import { getDatabase, ref as dbRef, get, set } from "firebase/database";
 
 export default {
@@ -252,10 +251,69 @@ export default {
       bookID: "",
       userID: "",
       showDeleteModal: false,
+      selectedVenueId: null,
       selectedTimeSlotId: null,
       currentPage: 1,
       itemsPerPage: 6,
+      bookings: [],
+      users: [],
+      filteredBookings: [],
+      filteredUsers: [],
+      showSuccess: false,
+      successMessage: "",
+      showError: false,
+      errorMessage: "",
+      perWhat: "hour"
     };
+  },
+  async created() {
+    try {
+      const db = getDatabase();
+
+      // Fetch bookings
+      const bookingsSnapshot = await get(dbRef(db, "bookings"));
+      if (bookingsSnapshot.exists()) {
+        const bookingsData = bookingsSnapshot.val();
+        this.bookings = Object.keys(bookingsData).map((key) => ({
+          id: key,
+          ...bookingsData[key],
+        }));
+      }
+
+      // Fetch users
+      const usersSnapshot = await get(dbRef(db, "users"));
+      if (usersSnapshot.exists()) {
+        const usersData = usersSnapshot.val();
+        this.users = Object.keys(usersData).map((key) => ({
+          id: key,
+          ...usersData[key],
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  },
+  watch: {
+    bookID(newBookID) {
+      if (newBookID) {
+        this.filteredBookings = this.bookings.filter((booking) => {
+          return (
+            booking.venueId === newBookID || booking.venue?.id === newBookID
+          );
+        });
+      } else {
+        this.filteredBookings = this.bookings;
+      }
+    },
+    userID(newUserID) {
+      if (newUserID) {
+        this.filteredUsers = this.users.filter((user) => {
+          return user.id === newUserID;
+        });
+      } else {
+        this.filteredUsers = this.users;
+      }
+    }
   },
   methods: {
     showBookings(venueId) {
@@ -277,118 +335,173 @@ export default {
       this.selectedTimeSlotId = null;
     },
     async confirmDelete() {
-      if (this.selectedVenueId && this.selectedTimeSlotId !== null) {
-        try {
-          const db = getDatabase();
+  if (this.selectedVenueId && this.selectedTimeSlotId !== null) {
+    try {
+      const db = getDatabase();
 
-          // Fetch the specific time slot to update
-          const timeSlotRef = dbRef(
-            db,
-            `venues/${this.selectedVenueId}/timeSlots/${this.selectedTimeSlotId}`
+      // Fetch the specific time slot to update
+      const timeSlotRef = dbRef(
+        db,
+        `venues/${this.selectedVenueId}/timeSlots/${this.selectedTimeSlotId}`
+      );
+
+      // Fetch the current time slot data
+      const timeSlotSnapshot = await get(timeSlotRef);
+      if (timeSlotSnapshot.exists()) {
+        const timeSlotData = timeSlotSnapshot.val();
+
+        // Update the `exist` field to `false`
+        await set(timeSlotRef, { ...timeSlotData, exist: false });
+
+        // Fetch all bookings
+        const bookingsSnapshot = await get(dbRef(db, "bookings"));
+        if (bookingsSnapshot.exists()) {
+          const bookingsData = bookingsSnapshot.val();
+
+          // Filter bookings for the specific venue and time slot
+          const filteredBookings = Object.values(bookingsData).filter(
+            (booking) =>
+              booking.venue.id === this.selectedVenueId &&
+              booking.timeSlotId === this.selectedTimeSlotId
           );
 
-          // Fetch the current time slot data
-          const timeSlotSnapshot = await get(timeSlotRef);
-          if (timeSlotSnapshot.exists()) {
-            const timeSlotData = timeSlotSnapshot.val();
+          // If there are bookings, notify the users and remove the bookings
+          if (filteredBookings.length > 0) {
+            // Fetch all users
+            const usersSnapshot = await get(dbRef(db, "users"));
+            if (usersSnapshot.exists()) {
+              const usersData = usersSnapshot.val();
 
-            // Update the `exist` field to `false`
-            await set(timeSlotRef, { ...timeSlotData, exist: false });
+              // Send notifications to users who booked the time slot
+              for (const booking of filteredBookings) {
+                const user = usersData[booking.userId];
+                if (user) {
+                  // Create notification
+                  const notification = {
+                    id: Date.now().toString(),
+                    message: this.$t("booking_canceled", {
+                      venueName: booking.venue.venueName,
+                      date: booking.date,
+                    }),
+                    timestamp: new Date().toISOString(),
+                    read: false,
+                    type: "booking_canceled",
+                  };
 
-            // Fetch all bookings
-            const bookingsSnapshot = await get(dbRef(db, "bookings"));
-            if (bookingsSnapshot.exists()) {
-              const bookingsData = bookingsSnapshot.val();
+                  // Save notification to the user's notifications collection
+                  await set(
+                    dbRef(
+                      db,
+                      `users/${booking.userId}/notifications/${notification.id}`
+                    ),
+                    notification
+                  );
 
-              // Filter bookings for the specific venue and time slot
-              const filteredBookings = Object.values(bookingsData).filter(
-                (booking) =>
-                  booking.venue.id === this.selectedVenueId &&
-                  booking.timeSlotId === this.selectedTimeSlotId
-              );
+                  // Refund money to user's wallet if payment method was wallet
+                  if (booking.method === "wallet") {
+                    const userRef = dbRef(db, `users/${booking.userId}`);
+                    const userSnapshot = await get(userRef);
+                    
+                    if (userSnapshot.exists()) {
+                      const userData = userSnapshot.val();
+                      const currentBalance = userData.balance || 0;
+                      const refundAmount = booking.price || 0;
+                      
+                      // Update user's balance
+                      await set(userRef, {
+                        ...userData,
+                        balance: currentBalance + refundAmount
+                      });
 
-              // If there are bookings, notify the users and remove the bookings
-              if (filteredBookings.length > 0) {
-                // Fetch all users
-                const usersSnapshot = await get(dbRef(db, "users"));
-                if (usersSnapshot.exists()) {
-                  const usersData = usersSnapshot.val();
-
-                  // Send notifications to users who booked the time slot
-                  for (const booking of filteredBookings) {
-                    const user = usersData[booking.userId];
-                    if (user) {
-                      const notification = {
+                      // Create refund transaction record
+                      const refundTransaction = {
                         id: Date.now().toString(),
-                        message: this.$t("booking_canceled", {
-                          venueName: booking.venue.venueName,
-                          date: booking.date,
-                        }),
+                        amount: refundAmount,
+                        type: "refund",
                         timestamp: new Date().toISOString(),
-                        read: false,
-                        type: "booking_canceled",
+                        bookingId: booking.id,
+                        venueName: booking.venue.venueName
                       };
 
-                      // Save notification to the user's notifications collection
                       await set(
                         dbRef(
                           db,
-                          `users/${booking.userId}/notifications/${notification.id}`
+                          `users/${booking.userId}/transactions/${refundTransaction.id}`
                         ),
-                        notification
+                        refundTransaction
                       );
-
-                      console.log(`Notification sent to user: ${user.email}`);
                     }
-
-                    // Remove the booking from the database
-                    const bookingRef = dbRef(db, `bookings/${booking.id}`);
-                    await set(bookingRef, null);
                   }
+
+                  // Remove the booking from the user's bookings
+                  const userBookingRef = dbRef(
+                    db,
+                    `users/${booking.userId}/bookings/${booking.id}`
+                  );
+                  await set(userBookingRef, null);
+
+                  console.log(`Notification and refund sent to user: ${user.email}`);
                 }
+
+                // Remove the booking from the global bookings collection
+                const bookingRef = dbRef(db, `bookings/${booking.id}`);
+                await set(bookingRef, null);
               }
             }
-
-            // Update the local state (UI)
-            this.updateTimeSlotStatus(
-              this.selectedVenueId,
-              this.selectedTimeSlotId,
-              false
-            );
-
-            // Show success message
-            this.showSuccess = true;
-            this.successMessage = "Time slot deactivated successfully.";
-          } else {
-            console.error("Time slot not found.");
-            this.showError = true;
-            this.errorMessage = "Time slot not found.";
           }
-        } catch (error) {
-          console.error("Error deactivating time slot:", error);
-          this.showError = true;
-          this.errorMessage =
-            "Failed to deactivate time slot. Please try again.";
         }
+
+        // Update the local state (UI)
+        this.updateTimeSlotStatus(
+          this.selectedVenueId,
+          this.selectedTimeSlotId,
+          false
+        );
+
+        // Show success message
+        this.showSuccess = true;
+        this.successMessage = "Time slot deactivated and users refunded successfully.";
+      } else {
+        console.error("Time slot not found.");
+        this.showError = true;
+        this.errorMessage = "Time slot not found.";
       }
-      this.closeDeleteModal();
-    },
+    } catch (error) {
+      console.error("Error deactivating time slot:", error);
+      this.showError = true;
+      this.errorMessage =
+        "Failed to deactivate time slot. Please try again.";
+    }
+  }
+  this.closeDeleteModal();
+},
     updateTimeSlotStatus(venueId, timeSlotId, existStatus) {
       const venueIndex = this.sortedBookings.findIndex(
         (venue) => venue.id === venueId
       );
 
       if (venueIndex !== -1) {
-        // Create a copy of the venue to ensure reactivity
-        const venue = { ...this.sortedBookings[venueIndex] };
+        // Create a new array to trigger reactivity
+        const updatedBookings = [...this.sortedBookings];
+        const venue = { ...updatedBookings[venueIndex] };
 
         // Update the time slot's `exist` status
         if (venue.timeSlots && venue.timeSlots[timeSlotId]) {
-          venue.timeSlots[timeSlotId].exist = existStatus;
+          venue.timeSlots = {
+            ...venue.timeSlots,
+            [timeSlotId]: {
+              ...venue.timeSlots[timeSlotId],
+              exist: existStatus
+            }
+          };
         }
 
-        // Update the sortedBookings array reactively
-        this.$set(this.sortedBookings, venueIndex, venue);
+        // Update the venue in the array
+        updatedBookings[venueIndex] = venue;
+        
+        // Here you would update the source data that sortedBookings depends on
+        // For example, if sortedBookings comes from a store, you'd update the store
+        // This depends on your specific implementation
       }
     },
     async showUsersForSlot(venueId, timeSlotId) {
@@ -501,7 +614,7 @@ export default {
         const venue = this.sortedBookings.find((venue) => venue.id === venueId);
         if (venue && venue.timeSlots) {
           return Object.entries(venue.timeSlots).filter(
-            ([_, timeslot]) => timeslot.exist === true // Only show time slots where `exist` is true
+            ([_, timeslot]) => timeslot.exist === true
           );
         }
         return [];
@@ -510,86 +623,7 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredVenues.length / this.itemsPerPage);
     },
-  },
-  setup() {
-    const bookings = ref([]);
-    const filteredBookings = ref([]);
-    const bookID = ref("");
-    const users = ref([]);
-    const filteredUsers = ref([]);
-    const userID = ref("");
-
-    // Fetch bookings and users from Firebase
-    onMounted(async () => {
-      try {
-        const db = getDatabase();
-
-        // Fetch bookings
-        const bookingsSnapshot = await get(dbRef(db, "bookings"));
-        if (bookingsSnapshot.exists()) {
-          const bookingsData = bookingsSnapshot.val();
-          bookings.value = Object.keys(bookingsData).map((key) => ({
-            id: key,
-            ...bookingsData[key],
-          }));
-          console.log("Bookings fetched:", bookings.value);
-        }
-
-        // Fetch users
-        const usersSnapshot = await get(dbRef(db, "users"));
-        if (usersSnapshot.exists()) {
-          const usersData = usersSnapshot.val();
-          users.value = Object.keys(usersData).map((key) => ({
-            id: key,
-            ...usersData[key],
-          }));
-          console.log("Users fetched:", users.value);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    });
-
-    // Watch for changes in bookID and filter bookings
-    watch(bookID, (newBookID) => {
-      if (newBookID) {
-        console.log("Filtering bookings for venue ID:", newBookID);
-        const filtered = bookings.value.filter((booking) => {
-          return (
-            booking.venueId === newBookID || booking.venue?.id === newBookID
-          );
-        });
-        console.log("Filtered Bookings:", filtered);
-        filteredBookings.value = filtered;
-      } else {
-        filteredBookings.value = bookings.value;
-      }
-    });
-
-    // Watch for changes in userID and filter users
-    watch(userID, (newUserID) => {
-      if (newUserID) {
-        console.log("Filtering users for user ID:", newUserID);
-        const filtered = users.value.filter((user) => {
-          return user.id === newUserID;
-        });
-        console.log("Filtered Users:", filtered);
-        filteredUsers.value = filtered;
-        console.log(filteredUsers);
-      } else {
-        filteredUsers.value = users.value;
-      }
-    });
-
-    return {
-      bookings,
-      filteredBookings,
-      bookID,
-      users,
-      filteredUsers,
-      userID,
-    };
-  },
+  }
 };
 </script>
 
@@ -653,25 +687,19 @@ export default {
 
 .time-slot-item {
   background-color: #ffffff;
-  /* White background */
   border: 1px solid #e5e7eb;
-  /* Light gray border */
   border-radius: 8px;
   padding: 10px;
   transition: all 0.3s ease;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  /* Subtle shadow */
 }
 
 .time-slot-item:hover {
   background-color: #f9fafb;
-  /* Light gray background on hover */
   border-color: #d1d5db;
-  /* Slightly darker border on hover */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Enhanced shadow on hover */
 }
 
 .time-slot-content {
@@ -680,56 +708,39 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   color: #374151;
-  /* Dark gray text */
 }
 
 .delete-icon {
   background: none;
   border: none;
   color: #ef4444;
-  opacity: 0;
-  transition: opacity 0.3s ease;
   cursor: pointer;
 }
 
 .delete-icon:hover {
-  /* No background color on hover */
   color: #dc2626;
-  /* Optional: Darken the icon color on hover */
-}
-
-.time-slot-item:hover .delete-icon {
-  opacity: 1;
 }
 
 .dark .time-slot-item {
   background-color: #1f2937;
-  /* Dark gray background */
   border-color: #374151;
-  /* Darker gray border */
   color: #f3f4f6;
-  /* Light gray text */
 }
 
 .dark .time-slot-item:hover {
   background-color: #374151;
-  /* Slightly lighter gray on hover */
   border-color: #4b5563;
-  /* Lighter border on hover */
 }
 
 .dark .time-slot-content {
   color: #f3f4f6;
-  /* Light gray text */
 }
 
 .dark .delete-icon {
   color: #ef4444;
-  /* Red color for delete icon */
 }
 
 .dark .delete-icon:hover {
   color: #dc2626;
-  /* Optional: Darken the icon color on hover */
 }
 </style>
