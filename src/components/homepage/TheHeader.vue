@@ -41,10 +41,10 @@
       </div>
 
       <!-- Illustration/Image -->
-      <div class="flex justify-center grow-1 sm:justify-end mb-4 sm:mb-6 md:mb-0 animate-fade-in w-full md:w-auto">
+      <div class="flex justify-center grow-1 lg:justify-end mb-4 sm:mb-6 md:mb-0 animate-fade-in w-full md:w-auto">
         <div class="relative">
           <img src="../../assets/pictures/Asset 1.svg" alt="Hero Illustration"
-            class="relative w-full lg:w-100 max-w-xs sm:max-w-sm md:max-w-md animate-float transform hover:scale-105 transition-all duration-500 hover:rotate-2" />
+            class="relative w-full lg:w-100 lg:h-125 max-w-xs sm:max-w-sm md:max-w-md animate-float transform hover:scale-105 transition-all duration-500 hover:rotate-2" />
           <!-- Decorative elements around the illustration -->
           <div
             class="absolute -top-4 -right-4 w-12 h-12 bg-blue-400 dark:bg-blue-600 rounded-full blur-xl opacity-20 animate-pulse-slow">
