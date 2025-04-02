@@ -27,6 +27,7 @@ const store = createStore({
       location: "",
       sortBy: "rating", // Default sort by rating
     },
+    selectedTimeSlotId: "0", // Default to "0" or set dynamically
   },
   mutations: {
     toggleDarkMode(state) {
@@ -98,6 +99,9 @@ const store = createStore({
         venue.averageRating = averageRating;
         venue.totalReviews = totalReviews;
       }
+    },
+    setSelectedTimeSlotId(state, timeSlotId) {
+      state.selectedTimeSlotId = timeSlotId; // Mutation to update the selected time slot ID
     },
   },
   actions: {
@@ -393,8 +397,8 @@ const store = createStore({
         }
       }
     },
+    getSelectedTimeSlotId: (state) => state.selectedTimeSlotId, // Add this getter
   },
 });
 
 export default store;
-

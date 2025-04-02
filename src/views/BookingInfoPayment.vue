@@ -29,7 +29,8 @@
             {{ venue.address.city }}, {{ venue.address.governorate }}
           </p>
           <p class="mt-2 font-semibold dark:text-gray-100">
-            Time Slot: <span class="font-normal">7:00 PM - 8:00 PM</span>
+            Time Slot: <span class="font-normal">{{ venue.timeSlots[selectedTimeSlotId].from }} - {{
+              venue.timeSlots[selectedTimeSlotId].to }}</span>
           </p>
           <img :src="venue.pictures[0]" alt="Stadium" class="w-full h-32 object-cover rounded-lg mt-2" />
         </div>
@@ -106,6 +107,9 @@ export default {
     venue() {
       return this.$store.getters.getSelectedVenue;
     },
+    selectedTimeSlotId() {
+      return this.$route.query.timeSlotId || "0"; // Get the time slot ID from the route query, fallback to "0"
+    },
     balanceAfterBooking() {
       return this.userBalance - this.venue.price;
     },
@@ -137,11 +141,10 @@ export default {
       }
     },
 
-    // جلب عدد الأماكن المتاحة من Firebase
     async fetchAvailableSlots() {
       const venueId = this.venue.id;
       const db = getDatabase();
-      const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+      const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/${this.selectedTimeSlotId}/available`);
       const snapshot = await get(timeSlotRef);
 
       if (snapshot.exists()) {
@@ -184,7 +187,7 @@ export default {
         await update(userRef, { balance: this.balanceAfterBooking });
 
         const venueId = this.venue.id;
-        const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/0/available`);
+        const timeSlotRef = ref(db, `venues/${venueId}/timeSlots/${this.selectedTimeSlotId}/available`);
 
         await runTransaction(timeSlotRef, (currentAvailableSlots) => {
           console.log(

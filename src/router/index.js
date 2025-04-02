@@ -78,7 +78,8 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/bookingInfoPayment",
+    path: "/booking-info-payment",
+    name: "BookingInfoPayment",
     component: BookingInfoPayment,
     meta: { requiresAuth: true },
   },
@@ -105,11 +106,6 @@ const routes = [
   {
     path: "/pending",
     component: PaymentSuccess2,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/bookingInfoPayment",
-    component: BookingInfoPayment,
     meta: { requiresAuth: true },
   },
   {

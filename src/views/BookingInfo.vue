@@ -205,13 +205,20 @@ export default {
         bookingDate: new Date().toISOString(),
       };
       store.state.currentBookingInfo = bookingInfo;
-      this.$router.push("/bookingInfoPayment");
+      this.proceedToPayment(this.selectedTime);
     },
     cancelBooking() {
       this.$router.back();
     },
     closePopUp() {
       this.showPaymentPopup = false;
+    },
+    proceedToPayment(selectedTimeSlotId) {
+      this.$store.commit("setSelectedTimeSlotId", selectedTimeSlotId); // Update the store
+      this.$router.push({
+        path: "/booking-info-payment",
+        query: { timeSlotId: selectedTimeSlotId }, // Pass the selected time slot ID as a query parameter
+      });
     },
   },
 };
