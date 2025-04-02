@@ -1,28 +1,50 @@
 <template>
   <!-- Responsive grid of reservation cards -->
   <div class="mb-6">
-    <div v-if="searchApplied && !isHomePage" class="flex items-center justify-between mb-4">
+    <div
+      v-if="searchApplied && !isHomePage"
+      class="flex items-center justify-between mb-4"
+    >
       <p class="text-gray-600 dark:text-gray-300">
         {{ filteredVenues.length }}
         {{ filteredVenues.length === 1 ? "result" : "results" }} found
       </p>
-      <button @click="clearSearch" class="cursor-pointer text-blue-600 hover:text-blue-800 flex items-center">
+      <button
+        @click="clearSearch"
+        class="cursor-pointer text-blue-600 hover:text-blue-800 flex items-center"
+      >
         <span>Clear filters</span>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     </div>
 
     <!-- Pagination info - showing X-Y of Z results -->
-    <div v-if="!isHomePage && filteredVenues.length > 0" class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+    <div
+      v-if="!isHomePage && filteredVenues.length > 0"
+      class="text-sm text-gray-500 dark:text-gray-400 mb-4"
+    >
       Showing {{ paginationStart }} - {{ paginationEnd }} of
       {{ filteredVenues.length }} results
     </div>
 
     <!-- Loading state -->
-    <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div
+      v-if="isLoading"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+    >
       <VenueCardSkeleton v-for="n in 6" :key="n" />
     </div>
 
@@ -31,54 +53,98 @@
       <p class="text-gray-500 dark:text-gray-400 text-lg">
         No venues found matching your search criteria.
       </p>
-      <button @click="clearSearch" class="mt-4 text-blue-600 hover:text-blue-800 underline">
+      <button
+        @click="clearSearch"
+        class="mt-4 text-blue-600 hover:text-blue-800 underline"
+      >
         Clear search filters
       </button>
     </div>
 
     <!-- Results grid with fade transition -->
-    <transition-group v-else name="venue-fade" tag="div" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <VenueCard v-for="venue in paginatedVenues" :key="venue.id" :source="venue.pictures ? venue.pictures[0] : ''"
-        :title="venue.venueName" :category="venue.category" :description="venue.shortDescription" :price="venue.price"
-        :id="venue.id" :showTopRatedBadge="isHomePage" :location="venue.address" />
+    <transition-group
+      v-else
+      name="venue-fade"
+      tag="div"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+    >
+      <VenueCard
+        v-for="venue in paginatedVenues"
+        :key="venue.id"
+        :source="venue.pictures ? venue.pictures[0] : ''"
+        :title="venue.venueName"
+        :category="venue.category"
+        :description="venue.shortDescription"
+        :price="venue.price"
+        :id="venue.id"
+        :showTopRatedBadge="isHomePage"
+        :location="venue.address"
+      />
     </transition-group>
 
     <!-- Pagination controls -->
-    <div v-if="!isHomePage && filteredVenues.length > itemsPerPage"
-      class="flex justify-center items-center mt-8 space-x-2">
+    <div
+      v-if="!isHomePage && filteredVenues.length > itemsPerPage"
+      class="flex justify-center items-center mt-8 space-x-2"
+    >
       <!-- Previous page button -->
-      <button @click="prevPage" :disabled="currentPage === 1"
-        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
             d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clip-rule="evenodd" />
+            clip-rule="evenodd"
+          />
         </svg>
       </button>
 
       <!-- Page numbers -->
       <div class="flex space-x-1">
-        <button v-for="page in displayedPageNumbers" :key="page" @click="goToPage(page)" :class="[
-          page === '...'
-            ? 'px-4 py-2 bg-transparent text-gray-500 dark:text-gray-400 cursor-default'
-            : 'px-4 py-2 rounded-md transition-colors duration-200',
-          currentPage === page
-            ? 'bg-blue-600 dark:bg-blue-500 text-white'
-            : page !== '...'
+        <button
+          v-for="page in displayedPageNumbers"
+          :key="page"
+          @click="goToPage(page)"
+          :class="[
+            page === '...'
+              ? 'px-4 py-2 bg-transparent text-gray-500 dark:text-gray-400 cursor-default'
+              : 'px-4 py-2 rounded-md transition-colors duration-200',
+            currentPage === page
+              ? 'bg-blue-600 dark:bg-blue-500 text-white'
+              : page !== '...'
               ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               : '',
-        ]">
+          ]"
+        >
           {{ page }}
         </button>
       </div>
 
       <!-- Next page button -->
-      <button @click="nextPage" :disabled="currentPage === totalPages"
-        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
             d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clip-rule="evenodd" />
+            clip-rule="evenodd"
+          />
         </svg>
       </button>
     </div>
@@ -109,12 +175,26 @@ export default {
   },
   computed: {
     filteredVenues() {
-      // On the home page, show top rated venues
-      // On other pages, show filtered venues
-      return this.isHomePage
+      // Get venues from store (either top rated or filtered)
+      let venues = this.isHomePage
         ? store.getters.getTopRatedVenues
         : store.getters.getFilteredVenues;
+
+      // Filter out venues with no available time slots
+      return venues.filter((venue) => {
+        // If venue has no timeSlots, exclude it
+        if (!venue.timeSlots || Object.keys(venue.timeSlots).length === 0) {
+          return false;
+        }
+
+        // Check if at least one time slot exists (exist: true)
+        return Object.values(venue.timeSlots).some(
+          (slot) => slot.exist !== false
+        );
+      });
     },
+
+    // Rest of your computed properties remain the same
     searchApplied() {
       const filters = store.state.searchFilters;
       return (
