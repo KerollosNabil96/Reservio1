@@ -7,7 +7,7 @@
     </button>
   </div>
 
-  <!-- Sidebar Navigation -->
+  <!-- Sidebar.... Navigation -->
   <nav :class="[sidebarOpen ? 'block' : 'hidden', 'md:block w-full md:w-64 bg-white dark:bg-gray-800 shadow-lg']">
     <!-- Header Section for Desktop -->
     <div class="p-6 hidden md:block">
