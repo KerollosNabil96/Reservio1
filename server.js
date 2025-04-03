@@ -71,8 +71,8 @@ app.post("/create-checkout-session-book", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: "https://reservio-two.vercel.app/booking-success",
-      cancel_url: "https://reservio-two.vercel.app/booking-cancelled",
+      success_url: "/booking-success",
+      cancel_url: "/booking-cancelled",
     });
 
     res.json({ url: session.url });
@@ -112,8 +112,8 @@ app.post("/create-checkout-session-register", async (req, res) => {
         category: venue.category,
         owner: venue.owner,
       },
-      success_url: "https://reservio-two.vercel.app/registration-success",
-      cancel_url: "https://reservio-two.vercel.app/registration-cancelled",
+      success_url: "/registration-success",
+      cancel_url: "/registration-cancelled",
     });
 
     res.json({ url: session.url });
