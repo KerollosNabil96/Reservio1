@@ -69,7 +69,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
               <!-- Main large image -->
               <div
-                class="col-span-1 md:col-span-7 transform transition-all duration-500 hover:-translate-y-1"
+                class="col-span-1 md:col-span-7 transform transition-all duration-500 "
               >
                 <div
                   class="relative overflow-hidden rounded-xl shadow-2xl group"
@@ -96,7 +96,7 @@
                 class="col-span-1 md:col-span-5 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-4"
               >
                 <div
-                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
+                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 "
                   @click="openImageModal(currentVenue.pictures[1])"
                 >
                   <div
@@ -115,7 +115,7 @@
                 </div>
 
                 <div
-                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 hover:-translate-y-1"
+                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 "
                   @click="openImageModal(currentVenue.pictures[2])"
                 >
                   <div

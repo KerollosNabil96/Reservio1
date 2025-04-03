@@ -1,10 +1,13 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto"
+    class="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 overflow-auto"
     @click="$emit('close')"
   >
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" @click.stop>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl dark:text-white"
+      @click.stop
+    >
       <div class="flex items-center text-red-500 mb-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
