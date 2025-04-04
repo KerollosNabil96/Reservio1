@@ -238,6 +238,7 @@ export default {
     },
   },
   async mounted() {
+    console.log("Venue data:", venueData);
     // Improved detection for Stripe redirects with detailed logging
     console.log("URL search params:", window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
