@@ -69,7 +69,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
               <!-- Main large image -->
               <div
-                class="col-span-1 md:col-span-7 transform transition-all duration-500 "
+                class="col-span-1 md:col-span-7 transform transition-all duration-500"
               >
                 <div
                   class="relative overflow-hidden rounded-xl shadow-2xl group"
@@ -96,7 +96,7 @@
                 class="col-span-1 md:col-span-5 grid grid-cols-2 md:grid-cols-1 md:grid-rows-2 gap-4"
               >
                 <div
-                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 "
+                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500"
                   @click="openImageModal(currentVenue.pictures[1])"
                 >
                   <div
@@ -115,7 +115,7 @@
                 </div>
 
                 <div
-                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500 "
+                  class="relative overflow-hidden rounded-xl shadow-2xl group transform transition-all duration-500"
                   @click="openImageModal(currentVenue.pictures[2])"
                 >
                   <div
@@ -199,20 +199,16 @@
           <!-- Tab Content -->
           <div class="min-h-[500px]">
             <transition name="tab" mode="out-in">
-              <div>
-                <component
-                  :is="
-                    activeTab === 'information'
-                      ? 'InformationTab'
-                      : 'ReviewsTab'
-                  "
-                  :current-venue="currentVenue"
-                  :full-address="fullAddress"
-                  :venue-id="currentVenue.id"
-                  @book-now="goToBooking"
-                  @show-signin="showSigninForm = true"
-                ></component>
-              </div>
+              <component
+                :is="
+                  activeTab === 'information' ? 'InformationTab' : 'ReviewsTab'
+                "
+                :current-venue="currentVenue"
+                :full-address="fullAddress"
+                :venue-id="currentVenue.id"
+                @book-now="goToBooking"
+                @show-signin="showSigninForm = true"
+              ></component>
             </transition>
           </div>
 
@@ -224,8 +220,7 @@
               @click="closeImageModal"
             >
               <div
-                class="relative w-full h-full md:w-auto md:h-auto md:max-w-5xl md:max-h-[90vh] p-2 transform transition-all duration-500"
-                :class="{ 'scale-95 opacity-0': isImageChanging }"
+                class="relative dark:bottom-1/4 w-full h-full md:w-auto md:h-auto md:max-w-5xl md:max-h-[90vh] p-2 transform transition-all duration-500"
               >
                 <!-- Close button -->
                 <button
@@ -510,29 +505,7 @@ export default {
   transform: translateY(-10px) scale(0.98);
 }
 
-/* Make sure transitions work the same in dark mode */
-:deep(.dark) .tab-enter-active,
-:deep(.dark) .tab-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99),
-    transform 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-  transform-origin: top center;
-  will-change: opacity, transform;
-  backface-visibility: hidden;
-}
-
-/* Keyboard navigation support */
 .img-gallery:focus {
   outline: none;
-}
-
-/* Dark mode specific styles */
-:deep(.dark) .modal-fade-enter-active,
-:deep(.dark) .modal-fade-leave-active,
-:deep(.dark) .slide-fade-enter-active,
-:deep(.dark) .slide-fade-leave-active {
-  transition: opacity 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99),
-    transform 0.45s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-  backface-visibility: hidden;
-  will-change: opacity, transform;
 }
 </style>
