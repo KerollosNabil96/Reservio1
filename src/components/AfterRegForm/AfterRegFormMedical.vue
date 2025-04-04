@@ -1,24 +1,47 @@
 <template>
   <div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload your Medical License</label>
-    <CloudinaryUploader v-model="medicalLicense" :cloud-name="cloudName" :upload-preset="uploadPreset"
-      folder="medical_licenses" upload-text="Upload your medical license"
-      @upload-success="handleMedicalLicenseUpload" />
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >Upload your Medical License</label
+    >
+    <CloudinaryUploader
+      v-model="medicalLicense"
+      :cloud-name="cloudName"
+      :upload-preset="uploadPreset"
+      folder="medical_licenses"
+      upload-text="Upload your medical license"
+      @upload-success="handleMedicalLicenseUpload"
+    />
   </div>
 
   <div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload your Clinic License</label>
-    <CloudinaryUploader v-model="clinicLicense" :cloud-name="cloudName" :upload-preset="uploadPreset"
-      folder="clinic_licenses" upload-text="Upload your clinic license" @upload-success="handleClinicLicenseUpload" />
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >Upload your Clinic License</label
+    >
+    <CloudinaryUploader
+      v-model="clinicLicense"
+      :cloud-name="cloudName"
+      :upload-preset="uploadPreset"
+      folder="clinic_licenses"
+      upload-text="Upload your clinic license"
+      @upload-success="handleClinicLicenseUpload"
+    />
   </div>
 
   <!-- Date Picker -->
   <div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+    >
       Pick a Date
     </label>
-    <input type="date" v-model="selectedDate" @change="validateDate"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm" />
+    <input
+      type="date"
+      v-model="selectedDate"
+      @change="validateDate"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+    />
     <!-- Error message for invalid date -->
     <div v-if="dateError" class="text-red-500 text-sm mt-2">
       {{ dateError }}
@@ -27,27 +50,48 @@
 
   <!-- Time Slot Selection -->
   <div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select time slot</label>
+    <label
+      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >Select time slot</label
+    >
     <div class="flex gap-3 mt-2">
       <div class="w-1/3">
-        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">From</label>
-        <input type="time" v-model="fromTime"
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm" />
-      </div>
-      <div class="w-1/3">
-        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">To</label>
-        <input type="time" v-model="toTime"
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm" />
-      </div>
-      <div class="w-1/3">
-        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Capacity</label>
-        <input type="number" v-model.number="capacity"
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >From</label
+        >
+        <input
+          type="time"
+          v-model="fromTime"
           class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-          placeholder="Capacity" min="1" />
+        />
+      </div>
+      <div class="w-1/3">
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >To</label
+        >
+        <input
+          type="time"
+          v-model="toTime"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+        />
+      </div>
+      <div class="w-1/3">
+        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
+          >Capacity</label
+        >
+        <input
+          type="number"
+          v-model.number="capacity"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
+          placeholder="Capacity"
+          min="1"
+        />
       </div>
     </div>
-    <button @click="addTimeSlot"
-      class="cursor-pointer mt-4 w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg">
+    <button
+      @click="addTimeSlot"
+      class="cursor-pointer mt-4 w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
+    >
       Add Time Slot
     </button>
   </div>
@@ -58,18 +102,32 @@
       Added Time Slots
     </h3>
     <div class="space-y-3">
-      <div v-for="(slot, index) in timeSlots" :key="index"
-        class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 backdrop-blur-sm">
+      <div
+        v-for="(slot, index) in timeSlots"
+        :key="index"
+        class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 backdrop-blur-sm"
+      >
         <div class="text-gray-700 dark:text-gray-300">
           <span class="font-medium">{{ slot.from }} - {{ slot.to }}</span>
-          <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">({{ slot.capacity }} spots)</span>
+          <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"
+            >({{ slot.capacity }} spots)</span
+          >
         </div>
-        <button @click="removeTimeSlot(index)"
-          class="cursor-pointer text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd"
+        <button
+          @click="removeTimeSlot(index)"
+          class="cursor-pointer text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
               d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-              clip-rule="evenodd" />
+              clip-rule="evenodd"
+            />
           </svg>
         </button>
       </div>
@@ -77,30 +135,53 @@
   </div>
 
   <!-- Error Message -->
-  <div v-if="errorMessage" class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+  <div
+    v-if="errorMessage"
+    class="mb-6 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
+  >
     {{ errorMessage }}
   </div>
 
   <!-- Submit Button -->
   <div class="mt-8">
-    <button @click="openPaymentPopup" :disabled="!canProceed"
-      class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+    <button
+      @click="openPaymentPopup"
+      :disabled="!canProceed"
+      class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+    >
       Proceed to Payment
     </button>
   </div>
 
   <!-- Payment Popup with dark overlay -->
-  <div v-if="showPaymentPopup" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div
+    v-if="showPaymentPopup"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+  >
     <div
-      class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700">
+      class="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 border border-gray-100 dark:border-gray-700"
+    >
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white">
           Choose Payment Method
         </h3>
-        <button @click="closePaymentPopup"
-          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <button
+          @click="closePaymentPopup"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -115,39 +196,77 @@
       </div>
 
       <div class="space-y-4">
-        <button @click="payWithWallet" :disabled="isLoading || !hasEnoughBalance"
-          class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-500 dark:to-emerald-500 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+        <button
+          @click="payWithWallet"
+          :disabled="isLoading || !hasEnoughBalance"
+          class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-500 dark:to-emerald-500 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
           <span v-if="isLoading && paymentMethod === 'wallet'" class="mr-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-              </path>
+            <svg
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           </span>
           Pay with Wallet
           <span class="text-sm ms-1">
-            (Current Balance: {{ userBalance }} EGP)</span>
+            (Current Balance: {{ userBalance }} EGP)</span
+          >
         </button>
 
-        <button @click="payWithCreditCard" :disabled="isLoading"
-          class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-          <span v-if="isLoading && paymentMethod === 'credit card'" class="mr-2">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-              </path>
+        <button
+          @click="payWithCreditCard"
+          :disabled="isLoading"
+          class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          <span
+            v-if="isLoading && paymentMethod === 'credit card'"
+            class="mr-2"
+          >
+            <svg
+              class="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           </span>
           Pay with Credit Card
         </button>
       </div>
 
-      <div v-if="!hasEnoughBalance"
-        class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+      <div
+        v-if="!hasEnoughBalance"
+        class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
+      >
         <p class="text-sm">
           Insufficient wallet balance. Please add funds or use a credit card.
         </p>
@@ -289,6 +408,7 @@ export default {
         id: this.timeSlots.length,
         from: this.fromTime,
         to: this.toTime,
+        exist: true,
         capacity: this.capacity,
         available: this.capacity,
       });
