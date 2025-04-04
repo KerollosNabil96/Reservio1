@@ -35,6 +35,11 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Import marker icons
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIconRetina from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
 export default {
   name: "MapPopup",
   data() {
@@ -46,6 +51,14 @@ export default {
     };
   },
   mounted() {
+    // Fix Leaflet marker icon paths
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: markerIconRetina,
+      iconUrl: markerIcon,
+      shadowUrl: markerShadow,
+    });
+
     this.initializeMap();
   },
   methods: {

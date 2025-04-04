@@ -218,25 +218,25 @@ export default {
       } catch (error) {
         switch (error.code) {
           case "auth/user-not-found":
-            this.toast.error("No account found with this email.");
+            this.errorMessage = "No account found with this email.";
             break;
-          case "auth/wrong-password":
-            this.toast.error("Incorrect password. Please try again.");
+          case "auth/invalid-credential":
+            this.errorMessage = "Invalid credentials. Please try again.";
             break;
           case "auth/invalid-email":
-            this.toast.error("Invalid email format.");
+            this.errorMessage = "Invalid email format.";
             break;
           case "auth/too-many-requests":
-            this.toast.error("Too many failed login attempts. Please try again later.");
+            this.errorMessage = "Too many failed login attempts. Please try again later.";
             break;
           case "auth/user-disabled":
-            this.toast.error("This account has been disabled.");
+            this.errorMessage = "This account has been disabled.";
             break;
           case "auth/network-request-failed":
-            this.toast.error("Network error. Please check your connection.");
+            this.errorMessage = "Network error. Please check your connection.";
             break;
           default:
-            this.toast.error("Sign in failed. Please try again.");
+            this.errorMessage = "Sign in failed. Please try again.";
         }
 
         return;
