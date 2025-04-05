@@ -114,6 +114,17 @@
               Requests Details
             </RouterLink>
           </li>
+          <li>
+            <RouterLink to="/dashboard?tab=analytics"
+              class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200"
+              :class="{
+                'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300':
+                  $route.query.tab === 'analytics',
+              }" @click="closeSidebarOnMobile">
+              <i class="fas fa-chart-pie mr-3"></i>
+              Analytics
+            </RouterLink>
+          </li>
         </ul>
       </nav>
 
@@ -244,6 +255,20 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div v-if="$route.path === '/dashboard' && $route.query.tab === 'analytics'"
+          class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 md:p-6">
+          <h2 class="text-xl md:text-2xl font-semibold mb-4 md:mb-6 dark:text-white">
+            Analytics
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <UserStats :total-users="users.length" :admin-count="adminCount" :regular-user-count="regularUserCount" />
+            <PieChart />
+            <LineChart />
+            <BarChart />
           </div>
         </div>
       </div>
@@ -604,8 +629,13 @@ import {
   set,
   remove,
   update,
+  runTransaction, // Ensure this is imported
 } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import PieChart from "@/components/PieChart.vue";
+import LineChart from "@/components/LineChart.vue";
+import BarChart from "@/components/BarChart.vue";
+import UserStats from "@/components/UserStats.vue";
 
 export default {
   data() {
@@ -709,6 +739,12 @@ export default {
         // Remove from pending requests
         await remove(dbRef(db, `requests/${request.id}`));
 
+        // Ensure requestStats exists and increment Accepted count
+        const statsRef = dbRef(db, "requestStats");
+        const statsSnapshot = await get(statsRef);
+        const stats = statsSnapshot.exists() ? statsSnapshot.val() : { Accepted: 0, Rejected: 0 };
+        await set(statsRef, { ...stats, Accepted: stats.Accepted + 1 });
+
         // Create notification for the venue owner
         const notification = {
           id: Date.now().toString(),
@@ -719,10 +755,7 @@ export default {
           type: "venue_approval",
         };
         await set(
-          dbRef(
-            db,
-            `users/${request.ownerId}/notifications/${notification.id}`
-          ),
+          dbRef(db, `users/${request.ownerId}/notifications/${notification.id}`),
           notification
         );
 
@@ -735,32 +768,70 @@ export default {
     };
 
     const rejectRequest = async (request) => {
+      console.log("1. Starting rejectRequest function"); // Initial debug point
+
       try {
         const db = getDatabase();
-        await remove(dbRef(db, `requests/${request.id}`));
+        console.log("2. Database initialized");
 
-        // Create notification for the venue owner
+        // Remove the request from pending requests
+        console.log(`3. Attempting to remove request ${request.id}`);
+        await remove(dbRef(db, `requests/${request.id}`));
+        console.log("4. Request successfully removed");
+
+        // Update requestStats
+        console.log("5. Preparing to update requestStats");
+        const statsRef = dbRef(db, "requestStats");
+
+        try {
+          const transactionResult = await runTransaction(statsRef, (currentStats) => {
+            console.log("6. Inside transaction callback", { currentStats });
+
+            if (!currentStats) {
+              console.log("7. Creating new stats record");
+              return { Accepted: 0, Rejected: 1 };
+            }
+
+            const newRejectedCount = (currentStats.Rejected || 0) + 1;
+            console.log(`8. Updating Rejected count from ${currentStats.Rejected || 0} to ${newRejectedCount}`);
+            return { ...currentStats, Rejected: newRejectedCount };
+          });
+
+          console.log("9. Transaction completed successfully", transactionResult);
+        } catch (transactionError) {
+          console.error("10. Transaction failed:", transactionError);
+          throw transactionError; // Re-throw to be caught by outer catch
+        }
+
+        // Create notification
+        console.log("11. Creating notification");
         const notification = {
           id: Date.now().toString(),
           message: "venue_rejected",
-          params: { venueName: this.selectedRequest.venueName },
+          params: { venueName: request.venueName },
           timestamp: new Date().toISOString(),
           read: false,
           type: "venue_rejection",
         };
+
         await set(
-          dbRef(
-            db,
-            `users/${request.ownerId}/notifications/${notification.id}`
-          ),
+          dbRef(db, `users/${request.ownerId}/notifications/${notification.id}`),
           notification
         );
+        console.log("12. Notification created");
 
+        // Update local state
         requests.value = requests.value.filter((r) => r.id !== request.id);
         showRequestModal.value = false;
         showRejectModal.value = false;
+        console.log("13. Local state updated");
+
       } catch (error) {
-        console.error("Error rejecting request:", error);
+        console.error("14. Error in rejectRequest:", {
+          error: error.message,
+          stack: error.stack,
+          fullError: error
+        });
       }
     };
 
@@ -837,6 +908,20 @@ export default {
       rejectRequest,
     };
   },
+  components: {
+    PieChart,
+    LineChart,
+    BarChart,
+    UserStats
+  },
+  computed: {
+    adminCount() {
+      return this.users.filter(user => user.isAdmin).length;
+    },
+    regularUserCount() {
+      return this.users.filter(user => !user.isAdmin).length;
+    }
+  },
   methods: {
     async handleRejectFromDetails(request) {
       this.selectedRequest = request;
@@ -882,12 +967,24 @@ export default {
         return;
       }
 
-      this.isSubmitting = true; /// Start loading
+      this.isSubmitting = true;
 
       try {
         const db = getDatabase();
 
-        // Create notification for the venue owner before deleting the request
+        // 1. First update the stats
+        const statsRef = dbRef(db, "requestStats");
+        await runTransaction(statsRef, (currentStats) => {
+          if (!currentStats) {
+            return { Accepted: 0, Rejected: 1 };
+          }
+          return {
+            ...currentStats,
+            Rejected: (currentStats.Rejected || 0) + 1
+          };
+        });
+
+        // 2. Create notification
         const notification = {
           id: Date.now().toString(),
           message: "venue_rejected",
@@ -897,67 +994,48 @@ export default {
           type: "venue_rejection",
         };
 
-        // Save notification to the user's notifications collection
         await set(
-          dbRef(
-            db,
-            `users/${this.selectedRequest.ownerId}/notifications/${notification.id}`
-          ),
+          dbRef(db, `users/${this.selectedRequest.ownerId}/notifications/${notification.id}`),
           notification
         );
 
-        console.log("Notification created for venue owner");
-
-        // Delete the request from Firebase
+        // 3. Remove the request
         await remove(dbRef(db, `requests/${this.selectedRequest.id}`));
 
+        // 4. Send email (optional)
         try {
-          // Then send the rejection email
-          const response = await fetch(
-            "http://localhost:3000/api/send-rejection-email",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                to: this.selectedRequest.ownerEmail,
-                subject: `Venue Request Rejected - ${this.selectedRequest.venueName}`,
-                message: this.rejectionReason,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Email sending failed:", errorData.message);
-          } else {
-            console.log("Email sent successfully");
-          }
+          await fetch("http://localhost:3000/api/send-rejection-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: this.selectedRequest.ownerEmail,
+              subject: `Venue Request Rejected - ${this.selectedRequest.venueName}`,
+              message: this.rejectionReason,
+            }),
+          });
         } catch (emailError) {
-          console.error("Error sending email:", emailError);
+          console.error("Email error:", emailError);
         }
 
-        // Update local state to remove the request
+        // Update local state
         this.requests = this.requests.filter(
-          (req) => req.id !== this.selectedRequest.id
+          req => req.id !== this.selectedRequest.id
         );
 
-        // Reset form and close modals
+        // Reset form
         this.rejectionReason = "";
         this.showEmailModal = false;
         this.showRejectModal = false;
         this.showRequestModal = false;
         this.selectedRequest = null;
 
-        console.log("Request rejected successfully");
       } catch (error) {
-        console.error("Error processing rejection:", error);
+        console.error("Rejection error:", error);
         alert("Failed to process rejection");
       } finally {
-        this.isSubmitting = false; // Stop loading regardless of outcome
+        this.isSubmitting = false;
       }
-    },
+    }
   },
 };
 </script>
