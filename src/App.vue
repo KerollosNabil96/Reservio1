@@ -147,39 +147,6 @@ html {
   transition: background-color 0.2s ease;
 }
 
-/* Make sure transitions are preserved for page transitions in dark mode */
-/* Dark mode transitions are now handled in page-transitions.css */
-html.dark .page-transition,
-html.dark .page-enter-active,
-html.dark .page-leave-active,
-html.dark .page-container {
-  background-color: #0f172a !important; /* Match dark mode background */
-}
-
-/* Ensure venue card sorting animations work in dark mode */
-html.dark .venue-fade-enter-active,
-html.dark .venue-fade-leave-active,
-html.dark .venue-fade-move {
-  transition: all 0.5s cubic-bezier(0.4, 0.01, 0.165, 0.99) !important;
-  will-change: opacity, transform;
-  backface-visibility: hidden;
-}
-
-/* Text color transitions happen immediately */
-html.dark h1,
-html.dark h2,
-html.dark h3,
-html.dark h4,
-html.dark h5,
-html.dark h6,
-html.dark p,
-html.dark span,
-html.dark a,
-html.dark div:not(.page-transition),
-html.dark label {
-  transition: color 0s;
-}
-
 /* Background transitions are slightly delayed for a smoother effect */
 .bg-white,
 .bg-gray-50,
@@ -188,11 +155,6 @@ html.dark label {
 .bg-gray-800,
 .bg-gray-900 {
   transition: background-color 0.2s ease;
-}
-
-/* Page transitions - simple fade with slight movement */
-.page-transition {
-  width: 100%;
 }
 
 .page-enter-active,
@@ -255,17 +217,5 @@ html.dark label {
 .slide-right-enter-from {
   opacity: 0;
   transform: translateX(20px);
-}
-
-/* For dialog/modal animations */
-.dialog-enter-active,
-.dialog-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.dialog-enter-from,
-.dialog-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
 }
 </style>

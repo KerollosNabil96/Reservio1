@@ -9,6 +9,7 @@ const store = createStore({
       phone: "",
       notifications: [], // Add notifications array to user object
     },
+    showErrorDialog: false,
     isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || true,
     showSignup: false,
     showSignin: false,

@@ -8,6 +8,18 @@
 
     <div class="w-full md:w-11/12 md:mx-auto">
       <SearchBox />
+      <ErrorDialog
+        :show="showErrorDialog"
+        title="Missing Information"
+        message="Please fill in all required fields:"
+        @close="closeErrorDialog"
+      >
+        <ul class="list-disc pl-5 mb-4">
+          <li v-if="!selectedDate">Select a date</li>
+          <li v-if="!selectedCategory">Choose a category</li>
+          <li v-if="!selectedLocation">Select a location</li>
+        </ul>
+      </ErrorDialog>
 
       <!-- Real-time search bar -->
       <div class="px-6 md:px-16 mt-8">
@@ -90,12 +102,14 @@
 import SearchBox from "@/components/homepage/SearchBox.vue";
 import VenueCardList from "../components/reservations/VenueCardList.vue";
 import store from "@/store/store";
+import ErrorDialog from "@/components/homepage/ErrorDialog.vue";
 
 export default {
   name: "bookNow",
   components: {
     VenueCardList,
     SearchBox,
+    ErrorDialog,
   },
   data() {
     return {
@@ -103,6 +117,11 @@ export default {
       searchDebounce: null,
       sortBy: "rating", // Default sort by rating
     };
+  },
+  methods: {
+    closeErrorDialog() {
+      store.state.showErrorDialog = false;
+    },
   },
   watch: {
     searchQuery: {
@@ -135,6 +154,11 @@ export default {
         location: location || "",
       });
     }
+  },
+  computed: {
+    showErrorDialog() {
+      return store.state.showErrorDialog;
+    },
   },
 };
 </script>

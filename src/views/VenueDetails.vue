@@ -216,7 +216,7 @@
           <transition name="modal-fade">
             <div
               v-if="showImageModal"
-              class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 dark:bg-black/95 backdrop-blur-sm"
+              class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 dark:bg-black/80 backdrop-blur-sm"
               @click="closeImageModal"
             >
               <div

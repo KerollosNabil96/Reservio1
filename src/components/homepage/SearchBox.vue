@@ -115,36 +115,19 @@
       </BaseButton>
 
       <!-- Error Dialog -->
-      <ErrorDialog
-        :show="showErrorDialog"
-        title="Missing Information"
-        message="Please fill in all required fields:"
-        @close="showErrorDialog = false"
-      >
-        <ul class="list-disc pl-5 mb-4">
-          <li v-if="!selectedDate">Select a date</li>
-          <li v-if="!selectedCategory">Choose a category</li>
-          <li v-if="!selectedLocation">Select a location</li>
-        </ul>
-      </ErrorDialog>
     </div>
   </div>
 </template>
 
 <script>
 import store from "@/store/store";
-import ErrorDialog from "./ErrorDialog.vue";
 
 export default {
-  components: {
-    ErrorDialog,
-  },
   data() {
     return {
       selectedDate: null,
       selectedCategory: "",
       selectedLocation: "",
-      showErrorDialog: false,
     };
   },
   methods: {
@@ -160,7 +143,7 @@ export default {
         !this.selectedCategory ||
         !this.selectedLocation
       ) {
-        this.showErrorDialog = true;
+        store.state.showErrorDialog = true; // Show error dialog
         return;
       }
 
@@ -172,7 +155,8 @@ export default {
       store.commit("setSearchFilters", {
         query: "",
         date: this.selectedDate,
-        category: this.selectedCategory === "All" ? null : this.selectedCategory,
+        category:
+          this.selectedCategory === "All" ? null : this.selectedCategory,
         location: this.selectedLocation,
       });
 
@@ -181,7 +165,8 @@ export default {
         path: "/book-now",
         query: {
           date: this.selectedDate || undefined,
-          category: this.selectedCategory === "All" ? undefined : this.selectedCategory,
+          category:
+            this.selectedCategory === "All" ? undefined : this.selectedCategory,
           location: this.selectedLocation || undefined,
         },
       });

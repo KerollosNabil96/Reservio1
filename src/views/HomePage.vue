@@ -9,6 +9,19 @@
       <!-- Search Box -->
       <SearchBox />
 
+      <ErrorDialog
+        :show="showErrorDialog"
+        title="Missing Information"
+        message="Please fill in all required fields:"
+        @close="closeErrorDialog"
+      >
+        <ul class="list-disc pl-5 mb-4">
+          <li v-if="!selectedDate">Select a date</li>
+          <li v-if="!selectedCategory">Choose a category</li>
+          <li v-if="!selectedLocation">Select a location</li>
+        </ul>
+      </ErrorDialog>
+
       <!-- Available Reservations Section -->
       <section class="mt-12 px-6 md:px-16">
         <h2 class="text-3xl font-bold mb-8 text-center animate-fade-in-up">
@@ -36,6 +49,7 @@ import TheHeader from "@/components/homepage/TheHeader.vue";
 import VenueCardList from "@/components/reservations/VenueCardList.vue";
 import TestimonialSection from "@/components/homepage/TestimonialSection.vue";
 import store from "@/store/store";
+import ErrorDialog from "@/components/homepage/ErrorDialog.vue";
 
 export default {
   name: "Home",
@@ -43,6 +57,7 @@ export default {
     VenueCardList,
     TheHeader,
     SearchBox,
+    ErrorDialog,
     TestimonialSection,
   },
   async created() {
@@ -81,6 +96,14 @@ export default {
     sendMessage() {
       // Handle form submission
       alert("Message sent!");
+    },
+    closeErrorDialog() {
+      store.state.showErrorDialog = false; // Close the error dialog
+    },
+  },
+  computed: {
+    showErrorDialog() {
+      return store.state.showErrorDialog;
     },
   },
 };
