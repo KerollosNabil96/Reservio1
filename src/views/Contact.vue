@@ -8,11 +8,10 @@
         <h1
           class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4"
         >
-          Contact Us
+          {{ $t('contact_us') }}
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          We'd love to hear from you. Send us a message and we'll respond as
-          soon as possible.
+          {{ $t('contact_us_subtitle') }}
         </p>
       </div>
 
@@ -26,7 +25,7 @@
             <label
               for="name"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >Full Name</label
+              >{{ $t('full_name') }}</label
             >
             <input
               type="text"
@@ -34,7 +33,7 @@
               v-model="formData.name"
               :class="{ 'border-red-500': errors.name }"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors duration-300"
-              placeholder="Enter your full name"
+              :placeholder="$t('enter_full_name')"
             />
             <p v-if="errors.name" class="mt-1 text-sm text-red-500">
               {{ errors.name }}
@@ -46,7 +45,7 @@
             <label
               for="email"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >Email Address</label
+              >{{ $t('email_address') }}</label
             >
             <input
               type="email"
@@ -54,7 +53,7 @@
               v-model="formData.email"
               :class="{ 'border-red-500': errors.email }"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors duration-300"
-              placeholder="Enter your email address"
+              :placeholder="$t('enter_email_address')"
             />
             <p v-if="errors.email" class="mt-1 text-sm text-red-500">
               {{ errors.email }}
@@ -66,7 +65,7 @@
             <label
               for="phone"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >Phone Number</label
+              >{{ $t('phone_number') }}</label
             >
             <input
               type="tel"
@@ -74,7 +73,8 @@
               v-model="formData.phone"
               :class="{ 'border-red-500': errors.phone }"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors duration-300"
-              placeholder="Enter your phone number"
+              :placeholder="$t('enter_phone_number')"
+              :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
             />
             <p v-if="errors.phone" class="mt-1 text-sm text-red-500">
               {{ errors.phone }}
@@ -86,7 +86,7 @@
             <label
               for="message"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >Message</label
+              >{{ $t('message') }}</label
             >
             <textarea
               id="message"
@@ -94,7 +94,7 @@
               :class="{ 'border-red-500': errors.message }"
               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors duration-300"
               rows="6"
-              placeholder="Enter your message"
+              :placeholder="$t('enter_message')"
             ></textarea>
             <p v-if="errors.message" class="mt-1 text-sm text-red-500">
               {{ errors.message }}
@@ -108,7 +108,7 @@
               :disabled="isSubmitting"
               class="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center space-x-2 disabled:opacity-50"
             >
-              <span>Send Message</span>
+              <span>{{ $t('send_message') }}</span>
               <svg
                 v-if="isSubmitting"
                 class="animate-spin h-5 w-5 text-white"
@@ -164,16 +164,16 @@
               <h3
                 class="mt-4 text-lg font-medium text-gray-900 dark:text-white"
               >
-                Message Sent Successfully!
+                {{ $t('message_sent_success') }}
               </h3>
               <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Thank you for contacting us. We'll get back to you soon.
+                {{ $t('thank_you_message') }}
               </p>
               <button
                 @click="showSuccess = false"
                 class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
               >
-                Close
+                {{ $t('close') }}
               </button>
             </div>
           </div>
@@ -238,32 +238,32 @@ export default {
       let isValid = true;
 
       if (!this.formData.name.trim()) {
-        this.errors.name = "Name is required";
+        this.errors.name = this.$t('error_name_required');
         isValid = false;
       }
 
       if (!this.formData.email.trim()) {
-        this.errors.email = "Email is required";
+        this.errors.email = this.$t('error_email_required');
         isValid = false;
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)) {
-        this.errors.email = "Please enter a valid email address";
+        this.errors.email = this.$t('error_email_invalid');
         isValid = false;
       }
 
       if (!this.formData.phone.trim()) {
-        this.errors.phone = "Phone number is required";
+        this.errors.phone = this.$t('error_phone_required');
         isValid = false;
       } else if (
         !/^(011|012|015|010)\d{8}$|^(02|03)\d{8}$/.test(
           this.formData.phone.replace(/[\s-]/g, "")
         )
       ) {
-        this.errors.phone = "Please enter a valid phone number";
+        this.errors.phone = this.$t('error_phone_invalid');
         isValid = false;
       }
 
       if (!this.formData.message.trim()) {
-        this.errors.message = "Message is required";
+        this.errors.message = this.$t('error_message_required');
         isValid = false;
       }
 

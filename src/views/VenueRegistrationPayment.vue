@@ -2,40 +2,39 @@
   <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 dark:bg-gray-800">
     <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-2xl dark:bg-gray-900 text-gray-900">
       <h2 class="text-xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
-        Venue Registration Payment
+        {{ $t('venueRegistrationPayment.title') }}
       </h2>
       <p class="text-gray-500 text-center mb-6 dark:text-gray-200">
-        Kindly review your balance
+        {{ $t('venueRegistrationPayment.reviewBalance') }}
       </p>
 
       <div class="flex flex-col md:flex-row items-center gap-6">
         <div class="w-full md:w-1/2">
-          <h3 class="font-semibold dark:text-gray-200">Venue Details:</h3>
+          <h3 class="font-semibold dark:text-gray-200">{{ $t('venueRegistrationPayment.venueDetails') }}</h3>
           <p class="text-gray-700 dark:text-gray-400">{{ venue.name }}</p>
           <p class="text-gray-500 text-sm dark:text-gray-400">
             {{ venue.address.city }}, {{ venue.address.governorate }}
           </p>
           <p class="text-gray-500 text-sm dark:text-gray-400">
-            Category: {{ venue.category }}
+            {{ $t('venueRegistrationPayment.category') }}: {{ venue.category }}
           </p>
           <p class="mt-2 font-semibold dark:text-gray-100">
-            Registration Fee: <span class="font-normal">200 EGP</span>
+            {{ $t('venueRegistrationPayment.registrationFee') }}: <span class="font-normal">200 EGP</span>
           </p>
         </div>
 
         <div class="w-full md:w-1/2 space-y-4">
           <p class="text-lg font-semibold dark:text-gray-100">
-            Your Balance:
+            {{ $t('venueRegistrationPayment.yourBalance') }}:
             <span class="text-blue-600">{{ userBalance }} EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
-            Registration Fee:
+            {{ $t('venueRegistrationPayment.registrationFee') }}:
             <span class="text-red-500">200 EGP</span>
           </p>
           <p class="text-lg font-semibold dark:text-gray-100">
-            Balance After Registration:
-            <span :class="balanceAfterRegistration < 0 ? 'text-red-500' : 'text-green-500'
-              ">
+            {{ $t('venueRegistrationPayment.balanceAfterRegistration') }}:
+            <span :class="balanceAfterRegistration < 0 ? 'text-red-500' : 'text-green-500'">
               {{ balanceAfterRegistration }} EGP
             </span>
           </p>
@@ -46,20 +45,19 @@
         {{ paymentError }}
       </p>
       <p v-if="paymentSuccess" class="text-green-500 text-center mt-2">
-        Payment Successful!
+        {{ $t('venueRegistrationPayment.paymentSuccess') }}
       </p>
 
       <div class="mt-6 flex flex-col space-y-2">
         <button @click="processPayment" :disabled="balanceAfterRegistration < 0 || loading"
           class="cursor-pointer w-full py-2 rounded-lg font-bold" :class="balanceAfterRegistration < 0
             ? 'bg-gray-300 hover:bg-gray-200 text-gray-600 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-500 text-white'
-            ">
-          {{ loading ? "Processing..." : "Pay Now" }}
+            : 'bg-blue-600 hover:bg-blue-500 text-white'">
+          {{ loading ? $t('venueRegistrationPayment.processing') : $t('venueRegistrationPayment.payNow') }}
         </button>
         <button class="cursor-pointer w-full hover:bg-gray-200 bg-gray-300 text-gray-600 py-2 rounded-lg"
           @click="cancelRegistration">
-          Back
+          {{ $t('venueRegistrationPayment.back') }}
         </button>
       </div>
     </div>

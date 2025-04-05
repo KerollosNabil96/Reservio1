@@ -22,7 +22,7 @@
             class="w-full h-full object-cover opacity-50 dark:opacity-30" />
           <div class="absolute inset-0 flex items-center justify-center">
             <h1 class="text-5xl font-bold text-blue-600 dark:text-blue-400">
-              Reservio
+              {{ $t('reservio') }}
             </h1>
           </div>
         </div>
@@ -31,7 +31,7 @@
       <!-- Form Section -->
       <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto">
         <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-          Sign In
+          {{ $t('sign_in') }}
         </h2>
 
         <form @submit.prevent="handleSubmit">
@@ -42,21 +42,23 @@
           </div>
           <!-- Email -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" v-model="email" placeholder="name@gmail.com"
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('email_address') }}</label>
+            <input type="email" v-model="email" :placeholder="$t('enter_email_address')"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               required />
           </div>
 
           <!-- Password -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Password</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('password') }}</label>
             <div class="relative">
-              <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Enter your password"
+              <input :type="showPassword ? 'text' : 'password'" v-model="password" :placeholder="$t('enter_password')"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required />
               <button type="button" @click="togglePasswordVisibility"
-                class="absolute cursor-pointer inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+  
+                class="absolute cursor-pointer inset-y-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" :class="[$i18n.locale === 'ar' ? 'left-2' : 'right-0']" >
+
                 <i :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
               </button>
             </div>
@@ -65,25 +67,24 @@
           <!-- Forgot Password Link -->
           <div class="mb-6 text-right">
             <a href="#" @click.prevent="showForgotPasswordDialog = true"
-              class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Forgot Password?</a>
+              class="text-sm text-blue-600 dark:text-blue-400 hover:underline">{{ $t('forgot_password') }}</a>
           </div>
 
           <!-- Forgot Password Dialog -->
           <div v-if="showForgotPasswordDialog" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
             <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
-              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Reset Password</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Enter your email address to receive a password
-                reset link.</p>
-              <input type="email" v-model="resetEmail" placeholder="Enter your email"
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">{{ $t('reset_password') }}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{{ $t('reset_password_instructions') }}</p>
+              <input type="email" v-model="resetEmail" :placeholder="$t('enter_email_address')"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 mb-4" />
               <div class="flex justify-end space-x-2">
                 <button @click="showForgotPasswordDialog = false"
-                  class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-700">Cancel</button>
+                  class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-700">{{ $t('cancel') }}</button>
                 <button @click="sendResetPasswordEmail"
                   class="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                   :disabled="isSendingResetEmail">
-                  <span v-if="!isSendingResetEmail">Send</span>
-                  <span v-else>Sending...</span>
+                  <span v-if="!isSendingResetEmail">{{ $t('send') }}</span>
+                  <span v-else>{{ $t('sending') }}</span>
                 </button>
               </div>
             </div>
@@ -93,7 +94,7 @@
           <button type="submit"
             class="w-full cursor-pointer bg-blue-600 dark:bg-blue-500 text-white py-3 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-200 relative"
             :disabled="isLoading">
-            <span v-if="!isLoading">Sign In</span>
+            <span v-if="!isLoading">{{ $t('sign_in') }}</span>
             <div v-else class="h-6 flex items-center justify-center">
               <BaseSpinner :show="true" />
             </div>
@@ -114,16 +115,16 @@
                 <path fill="#1976D2"
                   d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
               </svg>
-              <span>Sign in with Google</span>
+              <span>{{ $t('sign_in_with_google') }}</span>
             </button>
           </div>
 
           <!-- Sign Up Link -->
           <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?
+            {{ $t('dont_have_account') }}
             <button type="button" @click="$emit('switch-to-signup')"
               class="text-blue-600 dark:text-blue-400 hover:underline font-medium cursor-pointer">
-              Sign up
+              {{ $t('sign_up') }}
             </button>
           </div>
         </form>

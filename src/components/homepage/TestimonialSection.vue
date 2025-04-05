@@ -1,13 +1,15 @@
 <template>
   <section
     class="py-12 px-6 md:px-16 bg-gray-50 dark:bg-gray-900 dark:bg-opacity-90 rounded-xl my-12"
+    :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
   >
     <div class="max-w-6xl mx-auto">
       <h2 class="text-3xl font-bold text-center mb-12 animate-fade-in-up">
         <span
           class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-          >What Our Users Say</span
         >
+          {{ $t("testimonials.title") }}
+        </span>
       </h2>
 
       <div class="relative">
@@ -15,12 +17,13 @@
         <div class="overflow-hidden">
           <div
             class="flex transition-transform duration-500 ease-in-out"
-            :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
+            :style="{ transform: `translateX(${transformValue})` }"
           >
             <div
               v-for="(testimonial, index) in testimonials"
               :key="index"
               class="w-full flex-shrink-0 px-4"
+              style="min-width: 100%"
             >
               <div
                 class="bg-white dark:bg-gray-800 dark:bg-opacity-80 rounded-xl shadow-lg p-8 relative animate-fade-in"
@@ -44,7 +47,7 @@
                   <p
                     class="text-gray-600 dark:text-gray-300 italic mb-6 mt-8 md:mt-6"
                   >
-                    {{ testimonial.quote }}
+                    {{ $t(`testimonials.items.${index}.quote`) }}
                   </p>
 
                   <div class="flex items-center mt-4">
@@ -53,16 +56,16 @@
                     >
                       <img
                         :src="testimonial.avatar"
-                        :alt="testimonial.name"
+                        :alt="$t(`testimonials.items.${index}.name`)"
                         class="w-full h-full object-cover"
                       />
                     </div>
                     <div class="text-left">
                       <h4 class="font-bold text-gray-900 dark:text-white">
-                        {{ testimonial.name }}
+                        {{ $t(`testimonials.items.${index}.name`) }}
                       </h4>
                       <p class="text-sm text-gray-500 dark:text-gray-400">
-                        {{ testimonial.role }}
+                        {{ $t(`testimonials.items.${index}.role`) }}
                       </p>
                     </div>
                   </div>
@@ -137,29 +140,23 @@ export default {
       currentIndex: 0,
       testimonials: [
         {
-          quote:
-            "Reservio made it so easy to find the perfect venue for our company retreat. The booking process was seamless and the venue exceeded our expectations!",
-          name: "Sarah Johnson",
-          role: "Event Planner",
           avatar: "https://randomuser.me/api/portraits/women/1.jpg",
         },
         {
-          quote:
-            "As a venue owner, I've been able to increase my bookings by 40% since listing on Reservio. The platform is intuitive and the support team is always helpful.",
-          name: "Michael Chen",
-          role: "Venue Owner",
           avatar: "https://randomuser.me/api/portraits/men/2.jpg",
         },
         {
-          quote:
-            "I found the perfect basketball court for our weekly games. The search filters made it easy to find exactly what we needed in our neighborhood.",
-          name: "David Rodriguez",
-          role: "Sports Enthusiast",
           avatar: "https://randomuser.me/api/portraits/men/3.jpg",
         },
       ],
       autoplayInterval: null,
     };
+  },
+  computed: {
+    transformValue() {
+      const direction = this.$i18n.locale === "ar" ? 1 : -1;
+      return `${direction * this.currentIndex * 100}%`;
+    },
   },
   methods: {
     nextSlide() {

@@ -1,6 +1,7 @@
 <template>
   <div
     class="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 dark:border-gray-700"
+    :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
   >
     <!-- Top Image with overlay gradient and category badge -->
     <div class="relative">
@@ -26,13 +27,14 @@
             d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
           />
         </svg>
-        Top Rated
+        {{ $t("venueCard.topRated") }}
       </div>
       <div class="absolute bottom-3 left-3">
         <span
           class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm backdrop-blur-sm"
         >
-          {{ price }} EGP/ {{ perWhat }}
+          {{ price }} {{ $t("venueCard.currency") }}/
+          {{ $t(`venueCard.per${perWhat}`) }}
         </span>
       </div>
     </div>
@@ -47,17 +49,32 @@
       </h3>
 
       <div class="flex items-center mb-2">
-        <div class="text-yellow-400 flex">
-          <span v-for="i in 5" :key="i" class="text-lg">
-            {{ i <= Math.round(averageRating) ? "★" : "☆" }}
+        <div
+          class="text-yellow-400 flex"
+          :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+        >
+          <span v-for="i in 5" :key="i" class="text-sm">
+            <!-- Full star for ratings >= i -->
+            <template v-if="i <= Math.floor(averageRating)">
+              <i class="fas fa-star"></i>
+            </template>
+            <!-- Half star for the next decimal -->
+            <template v-else-if="i === Math.ceil(averageRating) && averageRating % 1 >= 0.5">
+              <i class="fas fa-star-half-alt"></i>
+            </template>
+            <!-- Empty star for the rest -->
+            <template v-else>
+              <i class="far fa-star"></i>
+            </template>
           </span>
         </div>
-        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
-          {{ averageRating ? averageRating.toFixed(1) : "No ratings" }}
-          <span v-if="totalReviews > 0" class="ml-1"
-            >({{ totalReviews }}
-            {{ totalReviews === 1 ? "review" : "reviews" }})</span
-          >
+        <span class="ml-2 text-sm text-gray-500 dark:text-gray-400" :class="{'mr-2': $i18n.locale === 'ar'}">
+          {{
+            averageRating ? averageRating.toFixed(1) : $t("venueCard.noRatings")
+          }}
+          <span v-if="totalReviews > 0" class="ml-1">
+            ({{ totalReviews }})
+          </span>
           <!-- High rating badge -->
           <span
             v-if="
@@ -65,7 +82,7 @@
             "
             class="ml-2 inline-block text-xs px-1.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full font-medium"
           >
-            Top Rated
+            {{ $t("venueCard.topRated") }}
           </span>
         </span>
       </div>
@@ -104,7 +121,7 @@
           <BaseButton
             class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white px-4 py-2 rounded-md transform transition-all duration-300 hover:scale-105 shadow-md"
           >
-            Book Now
+            {{ $t("venueCard.bookNow") }}
           </BaseButton>
         </RouterLink>
       </div>

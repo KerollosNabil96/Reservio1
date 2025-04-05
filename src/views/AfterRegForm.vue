@@ -18,7 +18,7 @@
       <div
         class="bg-white dark:bg-gray-800/50 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 p-8">
         <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
-          Register Your
+          {{ $t('afterRegForm.registerYour') }}
           <span
             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
             {{ category }}
@@ -34,7 +34,7 @@
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Back to Venue Details
+            {{ $t('afterRegForm.backToVenueDetails') }}
           </button>
         </div>
       </div>

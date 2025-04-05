@@ -16,11 +16,25 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({
-  legacy: false,
-  locale: "en",
+  locale: "en", // default locale
+  fallbackLocale: "en",
   messages: {
     en,
     ar,
+  },
+  pluralizationRules: {
+    ar: function (choice, choicesLength) {
+      // Arabic has different plural forms
+      return choice === 0
+        ? 0
+        : choice === 1
+        ? 1
+        : choice === 2
+        ? 2
+        : choice >= 3 && choice <= 10
+        ? 3
+        : 4;
+    },
   },
 });
 

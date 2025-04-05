@@ -20,7 +20,7 @@
             class="w-full h-full object-cover opacity-50 dark:opacity-30" />
           <div class="absolute inset-0 flex items-center justify-center">
             <h1 class="text-5xl font-bold text-blue-600 dark:text-blue-400">
-              Reservio
+              {{ $t('reservio') }}
             </h1>
           </div>
         </div>
@@ -29,7 +29,7 @@
       <!-- Form Section -->
       <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto" ref="formSection">
         <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-          Create Account
+          {{ $t('sign_up') }}
         </h2>
 
         <form @submit.prevent="register">
@@ -40,45 +40,45 @@
           </div>
           <!-- Name -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Name</label>
-            <input type="text" v-model="name" placeholder="Enter your name"
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('full_name') }}</label>
+            <input type="text" v-model="name" :placeholder="$t('enter_full_name')"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               required />
           </div>
 
           <!-- Email -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Email</label>
-            <input type="email" v-model="email" placeholder="name@gmail.com"
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('email_address') }}</label>
+            <input type="email" v-model="email" :placeholder="$t('enter_email_address')"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               required />
           </div>
 
           <!-- Phone -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Phone No</label>
-            <input type="tel" v-model="phone" placeholder="With Country Code"
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('phone_number') }}</label>
+            <input type="tel" v-model="phone" :placeholder="$t('enter_phone_number')"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-              required />
+              required :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"/>
           </div>
 
           <!-- Username -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Username</label>
-            <input type="text" v-model="username" placeholder="Username"
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('username') }}</label>
+            <input type="text" v-model="username" :placeholder="$t('username')"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               required />
           </div>
 
           <!-- Password -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Password</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('password') }}</label>
             <div class="relative">
-              <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="6+ characters"
+              <input :type="showPassword ? 'text' : 'password'" v-model="password" :placeholder="$t('enter_password')"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required minlength="6" />
               <button type="button" @click="togglePasswordVisibility"
-                class="absolute cursor-pointer inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                class="absolute cursor-pointer inset-y-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" :class="[$i18n.locale === 'ar' ? 'left-2' : 'right-0']">
                 <i :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
               </button>
             </div>
@@ -86,16 +86,15 @@
 
           <!-- Confirm Password -->
           <div class="mb-4">
-            <label class="block mb-1 text-gray-700 dark:text-gray-300">Confirm Password</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-300">{{ $t('confirm_password') }}</label>
             <div class="relative">
               <input :type="showConfirmPassword ? 'text' : 'password'" v-model="confirmPassword"
-                placeholder="6+ characters"
+                :placeholder="$t('enter_password')"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 required minlength="6" />
               <button type="button" @click="toggleConfirmPasswordVisibility"
-                class="absolute cursor-pointer inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                <i :class="showConfirmPassword ? 'fas fa-eye' : 'fas fa-eye-slash'
-                  "></i>
+                class="absolute cursor-pointer inset-y-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" :class="[$i18n.locale === 'ar' ? 'left-2' : 'right-0']">
+                <i :class="showConfirmPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
               </button>
             </div>
           </div>
@@ -103,9 +102,8 @@
           <!-- Terms and Conditions -->
           <div class="mb-6 text-sm text-gray-600 dark:text-gray-400">
             <p>
-              By signing up you agree to
-              <a href="#" class="text-blue-600 dark:text-blue-400">terms and conditions</a>
-              at reservio.
+              {{ $t('terms_and_conditions') }}
+              <a href="#" class="text-blue-600 dark:text-blue-400">{{ $t('terms_and_conditions_link') }}</a>
             </p>
           </div>
 
@@ -113,7 +111,7 @@
           <button type="submit"
             class="w-full cursor-pointer bg-blue-600 dark:bg-blue-500 text-white py-3 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-200 relative"
             :disabled="isLoading">
-            <span v-if="!isLoading">Register</span>
+            <span v-if="!isLoading">{{ $t('register') }}</span>
             <div v-else class="h-6 flex items-center justify-center">
               <BaseSpinner :show="true" />
             </div>
@@ -134,16 +132,16 @@
                 <path fill="#1976D2"
                   d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
               </svg>
-              <span>Sign up with Google</span>
+              <span>{{ $t('sign_in_with_google') }}</span>
             </button>
           </div>
 
           <!-- Sign In Link -->
           <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?
+            {{ $t('already_have_account') }}
             <button type="button" @click="$emit('switch-to-signin')"
               class="text-blue-600 dark:text-blue-400 hover:underline font-medium cursor-pointer">
-              Sign in
+              {{ $t('sign_in') }}
             </button>
           </div>
         </form>

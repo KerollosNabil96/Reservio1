@@ -15,10 +15,10 @@
         </div>
       </div>
       <h2 class="text-2xl font-bold text-center text-blue-900 dark:text-blue-400">
-        Booking Information
+        {{ $t('bookingInfo.title') }}
       </h2>
       <p class="text-center text-gray-500 mb-6 dark:text-gray-200">
-        Please fill up the blank fields below
+        {{ $t('bookingInfo.subtitle') }}
       </p>
 
       <div class="flex gap-6">
@@ -29,7 +29,9 @@
             {{ venue.address.city }}, {{ venue.address.governorate }}
           </p>
           <div class="mt-4">
-            <label class="block text-gray-700 font-medium dark:text-gray-200">Date</label>
+            <label class="block text-gray-700 font-medium dark:text-gray-200">
+              {{ $t('bookingInfo.dateLabel') }}
+            </label>
             <div class="flex items-center border p-2 rounded-lg shadow-sm mt-1 dark:bg-gray-800 dark:text-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -42,25 +44,21 @@
             </div>
           </div>
           <div class="mt-4">
-            <label class="block text-gray-700 font-medium dark:text-gray-200">Select time slot</label>
+            <label class="block text-gray-700 font-medium dark:text-gray-200">
+              {{ $t('bookingInfo.timeSlotLabel') }}
+            </label>
             <select v-model="selectedTime"
               class="w-full border p-2 rounded-lg shadow-sm mt-1 dark:bg-gray-800 dark:text-gray-200">
-              <option value="" disabled>Select a time slot</option>
+              <option value="" disabled>{{ $t('bookingInfo.selectTimeSlot') }}</option>
               <option v-for="(slot, index) in availableTimeSlots" :key="index" :value="`${slot.id}`">
-                {{ slot.from }} - {{ slot.to }} ({{ slot.available }} spots
-                available)
+                {{ slot.from }} - {{ slot.to }} ({{ slot.available }} {{ $t('bookingInfo.spotsAvailable') }})
               </option>
             </select>
           </div>
 
           <!-- تمت إضافة سعر الحجز هنا ✅ -->
           <p class="mt-4 text-gray-700 dark:text-gray-200">
-            You will pay
-            <span class="text-blue-600 font-bold">{{ venue.price }} EGP</span>
-            per
-            <span class="font-bold">
-              1 {{ venue.category === "Stadium" ? "Hour" : "Session" }}
-            </span>
+            You will pay {{ venue.price }} EGP per 1 {{ venue.category === "Stadium" ? "hour" : "session" }}
           </p>
         </div>
       </div>
@@ -68,9 +66,11 @@
       <div class="mt-6 flex justify-center gap-4">
         <BaseButton @click="openPaymentPopup" :loading="isSubmitting" :disabled="!selectedTime" variant="primary"
           size="lg" class="w-full cursor-pointer">
-          Book Now
+          {{ $t('bookingInfo.bookNow') }}
         </BaseButton>
-        <BaseButton @click="cancelBooking" variant="light" size="lg" class="cursor-pointer">Cancel</BaseButton>
+        <BaseButton @click="cancelBooking" variant="light" size="lg" class="cursor-pointer">
+          {{ $t('bookingInfo.cancel') }}
+        </BaseButton>
       </div>
     </div>
 
@@ -87,22 +87,22 @@
         </button>
 
         <h3 class="text-lg font-bold text-center mb-4">
-          Choose Payment Method
+          {{ $t('bookingInfo.paymentMethod') }}
         </h3>
         <div class="flex flex-col gap-4">
           <BaseButton class="cursor-pointer" @click="payWithCreditCard" variant="primary" size="lg">
             <div v-if="isSubmitting" class="flex items-center justify-center space-x-2">
               <div class="w-6 h-6 border-4 border-t-4 border-gray-200 border-t-blue-600 rounded-full animate-spin">
               </div>
-              <span>Processing...</span>
+              <span>{{ $t('bookingInfo.processing') }}</span>
             </div>
-            <div v-else>Pay with Credit Card</div>
+            <div v-else>{{ $t('bookingInfo.creditCard') }}</div>
           </BaseButton>
           <BaseButton class="cursor-pointer" @click="payWithWallet" variant="secondary" size="lg">
-            Pay with Your Wallet
+            {{ $t('bookingInfo.wallet') }}
           </BaseButton>
           <BaseButton class="cursor-pointer" @click="closePaymentPopup" variant="light" size="lg">
-            Cancel
+            {{ $t('bookingInfo.cancel') }}
           </BaseButton>
         </div>
       </div>

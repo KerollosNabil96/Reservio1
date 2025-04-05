@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-screen w-full bg-white text-gray-800 font-sans flex flex-col dark:bg-gray-800 dark:text-white"
-  >
+  <div class="min-h-screen w-full bg-white text-gray-800 font-sans flex flex-col dark:bg-gray-800 dark:text-white">
     <div class="w-full md:w-11/12 md:mx-auto">
       <!-- Hero Section -->
       <TheHeader />
@@ -9,16 +7,12 @@
       <!-- Search Box -->
       <SearchBox />
 
-      <ErrorDialog
-        :show="showErrorDialog"
-        title="Missing Information"
-        message="Please fill in all required fields:"
-        @close="closeErrorDialog"
-      >
+      <ErrorDialog :show="showErrorDialog" :title="$t('errorDialog.title')" :message="$t('errorDialog.message')"
+        @close="closeErrorDialog">
         <ul class="list-disc pl-5 mb-4">
-          <li v-if="!selectedDate">Select a date</li>
-          <li v-if="!selectedCategory">Choose a category</li>
-          <li v-if="!selectedLocation">Select a location</li>
+          <li v-if="!selectedDate">{{ $t('errorDialog.missingDate') }}</li>
+          <li v-if="!selectedCategory">{{ $t('errorDialog.missingCategory') }}</li>
+          <li v-if="!selectedLocation">{{ $t('errorDialog.missingLocation') }}</li>
         </ul>
       </ErrorDialog>
 
@@ -26,10 +20,8 @@
       <section class="mt-12 px-6 md:px-16">
         <h2 class="text-3xl font-bold mb-8 text-center animate-fade-in-up">
           <span
-            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400"
-            >Top Rated</span
-          >
-          Venues
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">{{
+              $t('homepage.topRatedVenues') }}</span>
         </h2>
         <div class="animate-fade-in-up">
           <VenueCardList :isHomePage="true" />

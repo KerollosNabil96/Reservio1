@@ -2,14 +2,15 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Upload your Medical License</label
     >
+      {{ $t('afterRegForm.uploadMedicalLicense') }}
+    </label>
     <CloudinaryUploader
       v-model="medicalLicense"
       :cloud-name="cloudName"
       :upload-preset="uploadPreset"
       folder="medical_licenses"
-      upload-text="Upload your medical license"
+      :upload-text="$t('afterRegForm.uploadMedicalLicense')"
       @upload-success="handleMedicalLicenseUpload"
     />
   </div>
@@ -17,14 +18,15 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Upload your Clinic License</label
     >
+      {{ $t('afterRegForm.uploadClinicLicense') }}
+    </label>
     <CloudinaryUploader
       v-model="clinicLicense"
       :cloud-name="cloudName"
       :upload-preset="uploadPreset"
       folder="clinic_licenses"
-      upload-text="Upload your clinic license"
+      :upload-text="$t('afterRegForm.uploadClinicLicense')"
       @upload-success="handleClinicLicenseUpload"
     />
   </div>
@@ -34,7 +36,7 @@
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
     >
-      Pick a Date
+      {{ $t('afterRegForm.pickDate') }}
     </label>
     <input
       type="date"
@@ -52,12 +54,13 @@
   <div class="mb-6">
     <label
       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >Select time slot</label
     >
+      {{ $t('afterRegForm.selectTimeSlot') }}
+    </label>
     <div class="flex gap-3 mt-2">
       <div class="w-1/3">
         <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
-          >From</label
+          >{{ $t('afterRegForm.from') }}</label
         >
         <input
           type="time"
@@ -67,7 +70,7 @@
       </div>
       <div class="w-1/3">
         <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
-          >To</label
+          >{{ $t('afterRegForm.to') }}</label
         >
         <input
           type="time"
@@ -77,13 +80,13 @@
       </div>
       <div class="w-1/3">
         <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1"
-          >Capacity</label
+          >{{ $t('afterRegForm.capacity') }}</label
         >
         <input
           type="number"
           v-model.number="capacity"
           class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-          placeholder="Capacity"
+          :placeholder="$t('afterRegForm.capacityPlaceholder')"
           min="1"
         />
       </div>
@@ -92,14 +95,14 @@
       @click="addTimeSlot"
       class="cursor-pointer mt-4 w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
     >
-      Add Time Slot
+      {{ $t('afterRegForm.addTimeSlot') }}
     </button>
   </div>
 
   <!-- Time Slots List -->
   <div v-if="timeSlots.length > 0" class="mb-6">
     <h3 class="font-medium text-gray-700 dark:text-gray-300 mb-3">
-      Added Time Slots
+      {{ $t('afterRegForm.addedTimeSlots') }}
     </h3>
     <div class="space-y-3">
       <div
@@ -110,7 +113,7 @@
         <div class="text-gray-700 dark:text-gray-300">
           <span class="font-medium">{{ slot.from }} - {{ slot.to }}</span>
           <span class="ml-2 text-sm text-gray-500 dark:text-gray-400"
-            >({{ slot.capacity }} spots)</span
+            >({{ slot.capacity }} {{ $t('afterRegForm.spots') }})</span
           >
         </div>
         <button
@@ -149,7 +152,7 @@
       :disabled="!canProceed"
       class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      Proceed to Payment
+      {{ $t('afterRegForm.proceedToPayment') }}
     </button>
   </div>
 
@@ -163,7 +166,7 @@
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-          Choose Payment Method
+          {{ $t('afterRegForm.choosePaymentMethod') }}
         </h3>
         <button
           @click="closePaymentPopup"
@@ -188,10 +191,10 @@
 
       <div class="mb-6">
         <p class="text-gray-700 dark:text-gray-300 mb-4">
-          Registration fee: <span class="font-bold">200 EGP</span>
+          {{ $t('afterRegForm.registrationFee') }}: <span class="font-bold">200 EGP</span>
         </p>
         <p class="text-gray-700 dark:text-gray-300 mb-4">
-          Select your preferred payment method:
+          {{ $t('afterRegForm.selectPaymentMethod') }}:
         </p>
       </div>
 
@@ -223,9 +226,9 @@
               ></path>
             </svg>
           </span>
-          Pay with Wallet
+          {{ $t('afterRegForm.payWithWallet') }}
           <span class="text-sm ms-1">
-            (Current Balance: {{ userBalance }} EGP)</span
+            ({{ $t('afterRegForm.currentBalance') }}: {{ userBalance }} EGP)</span
           >
         </button>
 
@@ -259,7 +262,7 @@
               ></path>
             </svg>
           </span>
-          Pay with Credit Card
+          {{ $t('afterRegForm.payWithCreditCard') }}
         </button>
       </div>
 
@@ -268,7 +271,7 @@
         class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg"
       >
         <p class="text-sm">
-          Insufficient wallet balance. Please add funds or use a credit card.
+          {{ $t('afterRegForm.insufficientBalance') }}
         </p>
       </div>
     </div>

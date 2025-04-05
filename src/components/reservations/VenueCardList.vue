@@ -36,8 +36,8 @@
       v-if="!isHomePage && filteredVenues.length > 0"
       class="text-sm text-gray-500 dark:text-gray-400 mb-4"
     >
-      Showing {{ paginationStart }} - {{ paginationEnd }} of
-      {{ filteredVenues.length }} results
+      {{$t("showing")}} {{ paginationStart }} - {{ paginationEnd }} {{$t("of")}}
+      {{ filteredVenues.length }} {{$t("results")}}
     </div>
 
     <!-- Loading state -->

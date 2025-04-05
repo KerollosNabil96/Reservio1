@@ -7,43 +7,40 @@
         </svg>
       </div>
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-        Payment Successful!
+        {{ $t('bookingSuccess.paymentSuccessful') }}
       </h2>
 
       <div v-if="bookingInfo" class="mb-6 text-left bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
         <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">
-          Booking Details
+          {{ $t('bookingSuccess.bookingDetails') }}
         </h3>
         <p class="text-gray-600 dark:text-gray-300">
-          <span class="font-semibold">Venue:</span>
+          <span class="font-semibold">{{ $t('bookingSuccess.venue') }}:</span>
           {{ bookingInfo.venue?.venueName }}
         </p>
         <p class="text-gray-600 dark:text-gray-300">
-          <span class="font-semibold">Date:</span>
+          <span class="font-semibold">{{ $t('bookingSuccess.date') }}:</span>
           {{ formatDate(bookingInfo.date) }}
         </p>
         <p class="text-gray-600 dark:text-gray-300">
-          <span class="font-semibold">Time Slot:</span>
+          <span class="font-semibold">{{ $t('bookingSuccess.timeSlot') }}:</span>
           {{ getTimeSlotDetails() }}
         </p>
         <p class="text-gray-600 dark:text-gray-300">
-          <span class="font-semibold">Status: </span>
-          <span class="text-green-500 font-semibold">Confirmed</span>
+          <span class="font-semibold">{{ $t('bookingSuccess.status') }}:</span>
+          <span class="text-green-500 font-semibold">{{ $t('bookingSuccess.confirmed') }}</span>
         </p>
         <p class="text-gray-600 dark:text-gray-300 text-sm mt-2">
-          Your booking ID: {{ bookingInfo.id }}
+          {{ $t('bookingSuccess.bookingId') }}: {{ bookingInfo.id }}
         </p>
       </div>
 
       <p class="text-gray-600 dark:text-gray-300 mb-6">
-        You have received
-        <span class="text-green-500 font-bold">{{ bookingInfo.price * 0.05 }} EGP
-        </span>
-        cash back in your wallet. Thank you for booking with Reservio!
+        You have received <span class="text-green-500 font-semibold">{{ bookingInfo.price * 0.05 }}  EGP</span> cashback in your wallet. Thank you for booking with Reservio!
       </p>
       <button @click="goHome"
         class="cursor-pointer inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-        Return to Home
+        {{ $t('bookingSuccess.returnHome') }}
       </button>
     </div>
   </div>
@@ -386,3 +383,6 @@ export default {
   },
 };
 </script>
+
+
+

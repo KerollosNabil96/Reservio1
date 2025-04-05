@@ -1,3 +1,4 @@
+
 <template>
   <div
     class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-10 px-4 sm:px-6 relative"
@@ -42,18 +43,13 @@
           </div>
 
           <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-            Registration Successful!
+            {{ $t('registrationSuccess.title') }}
           </h2>
           <p class="text-gray-600 dark:text-gray-300 mb-6">
-            Your venue has been successfully registered. Our team will review
-            your submission. If approved, your venue will be added to the
-            platform.
+            {{ $t('registrationSuccess.description') }}
             <span class="block mt-2">
-              You have also received
-              <span class="text-green-500 font-bold"
-                >{{ (200 * 0.05).toFixed(2) }} EGP</span
-              >
-              cash back from our loyalty program!
+              "You have also received <span class="text-green-500 font-bold">{{ (200 * 0.05).toFixed(2) }} EGP</span>  cashback from our loyalty program!"
+              
             </span>
           </p>
 
@@ -62,8 +58,8 @@
             class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-6"
           >
             <p class="text-blue-700 dark:text-blue-300">
-              <span class="font-bold">Great news!</span> Your venue request has
-              been submitted for review. You'll be notified once it's approved.
+              <span class="font-bold">{{ $t('registrationSuccess.greatNews') }}</span>
+              {{ $t('registrationSuccess.reviewMessage') }}
             </p>
           </div>
 
@@ -71,22 +67,22 @@
             <h3
               class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4"
             >
-              Registration Details
+              {{ $t('registrationSuccess.detailsTitle') }}
             </h3>
 
             <div class="text-left">
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">Venue Name:</span> {{ venueName }}
+                <span class="font-medium">{{ $t('registrationSuccess.venueName') }}:</span> {{ venueName }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">Category:</span> {{ venueCategory }}
+                <span class="font-medium">{{ $t('registrationSuccess.category') }}:</span> {{ venueCategory }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">Registration Date:</span>
+                <span class="font-medium">{{ $t('registrationSuccess.registrationDate') }}:</span>
                 {{ formattedDate }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">Payment Method: </span>
+                <span class="font-medium">{{ $t('registrationSuccess.paymentMethod') }}:</span>
                 <span
                   class="font-medium"
                   :class="{
@@ -98,10 +94,10 @@
                 </span>
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">Status: </span>
-                <span class="text-orange-400 font-semibold"
-                  >Pending Approval</span
-                >
+                <span class="font-medium">{{ $t('registrationSuccess.status') }}:</span>
+                <span class="text-orange-400 font-semibold">
+                  {{ $t('registrationSuccess.pendingApproval') }}
+                </span>
               </p>
             </div>
           </div>
@@ -111,7 +107,7 @@
               @click="goHome"
               class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
             >
-              Return to Home
+              {{ $t('registrationSuccess.returnHome') }}
             </button>
           </div>
         </div>

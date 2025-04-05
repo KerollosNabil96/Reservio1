@@ -16,25 +16,26 @@
       <div class="w-full md:w-5/12 md:pr-8 flex flex-col gap-4 sm:gap-5 animate-fade-in-up text-center md:text-start">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 text-gray-900 dark:text-white leading-tight">
           <span
-            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Reserve
-            Spaces</span>
-          or Share Your Venue
+            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+            {{ $t('header.reserve_spaces') }}
+          </span>
+          {{ $t('header.or_share_venue') }}
         </h1>
         <p class="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 dark:text-gray-300">
-          Find the perfect space for your next event or share your venue with
-          others looking for unique locations.
+          {{ $t('header.find_perfect_space') }}
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-2 sm:mt-4 justify-center md:justify-start">
           <RouterLink to="/book-now" class="w-full sm:w-auto">
             <BaseButton
               class="text-white px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg rounded-lg font-medium">
-              Browse Venues</BaseButton>
+              {{ $t('header.browse_venues') }}
+            </BaseButton>
           </RouterLink>
           <RouterLink to="/register-venue" class="w-full sm:w-auto">
             <BaseButton
               class="px-4 sm:px-6 py-3 sm:py-3.5 text-sm sm:text-base w-full border-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transform hover:scale-105 transition-all duration-300 rounded-lg font-medium">
-              Share Your Venue
+              {{ $t('header.share_venue') }}
             </BaseButton>
           </RouterLink>
         </div>

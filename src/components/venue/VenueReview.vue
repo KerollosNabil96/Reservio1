@@ -4,7 +4,7 @@
     <div
       class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b pb-4 dark:border-gray-700">
       <div class="mb-4 sm:mb-0">
-        <h3 class="text-xl font-semibold mb-2 dark:text-white">Reviews</h3>
+        <h3 class="text-xl font-semibold mb-2 dark:text-white">{{ $t('venueReview.reviews') }}</h3>
         <div class="flex items-center">
           <div class="text-yellow-400 text-2xl mr-2">
             {{ "★".repeat(Math.round(averageRating))
@@ -14,13 +14,13 @@
             {{ averageRating ? averageRating.toFixed(1) : "0" }}
           </span>
           <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">
-            ({{ totalReviews }} {{ totalReviews === 1 ? "review" : "reviews" }})
+            ({{ totalReviews }} {{ totalReviews === 1 ? $t('venueReview.review') : $t('venueReview.reviews') }})
           </span>
         </div>
       </div>
       <div class="w-full sm:w-auto sm:text-right">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-          Rating Breakdown
+          {{ $t('venueReview.ratingBreakdown') }}
         </div>
         <div class="space-y-1 mt-1">
           <div v-for="rating in 5" :key="rating" class="flex items-center text-sm">
@@ -43,7 +43,7 @@
     <!-- Review Form for logged in users -->
     <div v-if="isAuthenticated" class="mb-6">
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Your Rating</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ $t('venueReview.yourRating') }}</label>
         <div class="flex gap-2">
           <button v-for="star in 5" :key="star" @click="rating = star"
             class="cursor-pointer text-3xl focus:outline-none touch-manipulation"
@@ -53,15 +53,15 @@
         </div>
       </div>
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Your Review</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ $t('venueReview.yourReview') }}</label>
         <textarea v-model="reviewText" rows="4"
           class="w-full resize-none px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          placeholder="Write your review here..."></textarea>
+          :placeholder="$t('venueReview.writeReviewPlaceholder')"></textarea>
       </div>
       <button @click="submitReview"
         class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
         :disabled="!rating || !reviewText" :class="{ 'opacity-50 cursor-not-allowed': !rating || !reviewText }">
-        Submit Review
+        {{ $t('venueReview.submitReview') }}
       </button>
 
       <!-- Error Message -->
@@ -74,17 +74,17 @@
     <!-- Sign in prompt for non-authenticated users -->
     <div v-else class="mb-6 p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
       <p class="text-gray-600 dark:text-gray-300">
-        Please sign in to write a review
+        {{ $t('venueReview.signInPrompt') }}
       </p>
       <button @click="$emit('show-signin')" class="mt-2 text-blue-600 hover:text-blue-800 font-medium">
-        Sign in here
+        {{ $t('venueReview.signInHere') }}
       </button>
     </div>
 
     <!-- Reviews List -->
     <div class="space-y-4">
       <div v-if="venueReviews.length === 0" class="text-gray-500 dark:text-gray-400 text-center py-6">
-        No reviews yet. Be the first to review!
+        {{ $t('venueReview.noReviews') }}
       </div>
       <div v-for="review in venueReviews" :key="review.id" class="border-b last:border-b-0 pb-4 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
