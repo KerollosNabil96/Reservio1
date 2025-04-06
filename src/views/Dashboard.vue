@@ -272,6 +272,9 @@
                     <button
                       @click="toggleUserRole(user)"
                       class="cursor-pointer text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-2 md:mr-4 p-1 md:p-0"
+                      :class="[
+                        $i18n.locale === 'ar' ? 'ml-2 md:ml-4' : 'mr-2 md:mr-4',
+                      ]"
                       :title="
                         user.isAdmin
                           ? $t('dashboardAdmin.actionMakeUser')
