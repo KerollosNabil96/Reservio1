@@ -16,12 +16,22 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+
+const allowedOrigins = [
+  "https://reservio-two.vercel.app", // Deployed frontend
+  "http://localhost:5173", // Development frontend
+];
+
 app.use(
   cors({
-    origin: [
-      "https://reservio-two.vercel.app",
-      "http://localhost:3000", // Keep localhost for development
-    ], // Replace with your frontend's URL
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
