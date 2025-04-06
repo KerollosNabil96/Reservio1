@@ -36,8 +36,8 @@
       v-if="!isHomePage && filteredVenues.length > 0"
       class="text-sm text-gray-500 dark:text-gray-400 mb-4"
     >
-      {{$t("showing")}} {{ paginationStart }} - {{ paginationEnd }} {{$t("of")}}
-      {{ filteredVenues.length }} {{$t("results")}}
+      {{ $t("showing") }} {{ paginationStart }} - {{ paginationEnd }}
+      {{ $t("of") }} {{ filteredVenues.length }} {{ $t("results") }}
     </div>
 
     <!-- Loading state -->
@@ -99,11 +99,22 @@
           viewBox="0 0 20 20"
           fill="currentColor"
         >
-          <path
-            fill-rule="evenodd"
-            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clip-rule="evenodd"
-          />
+          <!-- Right arrow for RTL "Previous" -->
+          <template v-if="$i18n.locale === 'ar'">
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </template>
+          <!-- Left arrow for LTR "Previous" -->
+          <template v-else>
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </template>
         </svg>
       </button>
 
@@ -140,11 +151,22 @@
           viewBox="0 0 20 20"
           fill="currentColor"
         >
-          <path
-            fill-rule="evenodd"
-            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clip-rule="evenodd"
-          />
+          <!-- Left arrow for RTL "Next" -->
+          <template v-if="$i18n.locale === 'ar'">
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </template>
+          <!-- Right arrow for LTR "Next" -->
+          <template v-else>
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </template>
         </svg>
       </button>
     </div>
