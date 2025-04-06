@@ -18,7 +18,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://reservio-two.vercel.app/", // Replace with your frontend's URL
+    origin: [
+      "https://reservio-two.vercel.app",
+      "http://localhost:3000", // Keep localhost for development
+    ], // Replace with your frontend's URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
