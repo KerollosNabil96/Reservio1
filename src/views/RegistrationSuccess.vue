@@ -1,4 +1,3 @@
-
 <template>
   <div
     class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-10 px-4 sm:px-6 relative"
@@ -43,13 +42,16 @@
           </div>
 
           <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-            {{ $t('registrationSuccess.title') }}
+            {{ $t("registrationSuccess.title") }}
           </h2>
           <p class="text-gray-600 dark:text-gray-300 mb-6">
-            {{ $t('registrationSuccess.description') }}
+            {{ $t("registrationSuccess.description") }}
             <span class="block mt-2">
-              "You have also received <span class="text-green-500 font-bold">{{ (200 * 0.05).toFixed(2) }} EGP</span>  cashback from our loyalty program!"
-              
+              "You have also received
+              <span class="text-green-500 font-bold"
+                >{{ (200 * 0.05).toFixed(2) }} EGP</span
+              >
+              cashback from our loyalty program!"
             </span>
           </p>
 
@@ -58,8 +60,10 @@
             class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-6"
           >
             <p class="text-blue-700 dark:text-blue-300">
-              <span class="font-bold">{{ $t('registrationSuccess.greatNews') }}</span>
-              {{ $t('registrationSuccess.reviewMessage') }}
+              <span class="font-bold">{{
+                $t("registrationSuccess.greatNews")
+              }}</span>
+              {{ $t("registrationSuccess.reviewMessage") }}
             </p>
           </div>
 
@@ -67,22 +71,32 @@
             <h3
               class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4"
             >
-              {{ $t('registrationSuccess.detailsTitle') }}
+              {{ $t("registrationSuccess.detailsTitle") }}
             </h3>
 
             <div class="text-left">
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">{{ $t('registrationSuccess.venueName') }}:</span> {{ venueName }}
+                <span class="font-medium"
+                  >{{ $t("registrationSuccess.venueName") }}:</span
+                >
+                {{ venueName }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">{{ $t('registrationSuccess.category') }}:</span> {{ venueCategory }}
+                <span class="font-medium"
+                  >{{ $t("registrationSuccess.category") }}:</span
+                >
+                {{ venueCategory }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">{{ $t('registrationSuccess.registrationDate') }}:</span>
+                <span class="font-medium"
+                  >{{ $t("registrationSuccess.registrationDate") }}:</span
+                >
                 {{ formattedDate }}
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">{{ $t('registrationSuccess.paymentMethod') }}:</span>
+                <span class="font-medium"
+                  >{{ $t("registrationSuccess.paymentMethod") }}:</span
+                >
                 <span
                   class="font-medium"
                   :class="{
@@ -94,9 +108,11 @@
                 </span>
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-2">
-                <span class="font-medium">{{ $t('registrationSuccess.status') }}:</span>
+                <span class="font-medium"
+                  >{{ $t("registrationSuccess.status") }}:</span
+                >
                 <span class="text-orange-400 font-semibold">
-                  {{ $t('registrationSuccess.pendingApproval') }}
+                  {{ $t("registrationSuccess.pendingApproval") }}
                 </span>
               </p>
             </div>
@@ -105,9 +121,9 @@
           <div class="mt-8">
             <button
               @click="goHome"
-              class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
+              class="cursor-pointer w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white font-medium transform transition-all duration-200 hover:shadow-lg"
             >
-              {{ $t('registrationSuccess.returnHome') }}
+              {{ $t("registrationSuccess.returnHome") }}
             </button>
           </div>
         </div>
