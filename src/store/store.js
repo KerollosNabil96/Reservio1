@@ -10,7 +10,7 @@ const store = createStore({
       notifications: [], // Add notifications array to user object
     },
     showErrorDialog: false,
-    isDarkMode: JSON.parse(localStorage.getItem("DarkMode")) || true,
+    isDarkMode: localStorage.getItem("theme") === "dark", // Initialize from localStorage
     showSignup: false,
     showSignin: false,
     user: null,
@@ -33,7 +33,9 @@ const store = createStore({
   mutations: {
     toggleDarkMode(state) {
       state.isDarkMode = !state.isDarkMode;
-      localStorage.setItem("DarkMode", state.isDarkMode); // Save to localStorage
+      const theme = state.isDarkMode ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", theme); // Apply theme to document
+      localStorage.setItem("theme", theme); // Save to localStorage
     },
     addReservation(state, payload) {
       state.reservations.push(payload);
@@ -210,6 +212,11 @@ const store = createStore({
       } catch (error) {
         console.error("Error updating venue rating:", error);
       }
+    },
+    initializeTheme({ state }) {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      state.isDarkMode = savedTheme === "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme); // Apply theme on initialization
     },
   },
   getters: {

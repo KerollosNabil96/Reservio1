@@ -40,10 +40,24 @@ const i18n = createI18n({
 
 const app = createApp(App);
 
+// Load theme from localStorage or default to 'light'
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+
+// Function to toggle theme and save it to localStorage
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+}
+
+// Make setTheme globally accessible (optional)
+app.config.globalProperties.$setTheme = setTheme;
+
 app.use(i18n);
 
 app.use(router);
 app.use(store);
+store.dispatch("initializeTheme");
 app.use(Toast, {
   position: "top-right",
   timeout: 3000,
