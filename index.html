@@ -4,10 +4,98 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <title>Reservio</title>
+    <style>
+      /* Static Loader Styles */
+      #static-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Slightly more opaque background */
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(4px);
+        transition: opacity 0.5s ease-out;
+      }
+
+      .loader-content {
+        text-align: center;
+      }
+
+      .loader-logo {
+        display: inline-block; /* Needed for width animation */
+        font-size: 2.5rem;
+        font-weight: 600;
+        font-family: monospace; /* Often looks better for typing effect */
+        color: #3b82f6; /* blue-500 for light mode */
+        overflow: hidden; /* Hide text that extends beyond width */
+        white-space: nowrap; /* Keep text on a single line */
+        border-right: 0.1em solid #3b82f6; /* Blinking cursor */
+        width: 0; /* Start with no width */
+        animation: typing 2s steps(8, end) forwards,
+          /* Type in "Reservio" (8 chars) */ blink-caret 0.75s step-end infinite;
+        /* Prevent text selection */
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+
+      /* Dark mode styles */
+      @media (prefers-color-scheme: dark) {
+        #static-loader {
+          /* Darker background */
+          background-color: rgba(15, 23, 42, 0.9);
+        }
+        .loader-logo {
+          color: #60a5fa; /* blue-400 for dark mode */
+          border-right-color: #60a5fa; /* Cursor color */
+        }
+      }
+
+      /* Typing animation */
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 8ch;
+        } /* Adjust 8ch based on "Reservio" length */
+      }
+
+      /* Blinking cursor animation */
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: inherit;
+        } /* Use current text color */
+      }
+
+      /* Class to hide loader */
+      #static-loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
   </head>
-  <body id="app">
+  <body>
+    <div id="app">
+      <!-- Static Loader HTML -->
+      <div id="static-loader">
+        <div class="loader-content">
+          <span class="loader-logo">Reservio</span>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -3,12 +3,14 @@ import store from "./store/store";
 import TheNavbar from "./components/layouts/TheNavbar.vue";
 import TheFooter from "./components/layouts/TheFooter.vue";
 import OfflinePopup from "./components/OfflinePopup.vue";
+import GlobalLoader from "./components/GlobalLoader.vue";
 import { auth, onAuthStateChanged, db, ref, onValue } from "./firebase";
 export default {
   components: {
     TheNavbar,
     TheFooter,
     OfflinePopup,
+    GlobalLoader,
   },
   computed: {
     dark() {
@@ -49,47 +51,6 @@ export default {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    // Set loading state to true when app starts
-    store.dispatch("setLoadingState", true);
-
-    // Set up Firebase auth state listener to persist user login
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        console.log("User is signed in:", user.email);
-        // Fetch user data from database
-        const usersRef = ref(db, "users/");
-        onValue(usersRef, (snapshot) => {
-          const allUsers = snapshot.val();
-          if (allUsers) {
-            for (const username in allUsers) {
-              const currentUser = allUsers[username];
-              if (currentUser.email === user.email) {
-                // Update store with user info
-                store.dispatch("updateAuthState", currentUser);
-                return;
-              }
-            }
-          }
-        });
-      } else {
-        // User is signed out
-        console.log("User is signed out");
-        store.dispatch("updateAuthState", null);
-      }
-    });
-    const venuesRef = ref(db, "/venues");
-    onValue(venuesRef, (snapshot) => {
-      const data = snapshot.val();
-      let venues = [];
-      for (const venue in data) {
-        const current = data[venue];
-        venues.push(current);
-      }
-      store.state.reservations = venues;
-      // Set loading state to false after venues are loaded
-      store.dispatch("setLoadingState", false);
-    });
   },
 };
 </script>
@@ -99,6 +60,7 @@ export default {
     :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
     :class="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
   >
+    <!-- <GlobalLoader v-if="loading" /> Removed, static loader handles initial load -->
     <TheNavbar />
     <router-view v-slot="{ Component, route }">
       <OfflinePopup />
