@@ -567,6 +567,7 @@ import NotificationDropdown from "@/components/layouts/NotificationDropdown.vue"
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import { computed, ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -578,6 +579,7 @@ export default {
   setup() {
     const store = useStore();
     const { locale } = useI18n();
+    const router = useRouter();
 
     const isAuthenticated = computed(() => store.state.isAuthenticated);
     const username = computed(() => store.state.user?.name || "Guest");
@@ -631,6 +633,7 @@ export default {
         isUserMenuOpen.value = false;
         isMenuOpen.value = false;
         console.log("User logged out successfully");
+        router.push("/");
       } catch (err) {
         console.error("Unexpected logout error:", err);
       }
