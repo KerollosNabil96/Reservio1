@@ -3,6 +3,9 @@ import cors from "cors";
 import Stripe from "stripe";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import admin from "firebase-admin";
+import fs from "fs";
+import path from "path";
 
 dotenv.config();
 
@@ -13,7 +16,13 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://reservio-two.vercel.app/", // Replace with your frontend's URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Configure nodemailer
 const transporter = nodemailer.createTransport({
@@ -23,6 +32,25 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
+// Resolve directory path
+const __dirname = path.dirname(
+  path.resolve(
+    decodeURIComponent(new URL(import.meta.url).pathname).substring(1)
+  )
+);
+
+// Load the service account JSON file
+const serviceAccount = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "adminsdk.json"), "utf8")
+);
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 // Contact form endpoint
 app.post("/api/contact", async (req, res) => {
@@ -160,6 +188,19 @@ app.post("/api/send-rejection-email", async (req, res) => {
     console.error("Error sending email:", error);
 
     res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
+
+// API endpoint to delete a user from Firebase Authentication
+app.post("/api/delete-user", async (req, res) => {
+  const { uid } = req.body;
+
+  try {
+    await admin.auth().deleteUser(uid);
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ success: false, message: "Failed to delete user" });
   }
 });
 
