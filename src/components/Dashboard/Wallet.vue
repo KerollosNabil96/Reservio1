@@ -5,7 +5,7 @@
     <h1
       class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6"
     >
-      Your Wallet
+      {{ $t("wallet.title") }}
     </h1>
 
     <!-- Wallet Balance Card -->
@@ -16,12 +16,12 @@
         <h2
           class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white"
         >
-          Current Balance
+          {{ $t("wallet.currentBalance") }}
         </h2>
         <p
           class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mt-2"
         >
-          {{ balance }} EGP
+          {{ formattedBalance }} {{ $t("egp") }}
         </p>
       </div>
     </div>
@@ -34,24 +34,26 @@
         <h2
           class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200"
         >
-          Transaction History
+          {{ $t("wallet.transactionHistory") }}
         </h2>
         <select
           v-model="filterType"
           class="mt-2 sm:mt-0 p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
         >
-          <option value="all">All</option>
-          <option value="booking">Booking</option>
-          <option value="registration">Registration</option>
-          <option value="earnings">Earnings</option>
-          <option value="refund">Refunds</option>
+          <option value="all">{{ $t("wallet.filterAll") }}</option>
+          <option value="booking">{{ $t("wallet.filterBooking") }}</option>
+          <option value="registration">
+            {{ $t("wallet.filterRegistration") }}
+          </option>
+          <option value="earnings">{{ $t("wallet.filterEarnings") }}</option>
+          <option value="refund">{{ $t("wallet.filterRefunds") }}</option>
         </select>
       </div>
       <div
         v-if="filteredTransactions.length === 0"
         class="text-center text-gray-500 dark:text-gray-400"
       >
-        No transactions to display.
+        {{ $t("wallet.noTransactions") }}
       </div>
       <div v-else>
         <table class="w-full text-left border-collapse">
@@ -60,16 +62,16 @@
               class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
             >
               <th class="py-2 sm:py-3 px-2 sm:px-4 text-sm sm:text-base">
-                Date
+                {{ $t("wallet.tableHeaderDate") }}
               </th>
               <th class="py-2 sm:py-3 px-2 sm:px-4 text-sm sm:text-base">
-                Description
+                {{ $t("wallet.tableHeaderDescription") }}
               </th>
               <th class="py-2 sm:py-3 px-2 sm:px-4 text-sm sm:text-base">
-                Amount
+                {{ $t("wallet.tableHeaderAmount") }}
               </th>
               <th class="py-2 sm:py-3 px-2 sm:px-4 text-sm sm:text-base">
-                Type
+                {{ $t("wallet.tableHeaderType") }}
               </th>
             </tr>
           </thead>
@@ -102,7 +104,7 @@
                   transaction.amount > 0 || transaction.type === "refund"
                     ? "+"
                     : ""
-                }}{{ transaction.amount }} EGP
+                }}{{ transaction.amount }} {{ $t("egp") }}
               </td>
               <td
                 class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words"
@@ -122,12 +124,12 @@
                 >
                   {{
                     transaction.type === "booking"
-                      ? "Booking"
+                      ? $t("wallet.typeBooking")
                       : transaction.type === "registration"
-                      ? "Registration"
+                      ? $t("wallet.typeRegistration")
                       : transaction.type === "earnings"
-                      ? "Earnings"
-                      : "Refund"
+                      ? $t("wallet.typeEarnings")
+                      : $t("wallet.typeRefund")
                   }}
                 </span>
               </td>
@@ -144,11 +146,14 @@
           class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600"
           :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
         >
-          Previous
+          {{ $t("dashboardView.paginationPrevious") }}
         </button>
-        <span class="text-gray-700 dark:text-gray-300"
-          >Page {{ currentPage }} of {{ totalPages }}</span
-        >
+        <span class="text-gray-700 dark:text-gray-300">{{
+          $t("dashboardView.paginationPageInfo", {
+            currentPage: currentPage,
+            totalPages: totalPages,
+          })
+        }}</span>
         <button
           @click="nextPage"
           :disabled="currentPage === totalPages"
@@ -157,7 +162,7 @@
             'opacity-50 cursor-not-allowed': currentPage === totalPages,
           }"
         >
-          Next
+          {{ $t("dashboardView.paginationNext") }}
         </button>
       </div>
     </div>
@@ -166,8 +171,13 @@
 
 <script>
 import { getDatabase, ref as dbRef, onValue } from "firebase/database";
+import { useI18n } from "vue-i18n";
 
 export default {
+  setup() {
+    const { t, locale } = useI18n();
+    return { t, locale };
+  },
   data() {
     return {
       balance: 0,
@@ -179,6 +189,13 @@ export default {
     };
   },
   computed: {
+    formattedBalance() {
+      const numBalance = Number(this.balance);
+      if (isNaN(numBalance)) {
+        return "0.00"; // Default or error state
+      }
+      return numBalance.toFixed(2); // Format to 2 decimal places
+    },
     filteredTransactions() {
       const sorted = [...this.transactions].sort(
         (a, b) => new Date(b.date) - new Date(a.date)
@@ -197,7 +214,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleDateString(undefined, {
+      return new Date(date).toLocaleDateString(this.locale, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -223,30 +240,28 @@ export default {
         })
       );
 
-      // Fetch bookings to get venue dates for refunds
+      // Fetch bookings
       const bookingsRef = dbRef(db, `users/${userId}/bookings`);
       this.unsubscribeCallbacks.push(
         onValue(bookingsRef, (snapshot) => {
           const data = snapshot.val();
+          this.transactions = this.transactions.filter(
+            (t) => t.type !== "booking"
+          );
           if (data) {
-            this.transactions = this.transactions.filter(
-              (t) => t.type !== "booking"
-            );
             const walletBookings = Object.keys(data)
-              .map((key) => ({
-                id: key,
-                ...data[key],
-              }))
+              .map((key) => ({ id: key, ...data[key] }))
               .filter((booking) => booking.method === "wallet")
               .map((booking) => ({
                 id: booking.id,
                 date: booking.date,
-                description: `Booking for ${
-                  booking.venue?.venueName || "Unknown Venue"
-                }`,
+                description: this.t("wallet.descBooking", {
+                  venueName:
+                    booking.venue?.venueName ||
+                    this.t("wallet.descUnknownVenue"),
+                }),
                 amount: -Math.abs(booking.price || 0),
                 type: "booking",
-                venueDate: booking.venue?.selectedDate, // Store venue date for potential refunds
               }));
             this.transactions = [...this.transactions, ...walletBookings];
           }
@@ -258,19 +273,20 @@ export default {
       this.unsubscribeCallbacks.push(
         onValue(venuesRef, (snapshot) => {
           const data = snapshot.val();
+          this.transactions = this.transactions.filter(
+            (t) => t.type !== "registration"
+          );
           if (data) {
-            this.transactions = this.transactions.filter(
-              (t) => t.type !== "registration"
-            );
             const userRegistrations = Object.keys(data)
               .map((key) => ({ id: key, ...data[key] }))
               .filter((venue) => venue.ownerEmail === userEmail)
               .map((venue) => ({
                 id: venue.id,
                 date: venue.selectedDate || new Date().toISOString(),
-                description: `Registration for ${
-                  venue.venueName || "Unknown Venue"
-                }`,
+                description: this.t("wallet.descRegistration", {
+                  venueName:
+                    venue.venueName || this.t("wallet.descUnknownVenue"),
+                }),
                 amount: -Math.abs(venue.price || 0),
                 type: "registration",
               }));
@@ -284,19 +300,21 @@ export default {
       this.unsubscribeCallbacks.push(
         onValue(allBookingsRef, (snapshot) => {
           const data = snapshot.val();
+          this.transactions = this.transactions.filter(
+            (t) => t.type !== "earnings"
+          );
           if (data) {
-            this.transactions = this.transactions.filter(
-              (t) => t.type !== "earnings"
-            );
             const earnings = Object.keys(data)
               .map((key) => ({ id: key, ...data[key] }))
               .filter((booking) => booking.venue?.ownerEmail === userEmail)
               .map((booking) => ({
                 id: booking.id,
                 date: booking.date,
-                description: `Earnings from booking for ${
-                  booking.venue?.venueName || "Unknown Venue"
-                }`,
+                description: this.t("wallet.descEarnings", {
+                  venueName:
+                    booking.venue?.venueName ||
+                    this.t("wallet.descUnknownVenue"),
+                }),
                 amount: Math.abs(booking.price || 0),
                 type: "earnings",
               }));
@@ -305,43 +323,27 @@ export default {
         })
       );
 
-      // Fetch refund transactions and match with venue dates
+      // Fetch refund transactions from the dedicated transactions node
       const transactionsRef = dbRef(db, `users/${userId}/transactions`);
       this.unsubscribeCallbacks.push(
         onValue(transactionsRef, (snapshot) => {
           const data = snapshot.val();
+          this.transactions = this.transactions.filter(
+            (t) => t.type !== "refund"
+          );
           if (data) {
-            this.transactions = this.transactions.filter(
-              (t) => t.type !== "refund"
-            );
-
-            // Get all refund transactions
             const refunds = Object.keys(data)
               .map((key) => ({ id: key, ...data[key] }))
-              .filter((t) => t.type === "refund");
-
-            // Process refunds with venue dates
-            const processedRefunds = refunds.map((refund) => {
-              // Find the original booking to get the venue date
-              const originalBooking = this.transactions.find(
-                (t) => t.type === "booking" && t.id === refund.bookingId
-              );
-
-              return {
+              .filter((t) => t.type === "refund")
+              .map((refund) => ({
                 id: refund.id,
-                date:
-                  refund.venueDate ||
-                  refund.bookingDate ||
-                  refund.timestamp ||
-                  new Date().toISOString(),
+                date: refund.timestamp || new Date().toISOString(),
                 description:
-                  refund.description || "Refund for canceled booking",
+                  refund.description || this.t("wallet.descGenericRefund"),
                 amount: Math.abs(refund.amount || 0),
                 type: "refund",
-              };
-            });
-
-            this.transactions = [...this.transactions, ...processedRefunds];
+              }));
+            this.transactions = [...this.transactions, ...refunds];
           }
         })
       );

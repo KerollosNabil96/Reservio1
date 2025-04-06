@@ -15,8 +15,12 @@ import ar from "./locales/ar.json";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
+// Load initial locale from store (which loads from localStorage)
+const initialLocale = store.state.currentLocale;
+
 const i18n = createI18n({
-  locale: "en", // default locale
+  legacy: false, // Recommended for Composition API usage
+  locale: initialLocale, // Use loaded locale
   fallbackLocale: "en",
   messages: {
     en,

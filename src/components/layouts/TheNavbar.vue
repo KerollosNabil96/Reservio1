@@ -564,116 +564,114 @@ import Signin from "../registration/Signin.vue";
 import { getAuth, signOut } from "firebase/auth";
 import avatar from "../UserAvatar/Avatar.vue";
 import NotificationDropdown from "@/components/layouts/NotificationDropdown.vue";
+import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
+import { computed, ref, onMounted, onBeforeUnmount, watch } from "vue";
 
 export default {
-  data() {
-    return {
-      isUserMenuOpen: false,
-      isMenuOpen: false,
-      showSignupForm: false,
-      showSigninForm: false,
-      isScrolled: false,
-      scrollY: 0,
-      currentLanguage: "en",
-    };
-  },
-  computed: {
-    isAuthenticated() {
-      return this.$store.state.isAuthenticated;
-    },
-    username() {
-      return this.$store.state.user?.name || "Guest";
-    },
-    isDarkMode() {
-      return store.state.isDarkMode;
-    },
-  },
   components: {
     Signup,
     Signin,
     avatar,
     NotificationDropdown,
   },
-  mounted() {
-    // Add scroll event listener
-    window.addEventListener("scroll", this.handleScroll, { passive: true });
-    // Check initial scroll position
-    this.handleScroll();
-  },
-  beforeUnmount() {
-    // Clean up the event listener when component is unmounted
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  methods: {
-    toggleLanguage() {
-      if (this.currentLanguage === "en") {
-        this.currentLanguage = "ar";
-        this.$i18n.locale = "ar";
-      } else {
-        this.currentLanguage = "en";
-        this.$i18n.locale = "en";
-      }
-    },
+  setup() {
+    const store = useStore();
+    const { locale } = useI18n();
 
-    handleScroll() {
-      // Get current scroll position
-      this.scrollY = window.scrollY;
-      // Check if page is scrolled more than 20px
-      this.isScrolled = this.scrollY > 20;
-    },
-    closeUserMenu() {
-      this.isUserMenuOpen = false;
-    },
-    toggleDarkMode() {
-      store.commit("toggleDarkMode"); // Commit the mutation
-    },
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-    closeMenu() {
-      this.isMenuOpen = false;
-    },
-    toggleUserMenu(event) {
-      event.stopPropagation(); // Prevent the click event from bubbling up
-      this.isUserMenuOpen = !this.isUserMenuOpen;
-    },
-    async handleLogout() {
+    const isAuthenticated = computed(() => store.state.isAuthenticated);
+    const username = computed(() => store.state.user?.name || "Guest");
+    const isDarkMode = computed(() => store.state.isDarkMode);
+    const currentLanguage = computed(() => locale.value);
+
+    const isUserMenuOpen = ref(false);
+    const isMenuOpen = ref(false);
+    const showSignupForm = ref(false);
+    const showSigninForm = ref(false);
+    const isScrolled = ref(false);
+    const scrollY = ref(0);
+
+    const toggleLanguage = () => {
+      const newLocale = locale.value === "en" ? "ar" : "en";
+      store.dispatch("setLocale", newLocale);
+      locale.value = newLocale;
+    };
+
+    const handleScroll = () => {
+      scrollY.value = window.scrollY;
+      isScrolled.value = scrollY.value > 20;
+    };
+
+    const closeUserMenu = () => {
+      isUserMenuOpen.value = false;
+    };
+
+    const toggleDarkMode = () => {
+      store.commit("toggleDarkMode");
+    };
+
+    const toggleMenu = () => {
+      isMenuOpen.value = !isMenuOpen.value;
+    };
+
+    const closeMenu = () => {
+      isMenuOpen.value = false;
+    };
+
+    const toggleUserMenu = (event) => {
+      event.stopPropagation();
+      isUserMenuOpen.value = !isUserMenuOpen.value;
+    };
+
+    const handleLogout = async () => {
       try {
         const auth = getAuth();
         await signOut(auth);
-
-        // Clear user data from store
-        store.state.user = null;
-        store.state.isAuthenticated = false;
-        this.isUserMenuOpen = false; // Ensure the user menu is closed
-        this.isMenuOpen = false; // Ensure the mobile menu is closed
+        store.dispatch("updateAuthState", null);
+        isUserMenuOpen.value = false;
+        isMenuOpen.value = false;
         console.log("User logged out successfully");
-        this.$router.push("/");
       } catch (err) {
         console.error("Unexpected logout error:", err);
       }
-    },
-    toggleNotifications() {
-      this.showNotifications = !this.showNotifications;
-    },
-    closeNotifications() {
-      this.showNotifications = false;
-    },
-    markAsRead(notificationId) {
-      this.$store.commit("markNotificationAsRead", notificationId);
-    },
-    formatNotificationTime(timestamp) {
-      const date = new Date(timestamp);
-      return date.toLocaleString();
-    },
-  },
-  watch: {
-    isAuthenticated(newVal) {
+    };
+
+    onMounted(() => {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener("scroll", handleScroll);
+    });
+
+    watch(isAuthenticated, (newVal) => {
       if (newVal) {
-        this.isUserMenuOpen = false; // Ensure the user menu is closed when authenticated
-        this.isMenuOpen = false; // Ensure the mobile menu is closed when authenticated
+        isUserMenuOpen.value = false;
+        isMenuOpen.value = false;
       }
-    },
+    });
+
+    return {
+      isAuthenticated,
+      username,
+      isDarkMode,
+      currentLanguage,
+      isUserMenuOpen,
+      isMenuOpen,
+      showSignupForm,
+      showSigninForm,
+      isScrolled,
+      scrollY,
+      toggleLanguage,
+      handleScroll,
+      closeUserMenu,
+      toggleDarkMode,
+      toggleMenu,
+      closeMenu,
+      toggleUserMenu,
+      handleLogout,
+    };
   },
 };
 </script>

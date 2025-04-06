@@ -5,29 +5,31 @@
     <h2
       class="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 mb-6"
     >
-      Account Settings
+      {{ $t("settings2.pageTitle") }}
     </h2>
 
     <div
       class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg shadow-md mb-6 transform transition-all duration-300 hover:scale-[1.02]"
     >
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-        Profile Information
+        {{ $t("settings2.profileSectionTitle") }}
       </h3>
       <div class="mt-2 space-y-4">
         <input
           v-model="profile.fullName"
           type="text"
-          placeholder="Full Name"
+          :placeholder="$t('settings2.fullNamePlaceholder')"
           class="input-field"
         />
         <input
           v-model="profile.phone"
           type="text"
-          placeholder="Phone Number"
+          :placeholder="$t('settings2.phonePlaceholder')"
           class="input-field"
         />
-        <button @click="updateProfile" class="btn">Update Profile</button>
+        <button @click="updateProfile" class="btn">
+          {{ $t("settings2.updateProfileBtn") }}
+        </button>
         <div
           v-if="profileMessage"
           class="mt-4 p-2 text-center rounded-md"
@@ -42,28 +44,30 @@
       class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg shadow-md mb-6 transform transition-all duration-300 hover:scale-[1.02]"
     >
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-        Change Password
+        {{ $t("settings2.passwordSectionTitle") }}
       </h3>
       <div class="mt-2 space-y-4">
         <input
           v-model="password.current"
           type="password"
-          placeholder="Current Password"
+          :placeholder="$t('settings2.currentPasswordPlaceholder')"
           class="input-field"
         />
         <input
           v-model="password.new"
           type="password"
-          placeholder="New Password"
+          :placeholder="$t('settings2.newPasswordPlaceholder')"
           class="input-field"
         />
         <input
           v-model="password.confirm"
           type="password"
-          placeholder="Confirm New Password"
+          :placeholder="$t('settings2.confirmPasswordPlaceholder')"
           class="input-field"
         />
-        <button @click="changePassword" class="btn">Change Password</button>
+        <button @click="changePassword" class="btn">
+          {{ $t("settings2.changePasswordBtn") }}
+        </button>
         <div
           v-if="message"
           class="mt-4 p-2 text-center rounded-md"
@@ -78,7 +82,7 @@
       class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg shadow-md transform transition-all duration-300 hover:scale-[1.02]"
     >
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-        Notification Preferences
+        {{ $t("settings2.preferencesSectionTitle") }}
       </h3>
       <div class="mt-2 space-y-4">
         <label
@@ -89,9 +93,9 @@
             type="checkbox"
             class="checkbox"
           />
-          <span class="text-gray-700 dark:text-gray-300"
-            >Send notifications by email</span
-          >
+          <span class="text-gray-700 dark:text-gray-300">{{
+            $t("settings2.prefEmailLabel")
+          }}</span>
         </label>
         <label
           class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200"
@@ -101,7 +105,9 @@
             type="checkbox"
             class="checkbox"
           />
-          <span class="text-gray-700 dark:text-gray-300">Activity digests</span>
+          <span class="text-gray-700 dark:text-gray-300">{{
+            $t("settings2.prefDigestsLabel")
+          }}</span>
         </label>
         <label
           class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200"
@@ -111,11 +117,13 @@
             type="checkbox"
             class="checkbox"
           />
-          <span class="text-gray-700 dark:text-gray-300"
-            >Product tips and news</span
-          >
+          <span class="text-gray-700 dark:text-gray-300">{{
+            $t("settings2.prefPromotionsLabel")
+          }}</span>
         </label>
-        <button @click="savePreferences" class="btn">Save Preferences</button>
+        <button @click="savePreferences" class="btn">
+          {{ $t("settings2.savePreferencesBtn") }}
+        </button>
         <div
           v-if="preferencesMessage"
           class="mt-4 p-2 text-center rounded-md"
@@ -137,8 +145,13 @@ import {
   updatePassword,
 } from "firebase/auth";
 import { update } from "firebase/database";
+import { useI18n } from "vue-i18n";
 
 export default {
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       profile: {
@@ -168,17 +181,17 @@ export default {
       const user = auth.currentUser;
 
       if (!user) {
-        this.profileMessage = "No user is logged in!";
+        this.profileMessage = this.t("settings2.errorNoUser");
         this.profileMessageClass = "text-red-500";
         return;
       }
 
       const newName = this.profile.fullName.trim();
       const newPhone = this.profile.phone.trim();
-      const username = this.$store.state.user?.username;
+      const userId = this.$store.state.user?.id;
 
-      if (!username) {
-        this.profileMessage = "Username not found!";
+      if (!userId) {
+        this.profileMessage = this.t("settings2.errorUsernameNotFound");
         this.profileMessageClass = "text-red-500";
         return;
       }
@@ -186,33 +199,34 @@ export default {
       if (newPhone) {
         const phoneRegex = /^(011|012|015|010)\d{8}$/;
         if (!phoneRegex.test(newPhone)) {
-          this.profileMessage =
-            "Phone number must be 11 digits and start with 011, 012, or 015!";
+          this.profileMessage = this.t("settings2.errorPhoneFormat");
           this.profileMessageClass = "text-red-500";
           return;
         }
       }
 
       try {
-        await update(ref(db, "users/" + store.state.user.id), {
+        await update(ref(db, "users/" + userId), {
           name: newName,
           phone: newPhone,
         });
 
-        this.$store.commit("updateUserName", newName);
-        this.$store.commit("updateUserPhone", newPhone);
+        this.$store.commit("updateUserProfile", {
+          name: newName,
+          phone: newPhone,
+        });
 
-        this.profileMessage = "Profile updated successfully!";
+        this.profileMessage = this.t("settings2.successUpdateProfile");
         this.profileMessageClass = "text-green-500";
       } catch (error) {
         console.error("Error updating profile:", error);
-        this.profileMessage = "Error updating profile.";
+        this.profileMessage = this.t("settings2.errorUpdateProfile");
         this.profileMessageClass = "text-red-500";
       }
     },
     async changePassword() {
       if (this.password.new !== this.password.confirm) {
-        this.message = "Passwords do not match!";
+        this.message = this.t("settings2.errorPasswordMatch");
         this.messageClass = "text-red-500";
         return;
       }
@@ -221,11 +235,11 @@ export default {
         const user = auth.currentUser;
 
         if (!user) {
-          this.message = "No user is currently logged in!";
+          this.message = this.t("settings2.errorNoUser");
           this.messageClass = "text-red-500";
           return;
         }
-        console.log("User UID:", user.uid);
+
         const credential = EmailAuthProvider.credential(
           user.email,
           this.password.current
@@ -235,17 +249,18 @@ export default {
 
         await updatePassword(user, this.password.new);
 
-        this.message = "Password updated successfully!";
+        this.message = this.t("settings2.successPasswordUpdate");
         this.messageClass = "text-green-500";
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error changing password:", error);
         if (error.code === "auth/wrong-password") {
-          this.message = "Current password is incorrect!";
-          this.messageClass = "text-red-500";
+          this.message = this.t("settings2.errorPasswordWrong");
         } else {
-          this.message = `An error occurred: ${error.message}`;
-          this.messageClass = "text-red-500";
+          this.message = this.t("settings2.errorPasswordGeneric", {
+            message: error.message,
+          });
         }
+        this.messageClass = "text-red-500";
       }
     },
 
@@ -253,7 +268,7 @@ export default {
       const user = auth.currentUser;
 
       if (!user) {
-        this.preferencesMessage = "No user is logged in!";
+        this.preferencesMessage = this.t("settings2.errorNoUser");
         this.preferencesMessageClass = "text-red-500";
         return;
       }
@@ -265,11 +280,11 @@ export default {
           promotions: this.notifications.promotions,
         });
 
-        this.preferencesMessage = "Preferences saved successfully!";
+        this.preferencesMessage = this.t("settings2.successSavePreferences");
         this.preferencesMessageClass = "text-green-500";
       } catch (error) {
         console.error("Error saving preferences:", error);
-        this.preferencesMessage = "Error saving preferences.";
+        this.preferencesMessage = this.t("settings2.errorSavePreferences");
         this.preferencesMessageClass = "text-red-500";
       }
     },

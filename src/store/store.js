@@ -29,6 +29,7 @@ const store = createStore({
       sortBy: "rating", // Default sort by rating
     },
     selectedTimeSlotId: "0", // Default to "0" or set dynamically
+    currentLocale: localStorage.getItem("locale") || "en", // Add locale state, load from localStorage
   },
   mutations: {
     toggleDarkMode(state) {
@@ -105,6 +106,13 @@ const store = createStore({
     },
     setSelectedTimeSlotId(state, timeSlotId) {
       state.selectedTimeSlotId = timeSlotId; // Mutation to update the selected time slot ID
+    },
+    setLocale(state, locale) {
+      // Add mutation for locale
+      state.currentLocale = locale;
+      localStorage.setItem("locale", locale); // Save to localStorage
+      // Optionally update i18n instance here if it's accessible, or handle in action/component
+      // i18n.global.locale = locale; // Example, needs i18n instance
     },
   },
   actions: {
@@ -217,6 +225,11 @@ const store = createStore({
       const savedTheme = localStorage.getItem("theme") || "light";
       state.isDarkMode = savedTheme === "dark";
       document.documentElement.setAttribute("data-theme", savedTheme); // Apply theme on initialization
+    },
+    setLocale({ commit }, locale) {
+      // Add action for locale
+      commit("setLocale", locale);
+      // If i18n instance isn't directly available, trigger update in component or main.js
     },
   },
   getters: {
@@ -406,6 +419,7 @@ const store = createStore({
       }
     },
     getSelectedTimeSlotId: (state) => state.selectedTimeSlotId, // Add this getter
+    getCurrentLocale: (state) => state.currentLocale, // Add getter for locale
   },
 });
 
