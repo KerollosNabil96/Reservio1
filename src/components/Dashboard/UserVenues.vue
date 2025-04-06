@@ -1,19 +1,13 @@
 <template>
-  <div class="main-content">
+  <div class="main-content shadow-lg rounded-lg">
     <div class="booking-section">
       <div class="search-section mb-6 flex flex-col sm:flex-row gap-2">
         <div class="search-box w-full sm:w-11/12">
-          <input
-            type="search"
-            v-model="searchQuery"
-            :placeholder="$t('userVenues.searchPlaceholder')"
-            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-          />
+          <input type="search" v-model="searchQuery" :placeholder="$t('userVenues.searchPlaceholder')"
+            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" />
         </div>
-        <select
-          v-model="sortOption"
-          class="w-full sm:w-auto p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
-        >
+        <select v-model="sortOption"
+          class="w-full sm:w-auto p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
           <option value="all" disabled>{{ $t("userVenues.sortAll") }}</option>
           <option value="nearest">{{ $t("userVenues.sortNearest") }}</option>
           <option value="farthest">{{ $t("userVenues.sortFarthest") }}</option>
@@ -29,31 +23,17 @@
     <div v-if="sortedBookings.length === 0" class="no-bookings">
       <p>{{ $t("userVenues.noVenues") }}</p>
     </div>
-    <transition-group
-      name="sort-animation"
-      tag="div"
-      v-else
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-    >
-      <div
-        v-for="venue in sortedBookings"
-        :key="venue.id"
-        class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-      >
+    <transition-group name="sort-animation" tag="div" v-else
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div v-for="venue in sortedBookings" :key="venue.id"
+        class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <!-- Venue Image -->
         <div class="relative">
-          <img
-            :src="venue.pictures[0]"
-            :alt="venue.venueName"
-            class="w-full h-52 object-cover"
-          />
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"
-          ></div>
+          <img :src="venue.pictures[0]" :alt="venue.venueName" class="w-full h-52 object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
           <div class="absolute bottom-3 left-3">
             <span
-              class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm"
-            >
+              class="bg-white/90 dark:bg-gray-800/90 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-full text-sm">
               {{ venue.price }} {{ $t("egp") }}/ {{ perWhat }}
             </span>
           </div>
@@ -67,8 +47,7 @@
           <div class="flex items-center mb-2">
             <div class="text-yellow-400 flex">
               <span v-for="i in 5" :key="i" class="text-lg">
-                {{ i <= Math.round(venue.averageRating) ? "★" : "☆" }}
-              </span>
+                {{ i <= Math.round(venue.averageRating) ? "★" : "☆" }} </span>
             </div>
             <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
               {{
@@ -76,14 +55,12 @@
                   ? venue.averageRating.toFixed(1)
                   : $t("venueCard.noRatings")
               }}
-              <span v-if="venue.totalReviews > 0" class="ml-1"
-                >({{ venue.totalReviews }}
+              <span v-if="venue.totalReviews > 0" class="ml-1">({{ venue.totalReviews }}
                 {{
                   venue.totalReviews === 1
                     ? $t("userVenues.review")
                     : $t("userVenues.reviews")
-                }})</span
-              >
+                }})</span>
             </span>
           </div>
           <p class="text-sm text-gray-600 mb-4 dark:text-gray-300 line-clamp-2">
@@ -93,24 +70,11 @@
           <!-- Location and Date -->
           <div class="mt-auto flex items-center justify-between">
             <div class="flex items-center text-gray-500 dark:text-gray-400">
-              <svg
-                class="w-4 h-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <span class="text-xs">{{ venue.address.governorate }}</span>
             </div>
@@ -119,27 +83,19 @@
             </div>
           </div>
           <div class="time-slots-grid mt-4">
-            <div
-              v-for="[timeslotId, timeslot] in filteredTimeSlots(venue.id)"
-              :key="`${venue.id}-${timeslotId}`"
-              class="time-slot-item"
-            >
+            <div v-for="[timeslotId, timeslot] in filteredTimeSlots(venue.id)" :key="`${venue.id}-${timeslotId}`"
+              class="time-slot-item">
               <div class="time-slot-content">
                 <span>{{ timeslot.from }} - {{ timeslot.to }}</span>
-                <button
-                  class="cursor-pointer delete-icon"
-                  @click="openDeleteModal(venue.id, timeslotId)"
-                >
+                <button class="cursor-pointer delete-icon" @click="openDeleteModal(venue.id, timeslotId)">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
             </div>
           </div>
           <!-- Show Bookings Button -->
-          <button
-            @click="showBookings(venue.id)"
-            class="cursor-pointer mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-          >
+          <button @click="showBookings(venue.id)"
+            class="cursor-pointer mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
             {{ $t("userVenues.showBookingsBtn") }}
           </button>
         </div>
@@ -148,12 +104,9 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-between items-center mt-6">
-      <button
-        @click="prevPageAndScroll"
-        :disabled="currentPage === 1"
+      <button @click="prevPageAndScroll" :disabled="currentPage === 1"
         class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600"
-        :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
-      >
+        :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }">
         {{ $t("dashboardView.paginationPrevious") }}
       </button>
       <span class="text-gray-700 dark:text-gray-300">{{
@@ -162,34 +115,26 @@
           totalPages: totalPages,
         })
       }}</span>
-      <button
-        @click="nextPageAndScroll"
-        :disabled="currentPage === totalPages"
+      <button @click="nextPageAndScroll" :disabled="currentPage === totalPages"
         class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600"
-        :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }"
-      >
+        :class="{ 'opacity-50 cursor-not-allowed': currentPage === totalPages }">
         {{ $t("dashboardView.paginationNext") }}
       </button>
     </div>
   </div>
   <!-- Confirmation Modal -->
-  <div
-    v-if="showDeleteModal"
+  <div v-if="showDeleteModal"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="closeDeleteModal"
-  >
+    @click="closeDeleteModal">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           {{ $t("userVenues.deleteModalTitle") }}
         </h3>
-        <button
-          @click="closeDeleteModal"
-          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="closeDeleteModal"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
@@ -197,18 +142,14 @@
         {{ $t("userVenues.deleteModalConfirm") }}
       </p>
       <div class="flex justify-end gap-4">
-        <button
-          @click="closeDeleteModal"
+        <button @click="closeDeleteModal"
           class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-          :disabled="loading"
-        >
+          :disabled="loading">
           {{ $t("userVenues.cancelBtn") }}
         </button>
-        <button
-          @click="confirmDelete"
+        <button @click="confirmDelete"
           class="cursor-pointer px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center"
-          :disabled="loading"
-        >
+          :disabled="loading">
           <span v-if="loading" class="loader mr-2"></span>
           <span>{{ $t("userVenues.deleteBtn") }}</span>
         </button>
@@ -216,34 +157,25 @@
     </div>
   </div>
   <!-- Popup Modal -->
-  <div
-    v-if="showBooking"
+  <div v-if="showBooking"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="showBooking = false"
-  >
+    @click="showBooking = false">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           {{ $t("userVenues.userBookingsModalTitle") }}
         </h3>
-        <button
-          @click="showBooking = false"
-          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="showBooking = false"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
       <!-- Booking Details -->
       <div v-if="filteredBookings.length > 0">
         <ul class="space-y-2">
-          <li
-            v-for="booking in filteredBookings"
-            :key="booking.id"
-            class="text-gray-600 dark:text-gray-300"
-          >
+          <li v-for="booking in filteredBookings" :key="booking.id" class="text-gray-600 dark:text-gray-300">
             <div class="flex justify-between items-center">
               <div>
                 <p>
@@ -259,10 +191,8 @@
                   {{ booking.method }}
                 </p>
               </div>
-              <button
-                @click="showUserDetails(booking.userId)"
-                class="cursor-pointer ml-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
-              >
+              <button @click="showUserDetails(booking.userId)"
+                class="cursor-pointer ml-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm">
                 {{ $t("userVenues.detailsBtn") }}
               </button>
             </div>
@@ -278,10 +208,8 @@
 
       <!-- Close Button -->
       <div class="flex justify-end mt-6">
-        <button
-          @click="showBooking = false"
-          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-        >
+        <button @click="showBooking = false"
+          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
           {{ $t("close") }}
         </button>
       </div>
@@ -289,34 +217,25 @@
   </div>
 
   <!-- User Details Modal -->
-  <div
-    v-if="showUserModal"
+  <div v-if="showUserModal"
     class="fixed inset-0 backdrop-blur-md bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click="showUserModal = false"
-  >
+    @click="showUserModal = false">
     <div
       class="bg-white/95 dark:bg-gray-800/95 rounded-xl p-4 sm:p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]"
-      @click.stop
-    >
+      @click.stop>
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">
           {{ $t("userVenues.userDetailsModalTitle") }}
         </h3>
-        <button
-          @click="showUserModal = false"
-          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
+        <button @click="showUserModal = false"
+          class="cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
 
       <!-- User Details -->
       <div v-if="filteredUsers.length > 0">
-        <div
-          v-for="user in filteredUsers"
-          :key="user.id"
-          class="text-gray-600 dark:text-gray-300"
-        >
+        <div v-for="user in filteredUsers" :key="user.id" class="text-gray-600 dark:text-gray-300">
           <p class="text-gray-600 dark:text-gray-300 mb-2">
             <strong>{{ $t("userVenues.userDetailsNameLabel") }}:</strong>
             {{ user.name }}
@@ -334,10 +253,8 @@
       </div>
       <!-- Close Button -->
       <div class="flex justify-end mt-6">
-        <button
-          @click="showUserModal = false"
-          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-        >
+        <button @click="showUserModal = false"
+          class="cursor-pointer px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
           {{ $t("close") }}
         </button>
       </div>
@@ -706,7 +623,7 @@ export default {
 }
 
 .dark .main-content {
-  background-color: #1a202c;
+  background-color: oklch(27.8% 0.033 256.848);
 }
 
 .no-bookings {

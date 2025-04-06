@@ -336,7 +336,7 @@
     "returnHome": "Return to Home"
   },
   "dashboardView": {
-    "greeting": "Hello, {username}",
+    "greeting": "{username}",
     "haveNiceDay": "Have a nice day!",
     "searchPlaceholder": "Search",
     "sortAll": "All",
@@ -527,6 +527,9 @@
     "imagePreviewModalTitle": "Image Preview",
     "imageNotAvailable": "Image Not Available",
     "processing": "Processing...",
+    "paginationPrevious": "Previous",
+    "paginationPageInfo": "Page {currentPage} of {totalPages}",
+    "paginationNext": "Next",
     "errorRoleUpdate": "Error updating user role:",
     "errorUserDelete": "Error deleting user:",
     "errorRequestAccept": "Error accepting request:",

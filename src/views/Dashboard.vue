@@ -173,7 +173,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-for="user in users" :key="user.email">
+                <tr v-for="user in paginatedUsers" :key="user.email">
                   <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
                     <div class="flex items-center">
                       <div>
@@ -219,6 +219,20 @@
               </tbody>
             </table>
           </div>
+          <div class="flex justify-between items-center mt-4">
+            <button @click="prevPage('users')" :disabled="currentPageUsers === 1"
+              class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+              {{ $t("dashboardAdmin.paginationPrevious") }}
+            </button>
+            <span class="text-gray-700 dark:text-gray-300">
+              {{ $t("dashboardAdmin.paginationPageInfo", { currentPage: currentPageUsers, totalPages: totalPagesUsers })
+              }}
+            </span>
+            <button @click="nextPage('users')" :disabled="currentPageUsers === totalPagesUsers"
+              class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+              {{ $t("dashboardAdmin.paginationNext") }}
+            </button>
+          </div>
         </div>
 
         <!-- Requests Details Section -->
@@ -262,7 +276,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-for="request in requests" :key="request.id">
+                <tr v-for="request in paginatedRequests" :key="request.id">
                   <td class="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
                     <div class="text-xs md:text-sm font-medium text-gray-900 dark:text-white">
                       {{ request.owner }}
@@ -296,6 +310,22 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="flex justify-between items-center mt-4">
+            <button @click="prevPage('requests')" :disabled="currentPageRequests === 1"
+              class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+              {{ t("dashboardAdmin.paginationPrevious") }}
+            </button>
+            <span class="text-gray-700 dark:text-gray-300">
+              {{ t("dashboardAdmin.paginationPageInfo", {
+                currentPage: currentPageRequests, totalPages:
+                  totalPagesRequests
+              }) }}
+            </span>
+            <button @click="nextPage('requests')" :disabled="currentPageRequests === totalPagesRequests"
+              class="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+              {{ t("dashboardAdmin.paginationNext") }}
+            </button>
           </div>
         </div>
 
@@ -425,7 +455,7 @@
             {{ $t("userVenues.cancelBtn") }}
           </button>
           <button @click="sendRejectionEmailAndReject"
-            class="px-3 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
+            class="cursor-pointer px-3 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 font-medium shadow-md hover:shadow-lg flex items-center"
             :disabled="!rejectionReason || isSubmitting">
             <template v-if="isSubmitting">
               <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -705,6 +735,10 @@ export default {
       showEmailModal: false,
       rejectionReason: "",
       selectedRequest: null,
+      currentPageUsers: 1,
+      itemsPerPageUsers: 5,
+      currentPageRequests: 1,
+      itemsPerPageRequests: 7,
     };
   },
   setup() {
@@ -995,6 +1029,22 @@ export default {
     regularUserCount() {
       return this.users.filter((user) => !user.isAdmin).length;
     },
+    paginatedUsers() {
+      const start = (this.currentPageUsers - 1) * this.itemsPerPageUsers;
+      const end = start + this.itemsPerPageUsers;
+      return this.users.slice(start, end);
+    },
+    totalPagesUsers() {
+      return Math.ceil(this.users.length / this.itemsPerPageUsers);
+    },
+    paginatedRequests() {
+      const start = (this.currentPageRequests - 1) * this.itemsPerPageRequests;
+      const end = start + this.itemsPerPageRequests;
+      return this.requests.slice(start, end);
+    },
+    totalPagesRequests() {
+      return Math.ceil(this.requests.length / this.itemsPerPageRequests);
+    },
   },
   methods: {
     async handleRejectFromDetails(request) {
@@ -1097,6 +1147,20 @@ export default {
         alert(this.t("dashboardAdmin.errorRejectionProcess"));
       } finally {
         this.isSubmitting = false;
+      }
+    },
+    nextPage(type) {
+      if (type === 'users' && this.currentPageUsers < this.totalPagesUsers) {
+        this.currentPageUsers++;
+      } else if (type === 'requests' && this.currentPageRequests < this.totalPagesRequests) {
+        this.currentPageRequests++;
+      }
+    },
+    prevPage(type) {
+      if (type === 'users' && this.currentPageUsers > 1) {
+        this.currentPageUsers--;
+      } else if (type === 'requests' && this.currentPageRequests > 1) {
+        this.currentPageRequests--;
       }
     },
   },
