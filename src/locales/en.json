@@ -123,6 +123,21 @@
         "quote": "I found the perfect basketball court for our weekly games. The search filters made it easy to find exactly what we needed in our neighborhood.",
         "name": "Kareem Mohamed",
         "role": "User"
+      },
+      {
+        "quote": "Automated payments and 24/7 bookings saved us 20+ weekly hours!",
+        "name": "Nareman Abdallah",
+        "role": "Venue Owner"
+      },
+      {
+        "quote": "I now book venues in minutes instead of days also being able to compare venues, see real photos, and book instantly saves me so much time.",
+        "name": "Kerollos Nabil",
+        "role": "User"
+      },
+      {
+        "quote": "As someone who manages a busy conference center, Reservio gives me peace of mind. The real-time availability calendar prevents double bookings, and the integrated payment system means no more chasing invoices.",
+        "name": "Mohand Abdelkadir",
+        "role": "Venue Owner"
       }
     ]
   },
