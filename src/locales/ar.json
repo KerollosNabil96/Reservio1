@@ -457,7 +457,8 @@
     "descEarnings": "أرباح من حجز {venueName}",
     "descRefund": "استرداد لحجز ملغى في {venueName}",
     "descUnknownVenue": "مكان غير معروف",
-    "descGenericRefund": "استرداد لحجز ملغى"
+    "descGenericRefund": "استرداد لحجز ملغى",
+    "descRegistrationRefund": "استرداد لرفض تسجيل المكان: {venueName}"
   },
   "settings2": {
     "pageTitle": "إعدادات الحساب",

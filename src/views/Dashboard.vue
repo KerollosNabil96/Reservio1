@@ -1010,6 +1010,7 @@ import {
   remove,
   update,
   runTransaction,
+  push,
 } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import PieChart from "@/components/PieChart.vue";
@@ -1168,6 +1169,7 @@ export default {
     };
 
     const rejectRequest = async (request) => {
+      // This function seems unused now, confirm if needed or remove
       console.log("1. Starting rejectRequest function");
 
       try {
@@ -1416,6 +1418,37 @@ export default {
 
         await remove(dbRef(db, `requests/${this.selectedRequest.id}`));
 
+        // --- REFUND LOGIC --- //
+        const ownerBalanceRef = dbRef(
+          db,
+          `users/${this.selectedRequest.ownerId}/balance`
+        );
+        const ownerTransactionsRef = dbRef(
+          db,
+          `users/${this.selectedRequest.ownerId}/transactions`
+        );
+
+        const balanceSnapshot = await get(ownerBalanceRef);
+        const currentBalance = balanceSnapshot.exists()
+          ? balanceSnapshot.val()
+          : 0;
+        const newBalance = currentBalance + 200; // Refund amount
+
+        await set(ownerBalanceRef, newBalance);
+
+        const newTransactionRef = push(ownerTransactionsRef);
+        await set(newTransactionRef, {
+          id: newTransactionRef.key,
+          type: "refund",
+          amount: 200,
+          description: this.t("wallet.descRegistrationRefund", {
+            venueName: this.selectedRequest.venueName,
+          }),
+          timestamp: Date.now(),
+        });
+        // --- END REFUND LOGIC --- //
+
+        // Send email
         try {
           await fetch("http://localhost:3000/api/send-rejection-email", {
             method: "POST",

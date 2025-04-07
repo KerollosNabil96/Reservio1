@@ -457,7 +457,8 @@
     "descEarnings": "Earnings from booking for {venueName}",
     "descRefund": "Refund for canceled booking at {venueName}",
     "descUnknownVenue": "Unknown Venue",
-    "descGenericRefund": "Refund for canceled booking"
+    "descGenericRefund": "Refund for canceled booking",
+    "descRegistrationRefund": "Refund for rejected venue registration: {venueName}"
   },
   "settings2": {
     "pageTitle": "Account Settings",
