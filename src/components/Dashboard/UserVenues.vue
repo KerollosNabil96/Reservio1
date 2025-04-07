@@ -438,7 +438,7 @@ export default {
 
         let totalRefundAmount = 0;
         const refundPromises = relevantBookings.map(async (booking) => {
-          const refundAmount = booking.venue.price * 0.8;
+          const refundAmount = booking.venue.price;
           totalRefundAmount += refundAmount;
           const userBalanceRef = dbRef(db, `users/${booking.userId}/balance`);
           const userBalanceSnapshot = await get(userBalanceRef);
@@ -457,20 +457,41 @@ export default {
           );
           const newNotificationRef = push(notificationsListRef);
 
-          return Promise.all([
-            set(userBalanceRef, currentBalance + refundAmount),
-            remove(userBookingRef),
-            remove(globalBookingRef),
-            set(newNotificationRef, {
-              id: newNotificationRef.key,
-              message: this.t("userVenues.notificationCancelRefund", {
-                venueName: venueData.venueName,
-                date: booking.date,
+          // Add refund transaction to user's wallet
+          const transactionsRef = dbRef(
+            db,
+            `users/${booking.userId}/transactions`
+          );
+          const newTransactionRef = push(transactionsRef);
+
+          try {
+            await Promise.all([
+              set(userBalanceRef, currentBalance + refundAmount),
+              remove(userBookingRef),
+              remove(globalBookingRef),
+              set(newNotificationRef, {
+                id: newNotificationRef.key,
+                message: this.t("userVenues.notificationCancelRefund", {
+                  venueName: venueData.venueName,
+                  date: booking.date,
+                }),
+                read: false,
+                timestamp: Date.now(),
               }),
-              read: false,
-              timestamp: Date.now(),
-            }),
-          ]);
+              set(newTransactionRef, {
+                id: newTransactionRef.key,
+                type: "refund",
+                amount: refundAmount,
+                description: (`Refund for canceled booking at ${venueData.venueName}`),
+                timestamp: Date.now(),
+              }),
+            ]);
+          } catch (error) {
+            console.error(
+              `Error processing refund for booking ${booking.id}:`,
+              error
+            );
+          }
         });
 
         await Promise.all(refundPromises);
