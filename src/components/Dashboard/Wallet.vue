@@ -1,45 +1,30 @@
 <template>
-  <div
-    class="wallet-container bg-gray-100 dark:bg-gray-900 min-h-screen p-4 sm:p-6 md:p-10"
-  >
-    <h1
-      class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6"
-    >
+  <div class="wallet-container bg-gray-100 dark:bg-gray-900 min-h-screen p-4 sm:p-6 md:p-10">
+    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-6">
       {{ $t("wallet.title") }}
     </h1>
 
     <!-- Wallet Balance Card -->
     <div
-      class="wallet-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between mb-8"
-    >
+      class="wallet-card bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between mb-8">
       <div>
-        <h2
-          class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white"
-        >
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">
           {{ $t("wallet.currentBalance") }}
         </h2>
-        <p
-          class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mt-2"
-        >
+        <p class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400 mt-2">
           {{ formattedBalance }} {{ $t("egp") }}
         </p>
       </div>
     </div>
 
     <!-- Filter and Transaction History -->
-    <div
-      class="transaction-history bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6"
-    >
+    <div class="transaction-history bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
       <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
-        <h2
-          class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200"
-        >
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200">
           {{ $t("wallet.transactionHistory") }}
         </h2>
-        <select
-          v-model="filterType"
-          class="mt-2 sm:mt-0 p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
+        <select v-model="filterType"
+          class="mt-2 sm:mt-0 p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
           <option value="all">{{ $t("wallet.filterAll") }}</option>
           <option value="booking">{{ $t("wallet.filterBooking") }}</option>
           <option value="registration">
@@ -49,18 +34,13 @@
           <option value="refund">{{ $t("wallet.filterRefunds") }}</option>
         </select>
       </div>
-      <div
-        v-if="filteredTransactions.length === 0"
-        class="text-center text-gray-500 dark:text-gray-400"
-      >
+      <div v-if="filteredTransactions.length === 0" class="text-center text-gray-500 dark:text-gray-400">
         {{ $t("wallet.noTransactions") }}
       </div>
       <div v-else>
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr
-              class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-            >
+            <tr class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
               <th class="py-2 sm:py-3 px-2 sm:px-4 text-sm sm:text-base">
                 {{ $t("wallet.tableHeaderDate") }}
               </th>
@@ -76,60 +56,45 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="transaction in paginatedTransactions"
-              :key="transaction.id"
-              class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-            >
-              <td
-                class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words"
-              >
+            <tr v-for="transaction in paginatedTransactions" :key="transaction.id"
+              class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words">
                 {{ formatDate(transaction.date) }}
               </td>
-              <td
-                class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words"
-              >
+              <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words">
                 {{ transaction.description }}
               </td>
-              <td
-                class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold break-words"
-                :class="{
-                  'text-green-600 dark:text-green-400':
-                    transaction.amount > 0 || transaction.type === 'refund',
-                  'text-red-600 dark:text-red-400':
-                    transaction.amount < 0 && transaction.type !== 'refund',
-                }"
-              >
+              <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold break-words" :class="{
+                'text-green-600 dark:text-green-400':
+                  transaction.amount > 0 || transaction.type === 'refund',
+                'text-red-600 dark:text-red-400':
+                  transaction.amount < 0 && transaction.type !== 'refund',
+              }">
                 {{
                   transaction.amount > 0 || transaction.type === "refund"
                     ? "+"
                     : ""
                 }}{{ transaction.amount }} {{ $t("egp") }}
               </td>
-              <td
-                class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words"
-              >
-                <span
-                  :class="{
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200':
-                      transaction.type === 'booking',
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200':
-                      transaction.type === 'registration',
-                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200':
-                      transaction.type === 'earnings',
-                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200':
-                      transaction.type === 'refund',
-                  }"
-                  class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm"
-                >
+              <td class="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm break-words">
+                <span :class="{
+                  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200':
+                    transaction.type === 'booking',
+                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200':
+                    transaction.type === 'registration',
+                  'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200':
+                    transaction.type === 'earnings',
+                  'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200':
+                    transaction.type === 'refund',
+                }" class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
                   {{
                     transaction.type === "booking"
                       ? $t("wallet.typeBooking")
                       : transaction.type === "registration"
-                      ? $t("wallet.typeRegistration")
-                      : transaction.type === "earnings"
-                      ? $t("wallet.typeEarnings")
-                      : $t("wallet.typeRefund")
+                        ? $t("wallet.typeRegistration")
+                        : transaction.type === "earnings"
+                          ? $t("wallet.typeEarnings")
+                          : $t("wallet.typeRefund")
                   }}
                 </span>
               </td>
@@ -139,16 +104,10 @@
       </div>
 
       <!-- Pagination Controls -->
-      <div
-        v-if="filteredTransactions.length > 0"
-        class="flex justify-between items-center mt-4"
-      >
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
+      <div v-if="filteredTransactions.length > 0" class="flex justify-between items-center mt-4">
+        <button @click="prevPage" :disabled="currentPage === 1"
           class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
-        >
+          :class="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }">
           {{ $t("dashboardView.paginationPrevious") }}
         </button>
         <span class="text-gray-700 dark:text-gray-300">{{
@@ -157,14 +116,11 @@
             totalPages: totalPages,
           })
         }}</span>
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
+        <button @click="nextPage" :disabled="currentPage === totalPages"
           class="cursor-pointer px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           :class="{
             'opacity-50 cursor-not-allowed': currentPage === totalPages,
-          }"
-        >
+          }">
           {{ $t("dashboardView.paginationNext") }}
         </button>
       </div>
@@ -290,7 +246,7 @@ export default {
                   venueName:
                     venue.venueName || this.t("wallet.descUnknownVenue"),
                 }),
-                amount: -Math.abs(venue.price || 0),
+                amount: -200,
                 type: "registration",
               }));
             this.transactions = [...this.transactions, ...userRegistrations];
@@ -421,6 +377,7 @@ export default {
 }
 
 @media (min-width: 640px) {
+
   .transaction-history th,
   .transaction-history td {
     font-size: 0.875rem;
