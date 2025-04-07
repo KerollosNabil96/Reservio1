@@ -30,7 +30,7 @@
           </div>
           <div class="relative animate-slideRight">
             <div class="rounded-lg overflow-hidden">
-              <img src="/src/assets/pictures/about-image.jpg" alt="About Reservio"
+              <img src="/src/assets/pictures/about-us.svg" alt="About Reservio"
                 class="object-cover w-full h-full transform hover:scale-105 transition-transform duration-300" />
             </div>
           </div>
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <!-- Meet Our Team Section -->
+    <!-- Meet Our Team Section
     <div class="Meet py-16 bg-gray-50 dark:bg-gray-800 transition-all duration-300">
       <div class="container mx-auto px-4">
         <h2 class="font-bold text-3xl md:text-4xl text-center text-blue-600 mb-12 animate-fadeIn">
@@ -147,7 +147,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Our Vision Section -->
     <div class="vision bg-gray-50 py-16 dark:bg-gray-800 transition-all duration-300">
