@@ -274,7 +274,7 @@ export default {
                     booking.venue?.venueName ||
                     this.t("wallet.descUnknownVenue"),
                 }),
-                amount: Math.abs(booking.price || 0),
+                amount: Math.abs(booking.price * 0.9 || 0),
                 type: "earnings",
               }));
             this.transactions = [...this.transactions, ...earnings];
