@@ -1,4 +1,8 @@
 {
+  "reset_password_instructions": "Enter your email to reset your password",
+  "reset_password": "Reset Password",
+  "send": "Send",
+  "cancel": "Cancel",
   "welcome": "Welcome to Reservio",
   "transforming_reservation": "Transforming the way the world makes reservations",
   "who_we_are": "Who We Are",

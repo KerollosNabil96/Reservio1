@@ -1,4 +1,8 @@
 {
+  "reset_password_instructions": "قم بإدخال بريدك الإلكتروني لإعادة كلمة السر",
+  "reset_password": "إعادة كلمة السر",
+  "cancel": "إلغاء",
+  "send": "إرسال",
   "welcome": "  مرحبًا بك في ريسرفيو",
   "transforming_reservation": "تحويل طريقة حجز التذاكر في العالم",
   "who_we_are": "من نحن",
